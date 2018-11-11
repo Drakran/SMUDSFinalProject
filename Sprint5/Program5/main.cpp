@@ -12,6 +12,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
+    cout << "Test Terry Push" << endl;
     Driver Manager;
     Manager.Testing();
     return 0;
