@@ -60,6 +60,7 @@ private:
     int getHeight(Node<T>* n);
     int max(int l, int r);
     void rotateLeftLeft(Node<T>* &r);//passing root by reference
+    void rotateRightRight(Node<T>* &r);//passing root by reference
 };
 
 //default constructor
@@ -188,7 +189,13 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
         //check for balance factor WHEN INSERTING IN THE RIGHT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->right) - getHeight(ptrAtThisNode->left) == 2){
         //////////////////////////////////////////////////////////////////////
+            //checking for the imabalance factor, checking values inside node to do case 3 or 4
+            if( t > ptrAtThisNode->right->data ){
+                //case 4 rotation
+                rotateRightRight(ptrAtThisNode);
+            }else{
 
+            }
         //////////////////////////////////////////////////////////////////////
         }
     }else{//value already existsin map, SPECIAL CASE
@@ -260,7 +267,7 @@ K1 left    1
      * This function will do a left left rotation (Case 1)
                      5
             K2 =  3       7
-K1 = K2->left  2 (IN THIS CASE K1->right = null, however it can be another node).
+          K1 = 2 (IN THIS CASE K1->right = null, however it can be another node).
 K1 left    1
     */
     //2) Make unbalanced left pointer point to the right of its left
@@ -283,6 +290,47 @@ K1 left    1
     //4) Update heights of each node and rotate nodes and switch imbalance node withs its left
     K2->height = 1+ max( getHeight(K2->left), getHeight(K2->right) );
     K1->height = 1+ max( getHeight(K1->left), getHeight(K2) );
+    K2 = K1;
+}
+
+template <class T>
+void AVLTree<T> :: rotateRightRight(Node<T>* &K2)
+{
+    /*K2 is node passed on, this is the imbalanced node.
+     * This function will do a right right rotation (Case 4)
+                5
+            3       7 = K2
+                        9 K1 = K2->right
+                            12 = K1->right
+    */
+    //1) Create a pointer to the node left of the value passed in the function
+    Node<T>* K1 = K2->right;
+    /*
+                            5
+                        3       7 = K2
+                                  9 K1
+K2->right will point here now:(8)   12
+    */
+    //2) Make unbalanced right pointer point to the () of its ()
+    K2->right = K1->left;
+    /*
+                5
+            3       (7)K2
+          K1->left = K2 9
+                      8   12
+    */
+    //3) Make the the left ptr of K1 point to K2
+    K1->left = K2;
+    /*
+                5
+            3       (9)K2 = K1
+        K1-left = 7     12
+        K2->right = 8
+    */
+    //4)The height of k2 will depend if there was a node added or not from k1.
+    K2->height = 1+ max( getHeight(K2->left), getHeight(K2->right) );
+    //The height of K1 will be the height of its own right + the height of its left or K2
+    K1->height = 1+ max( getHeight(K1->right), getHeight(K2) );
     K2 = K1;
 }
 

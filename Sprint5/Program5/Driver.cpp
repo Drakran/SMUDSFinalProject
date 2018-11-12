@@ -23,7 +23,19 @@
       -20
             Not Balanced                Balanced tree.
     Comments:
-    Left left rotations work perfectly!
+    Left left rotations work perfectly! Still need to work on copy constructor and destructor.
+
+    3)Test testing rotateRightRight function:
+    The test will focus on making a left left rotation (CASE 4) on the imbalance tree.
+    Ex:                     to
+
+                  10                        10
+              5       15                5       15
+                                                    20
+                                                        30
+            Not Balanced                Balanced tree.
+    Comments:
+    Testing both rightright and leftleft functions at the same time:
 */
 using namespace std;
 
@@ -38,25 +50,23 @@ void Driver :: Testing()
     Test.insert(10);
     Test.insert(5);
     Test.insert(15);
-    Test.insert(-10);
     Test.printInOrder();
-    cout << "\n";
-    Test.insert(-20);
+    cout << "\nNew tree: \n";
+    Test.insert(20);
     Test.printInOrder();
-    cout << "\n";
-    Test.insert(-30);
+    cout << "\nNew tree: \n";
+    Test.insert(30);
     Test.printInOrder();
-    cout << "\n";
-    Test.insert(-40);
+    cout << "\nNew tree: \n";
+    Test.insert(40);
     Test.printInOrder();
-    cout << "\n";
-    Test.insert(-50);
+    cout << "\nNew tree: \n";
+    Test.insert(50);
     Test.printInOrder();
-    cout << "\n";
-    Test.insert(-60);
+    cout << "\nNew tree: \n";
+    Test.insert(60);
     Test.printInOrder();
-    cout << "\n";
-
+    cout << "\nNew tree: \n";
 
 /*********************
  * case 1: LL
