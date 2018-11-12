@@ -50,7 +50,6 @@ public:
     int getSizeOfTree();
     void insert(const T &d);
     void printInOrder();
-    void clear();//used for destructor
 
 private:
     Node<T>* root;
@@ -91,7 +90,7 @@ template <typename T>
 AVLTree<T> :: ~AVLTree()
 {
     //calling clear function to delete everything in tree.
-    clear();
+    clear(root);
 }
 
 //overloaded assignment operator
@@ -104,14 +103,18 @@ AVLTree<T>& AVLTree<T>:: operator=(const AVLTree<T>& rightObject)
     }
 
     //calling clear function to delete everything in tree.
-    clear();
+    clear(this->root);
     //call copy function passing in the object to be copied.
     copy(rightObject);
 
     return *this;
 }
 
-//copy function
+/*
+This function will copy values, form the right hand side object.
+This object is currently empty however, rightObject may not be empty.
+copy function is used in copy constructor and assignment operator.
+*/
 template <typename T>
 void AVLTree<T> :: copy(const AVLTree<T>& rightObject)
 {
@@ -123,14 +126,6 @@ void AVLTree<T> :: copy(const AVLTree<T>& rightObject)
         //right object is not empty, so we copy rightObject to this object
 
     }
-}
-
-//function that frees dynamic memory.
-template <typename T>
-void AVLTree<T> :: clear()
-{
-    //calling the private clear function
-    clear(root);
 }
 
 //function that frees dynamic memory.
