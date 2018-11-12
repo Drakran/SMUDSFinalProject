@@ -52,21 +52,19 @@ void Driver :: Testing()
     Test.insert(15);
     Test.printInOrder();
     cout << "\nNew tree: \n";
-    Test.insert(20);
+    Test.insert(6);
     Test.printInOrder();
     cout << "\nNew tree: \n";
-    Test.insert(30);
+    Test.insert(7);
     Test.printInOrder();
     cout << "\nNew tree: \n";
-    Test.insert(40);
+    Test.insert(14);
     Test.printInOrder();
     cout << "\nNew tree: \n";
-    Test.insert(50);
+    Test.insert(13);
     Test.printInOrder();
     cout << "\nNew tree: \n";
-    Test.insert(60);
-    Test.printInOrder();
-    cout << "\nNew tree: \n";
+
 
 /*********************
  * case 1: LL
@@ -89,6 +87,17 @@ void Driver :: Testing()
 //              7
 //                 9
 //*********************/
+
+/*
+ *1)convert to this
+            10
+        9       15
+    7
+ 5
+ 2) do left left
+*/
+
+
 
 ///*********************
 // * case 3: RL

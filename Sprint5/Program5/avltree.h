@@ -60,7 +60,9 @@ private:
     int getHeight(Node<T>* n);
     int max(int l, int r);
     void rotateLeftLeft(Node<T>* &r);//passing root by reference
+    void rotateLeftRight(Node<T>* &r);//passing root by reference
     void rotateRightRight(Node<T>* &r);//passing root by reference
+    void rotateRightLeft(Node<T>* &r);//passing root by reference
 };
 
 //default constructor
@@ -178,7 +180,8 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
                 //case 1 rotation
                 rotateLeftLeft(ptrAtThisNode);
             }else{
-
+                //case 2 rotation
+                rotateLeftRight(ptrAtThisNode);
             }
         //////////////////////////////////////////////////////////////////////
         }
@@ -194,7 +197,8 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
                 //case 4 rotation
                 rotateRightRight(ptrAtThisNode);
             }else{
-
+                //case 3 rotation
+                rotateRightLeft(ptrAtThisNode);
             }
         //////////////////////////////////////////////////////////////////////
         }
@@ -293,6 +297,20 @@ K1 left    1
     K2 = K1;
 }
 
+/*
+This is a case two rotation:
+-left child of right substree.
+*/
+template <class T>
+void AVLTree<T> :: rotateLeftRight(Node<T>* &K2)
+{
+    //converting case2 to a case1 by rotation
+    rotateRightRight(K2);
+    //balancing a tree using case1
+    rotateLeftLeft(K2);
+
+}
+
 template <class T>
 void AVLTree<T> :: rotateRightRight(Node<T>* &K2)
 {
@@ -332,6 +350,20 @@ K2->right will point here now:(8)   12
     //The height of K1 will be the height of its own right + the height of its left or K2
     K1->height = 1+ max( getHeight(K1->right), getHeight(K2) );
     K2 = K1;
+}
+
+/*
+This is a case three rotation:
+-rightt child of left substree.
+*/
+template <class T>
+void AVLTree<T> :: rotateRightLeft(Node<T>* &K2)
+{
+    //converting case3 to a case1 by rotation
+    rotateLeftLeft(K2);
+    //balancing a tree using case4
+    rotateRightRight(K2);
+
 }
 
 #endif
