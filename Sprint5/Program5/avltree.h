@@ -59,6 +59,7 @@ private:
     void printInOrder(Node<T>* r);
     int getHeight(Node<T>* n);
     int max(int l, int r);
+    void rotateLeftLeft(Node<T>* &r);//passing root by reference
 };
 
 //default constructor
@@ -171,9 +172,13 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
         //check for balance factor WHEN INSERTING IN THE LEFT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->left) - getHeight(ptrAtThisNode->right) ==  2){
         //////////////////////////////////////////////////////////////////////
-        cout << "here " << ptrAtThisNode->data << endl;
-        cout << "left height "<< getHeight(ptrAtThisNode->left) << "\n"
-             << "right heieght " << getHeight(ptrAtThisNode->right) << "\n";
+            //checking for the imabalance factor, checking values inside node to do case 1 or 2
+            if( t < ptrAtThisNode->left->data ){
+                //case 1 rotation
+                rotateLeftLeft(ptrAtThisNode);
+            }else{
+
+            }
         //////////////////////////////////////////////////////////////////////
         }
     }else
@@ -183,9 +188,7 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
         //check for balance factor WHEN INSERTING IN THE RIGHT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->right) - getHeight(ptrAtThisNode->left) == 2){
         //////////////////////////////////////////////////////////////////////
-            cout << "here " << ptrAtThisNode->data << endl;
-            cout << "right height "<< getHeight(ptrAtThisNode->right) << "\n"
-                 << "left heieght " << getHeight(ptrAtThisNode->left) << "\n";
+
         //////////////////////////////////////////////////////////////////////
         }
     }else{//value already existsin map, SPECIAL CASE
@@ -215,7 +218,7 @@ void AVLTree<T> :: printInOrder(Node<T>* ptrAtThisNode)
         //1st. Getting everything to left
         printInOrder(ptrAtThisNode->left);
         //2nd. Outputting values.
-        cout << ptrAtThisNode->data << endl;
+        cout << setw(ptrAtThisNode->height *4) << ptrAtThisNode->data << endl;
         //3rd. Getting evertyhing to the right.
         printInOrder(ptrAtThisNode->right);
     }
@@ -234,10 +237,53 @@ int AVLTree<T>::getHeight(Node<T>* nPtr)
 
 /*This function will use to measure the height of each child.*/
 template <class T>
-int AVLTree<T>::max(int l, int r)
+int AVLTree<T>::max(int leftChild, int rightChild)
 {
     //returing biggest between left and right
-    return l > r ? l : r;
+    return leftChild > rightChild ? leftChild : rightChild;
+}
+
+
+template <class T>
+void AVLTree<T> :: rotateLeftLeft(Node<T>* &K2)
+{
+    /*K2 is node passed on, this is the imbalanced node.
+     * This function will do a left left rotation (Case 1)
+                     5
+            K2 =  3       7
+K1 = K2->left  2
+K1 left    1
+    */
+    //1) Create a pointer to the node left of the value passed in the function
+    Node<T>* K1 = K2->left;
+    /*K2 is node passed on/imbalanced node.
+     * This function will do a left left rotation (Case 1)
+                     5
+            K2 =  3       7
+K1 = K2->left  2 (IN THIS CASE K1->right = null, however it can be another node).
+K1 left    1
+    */
+    //2) Make unbalanced left pointer point to the right of its left
+    K2->left = K1->right;
+    /*K2 is node passed on/imbalanced node.
+     * This function will do a left left rotation (Case 1)
+                      (5)
+              K2  (3)       (7)
+            K1 (2)  k1->right points to K2
+            (1)
+    */
+    //3) Make the the right ptr of K1 point to K2
+    K1->right = K2;
+    /*K2 is node passed on/imbalanced node.
+     * This function will do a left left rotation (Case 1)
+                     5
+        K2 = K1  2       7
+              1     3
+    */
+    //4) Update heights of each node and rotate nodes and switch imbalance node withs its left
+    K2->height = 1+ max( getHeight(K2->left), getHeight(K2->right) );
+    K1->height = 1+ max( getHeight(K1->left), getHeight(K2) );
+    K2 = K1;
 }
 
 #endif
