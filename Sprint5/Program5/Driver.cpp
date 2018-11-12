@@ -14,28 +14,14 @@
     Still working on desctructor/copy constructor.
 
     2)Test testing rotateLeftLeft function:
-    The test will focus on making a left left rotation (CASE 1) on the imbalance tree.
-    Ex:                     to
-
-                  10                        10
-              5       15                -10       15
-         -10                        -20     5
-      -20
-            Not Balanced                Balanced tree.
     Comments:
     Left left rotations work perfectly! Still need to work on copy constructor and destructor.
 
     3)Test testing rotateRightRight function:
-    The test will focus on making a left left rotation (CASE 4) on the imbalance tree.
-    Ex:                     to
-
-                  10                        10
-              5       15                5       15
-                                                    20
-                                                        30
-            Not Balanced                Balanced tree.
     Comments:
-    Testing both rightright and leftleft functions at the same time:
+    Testing both rightright and leftleft functions at the same time: both work
+
+    4) RightLeft and Left Right functions both work at the same time.
 */
 using namespace std;
 
@@ -50,20 +36,8 @@ void Driver :: Testing()
     Test.insert(10);
     Test.insert(5);
     Test.insert(15);
-    Test.printInOrder();
-    cout << "\nNew tree: \n";
-    Test.insert(6);
-    Test.printInOrder();
-    cout << "\nNew tree: \n";
-    Test.insert(7);
-    Test.printInOrder();
-    cout << "\nNew tree: \n";
-    Test.insert(14);
-    Test.printInOrder();
-    cout << "\nNew tree: \n";
-    Test.insert(13);
-    Test.printInOrder();
-    cout << "\nNew tree: \n";
+    Test.clear();
+    cout << Test.getSizeOfTree() << endl;
 
 
 /*********************

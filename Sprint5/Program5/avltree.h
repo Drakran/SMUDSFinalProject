@@ -47,14 +47,16 @@ public:
     AVLTree(const AVLTree<T>& rightObject);
     ~AVLTree();
     AVLTree<T>& operator=(const AVLTree<T>& rightObject);
-    void copy(const AVLTree<T>& rightObject);
-    void clear();
     int getSizeOfTree();
     void insert(const T &d);
     void printInOrder();
+    void clear();//used for destructor
+
 private:
     Node<T>* root;
     int treeNodes;
+    void copy(const AVLTree<T>& rightObject);//used for copy constructor
+    void clear(Node<T>* r);//used for destructor
     void insert(const T &d, Node<T>* &r);//passing root by reference
     void printInOrder(Node<T>* r);
     int getHeight(Node<T>* n);
@@ -127,12 +129,25 @@ void AVLTree<T> :: copy(const AVLTree<T>& rightObject)
 template <typename T>
 void AVLTree<T> :: clear()
 {
+    //calling the private clear function
+    clear(root);
+}
+
+//function that frees dynamic memory.
+template <typename T>
+void AVLTree<T> :: clear(Node<T>* ptrAtThisNode)
+{
     //checking if tree is empty
-    if(root == nullptr){
-        //don't do anything
+    if(ptrAtThisNode == nullptr)
         return;
-    }else{
-        //the tree is not empty so we delete everything
+    //recursively delete dynamic memory in order:
+    clear(ptrAtThisNode->left);
+    clear(ptrAtThisNode->right);
+    delete ptrAtThisNode;
+    //decrement the amount of tree nodes after each delete
+    --treeNodes;
+    if(treeNodes == 0){
+        root = nullptr;
     }
 }
 
