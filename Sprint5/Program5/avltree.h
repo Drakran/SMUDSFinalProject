@@ -119,7 +119,9 @@ template <typename T>
 void AVLTree<T> :: copy(Node<T>* rightObjNodePtr)
 {
     if(rightObjNodePtr){
+        //add a new element from the right object to the left object
         insert(rightObjNodePtr->data);
+        //copy recursively in order
         copy(rightObjNodePtr->left);
         copy(rightObjNodePtr->right);
     }
@@ -131,9 +133,11 @@ void AVLTree<T> :: clear(Node<T>* &rootPtr)
 {
     //checking if tree is empty
     if(rootPtr != nullptr){
+        //delete recursively on both left and right
         clear(rootPtr->left);
         clear(rootPtr->right);
         delete rootPtr;
+        //make ptr null
         rootPtr = nullptr;
         --treeNodes;
     }
@@ -253,43 +257,16 @@ int AVLTree<T>::max(int leftChild, int rightChild)
     return leftChild > rightChild ? leftChild : rightChild;
 }
 
-
+//case 1 rotation
 template <class T>
 void AVLTree<T> :: rotateLeftLeft(Node<T>* &K2)
 {
-    /*K2 is node passed on, this is the imbalanced node.
-     * This function will do a left left rotation (Case 1)
-                     5
-            K2 =  3       7
-K1 = K2->left  2
-K1 left    1
-    */
     //1) Create a pointer to the node left of the value passed in the function
     Node<T>* K1 = K2->left;
-    /*K2 is node passed on/imbalanced node.
-     * This function will do a left left rotation (Case 1)
-                     5
-            K2 =  3       7
-          K1 = 2 (IN THIS CASE K1->right = null, however it can be another node).
-K1 left    1
-    */
     //2) Make unbalanced left pointer point to the right of its left
     K2->left = K1->right;
-    /*K2 is node passed on/imbalanced node.
-     * This function will do a left left rotation (Case 1)
-                      (5)
-              K2  (3)       (7)
-            K1 (2)  k1->right points to K2
-            (1)
-    */
     //3) Make the the right ptr of K1 point to K2
     K1->right = K2;
-    /*K2 is node passed on/imbalanced node.
-     * This function will do a left left rotation (Case 1)
-                     5
-        K2 = K1  2       7
-              1     3
-    */
     //4) Update heights of each node and rotate nodes and switch imbalance node withs its left
     K2->height = 1+ max( getHeight(K2->left), getHeight(K2->right) );
     K1->height = 1+ max( getHeight(K1->left), getHeight(K2) );
@@ -310,40 +287,16 @@ void AVLTree<T> :: rotateLeftRight(Node<T>* &K2)
 
 }
 
+//case 4 rotation
 template <class T>
 void AVLTree<T> :: rotateRightRight(Node<T>* &K2)
 {
-    /*K2 is node passed on, this is the imbalanced node.
-     * This function will do a right right rotation (Case 4)
-                5
-            3       7 = K2
-                        9 K1 = K2->right
-                            12 = K1->right
-    */
     //1) Create a pointer to the node left of the value passed in the function
     Node<T>* K1 = K2->right;
-    /*
-                            5
-                        3       7 = K2
-                                  9 K1
-K2->right will point here now:(8)   12
-    */
     //2) Make unbalanced right pointer point to the () of its ()
     K2->right = K1->left;
-    /*
-                5
-            3       (7)K2
-          K1->left = K2 9
-                      8   12
-    */
     //3) Make the the left ptr of K1 point to K2
     K1->left = K2;
-    /*
-                5
-            3       (9)K2 = K1
-        K1-left = 7     12
-        K2->right = 8
-    */
     //4)The height of k2 will depend if there was a node added or not from k1.
     K2->height = 1+ max( getHeight(K2->left), getHeight(K2->right) );
     //The height of K1 will be the height of its own right + the height of its left or K2
