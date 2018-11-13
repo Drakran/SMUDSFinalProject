@@ -1,3 +1,0 @@
-First commit -- Commit Test
-
-"Hello World"
