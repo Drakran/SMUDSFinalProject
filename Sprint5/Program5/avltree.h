@@ -233,8 +233,8 @@ void AVLTree<T> :: printInOrder(Node<T>* ptrAtThisNode)
     if(ptrAtThisNode != nullptr){
         //1st. Getting everything to left
         printInOrder(ptrAtThisNode->left);
-        //2nd. Outputting values.
-        cout << setw(ptrAtThisNode->height *4) << ptrAtThisNode->data << endl;
+        //2nd. Outputting values. //setw(ptrAtThisNode->height *4) to print in tree format
+        cout << ptrAtThisNode->data << endl;
         //3rd. Getting evertyhing to the right.
         printInOrder(ptrAtThisNode->right);
     }
