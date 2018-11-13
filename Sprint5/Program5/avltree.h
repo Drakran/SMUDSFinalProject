@@ -5,8 +5,6 @@
 #include <stdexcept>
 #include <iomanip>
 
-using namespace std;
-
 template <typename T> class Node;
 template <typename T> class AVLTree;
 
@@ -236,7 +234,7 @@ void AVLTree<T> :: printInOrder(Node<T>* ptrAtThisNode)
         //1st. Getting everything to left
         printInOrder(ptrAtThisNode->left);
         //2nd. Outputting values. //setw(ptrAtThisNode->height *4) to print in tree format
-        cout << ptrAtThisNode->data << endl;
+        std::cout << ptrAtThisNode->data << std::endl;
         //3rd. Getting evertyhing to the right.
         printInOrder(ptrAtThisNode->right);
     }

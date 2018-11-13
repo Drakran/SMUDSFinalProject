@@ -3,8 +3,6 @@
 #include <iostream>
 #include <avltree.h>
 
-using namespace std;
-
 class Driver
 {
 public:
