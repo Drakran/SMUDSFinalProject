@@ -50,7 +50,7 @@ public:
     int getSizeOfTree();
     void insert(const T &d);
     void printInOrder();
-
+    bool contains(const T &d);//contains will use find to search the avl tree
 private:
     Node<T>* root;
     int treeNodes;
@@ -64,6 +64,8 @@ private:
     void rotateLeftRight(Node<T>* &r);//passing root by reference
     void rotateRightRight(Node<T>* &r);//passing root by reference
     void rotateRightLeft(Node<T>* &r);//passing root by reference
+    Node<T>* find(const T &d);//public function contains will call find
+
 };
 
 //default constructor
@@ -95,7 +97,7 @@ AVLTree<T> :: ~AVLTree()
 
 //overloaded assignment operator
 template <typename T>
-AVLTree<T>& AVLTree<T>:: operator=(const AVLTree<T>& rightObject)
+AVLTree<T>& AVLTree<T> :: operator=(const AVLTree<T>& rightObject)
 {
     //checking if we are copying the same object
     if(this == &rightObject){
@@ -239,8 +241,8 @@ void AVLTree<T> :: printInOrder(Node<T>* ptrAtThisNode)
 }
 
 /*This function will use to measure the height of each child.*/
-template <class T>
-int AVLTree<T>::getHeight(Node<T>* nPtr)
+template <typename T>
+int AVLTree<T> :: getHeight(Node<T>* nPtr)
 {
     //if no children return -1
     if(nPtr== nullptr)
@@ -250,15 +252,15 @@ int AVLTree<T>::getHeight(Node<T>* nPtr)
 }
 
 /*This function will use to measure the height of each child.*/
-template <class T>
-int AVLTree<T>::max(int leftChild, int rightChild)
+template <typename T>
+int AVLTree<T> :: max(int leftChild, int rightChild)
 {
     //returing biggest between left and right
     return leftChild > rightChild ? leftChild : rightChild;
 }
 
 //case 1 rotation
-template <class T>
+template <typename T>
 void AVLTree<T> :: rotateLeftLeft(Node<T>* &K2)
 {
     //1) Create a pointer to the node left of the value passed in the function
@@ -277,7 +279,7 @@ void AVLTree<T> :: rotateLeftLeft(Node<T>* &K2)
 This is a case two rotation:
 -left child of right substree.
 */
-template <class T>
+template <typename T>
 void AVLTree<T> :: rotateLeftRight(Node<T>* &K2)
 {
     //converting case2 to a case1 by rotation
@@ -288,7 +290,7 @@ void AVLTree<T> :: rotateLeftRight(Node<T>* &K2)
 }
 
 //case 4 rotation
-template <class T>
+template <typename T>
 void AVLTree<T> :: rotateRightRight(Node<T>* &K2)
 {
     //1) Create a pointer to the node left of the value passed in the function
@@ -308,7 +310,7 @@ void AVLTree<T> :: rotateRightRight(Node<T>* &K2)
 This is a case three rotation:
 -rightt child of left substree.
 */
-template <class T>
+template <typename T>
 void AVLTree<T> :: rotateRightLeft(Node<T>* &K2)
 {
     //converting case3 to a case1 by rotation
@@ -316,6 +318,32 @@ void AVLTree<T> :: rotateRightLeft(Node<T>* &K2)
     //balancing a tree using case4
     rotateRightRight(K2);
 
+}
+
+//This function will return a ptr to the element in the AVL tree
+template <typename T>
+bool AVLTree<T> :: contains(const T& ValueToFind)
+{
+    //if the return type of find is NOT NULL then the value exists in avl tree
+    return ( find(ValueToFind) != nullptr );
+}
+
+//This function will return a ptr to the element in the AVL tree
+template <typename T>
+Node<T>* AVLTree<T> :: find(const T& ValueToFind)
+{
+    //create a temp node ptr poiting to root
+    Node<T>* tempNodePtr = root;
+    while (tempNodePtr != nullptr){
+        if (tempNodePtr->data == ValueToFind)//ptr found
+            return tempNodePtr;
+        if (tempNodePtr->data < ValueToFind)//searching right
+            tempNodePtr = tempNodePtr->right;
+        else                        //searching left
+            tempNodePtr= tempNodePtr->left;
+    }
+    //returning null if not found
+    return nullptr;
 }
 
 #endif

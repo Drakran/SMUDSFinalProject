@@ -12,9 +12,12 @@ Driver::Driver()
 void Driver :: Testing()
 {
     AVLTree<int>Test;
-    for(int i = 0; i < 65; ++i){
+    for(int i = 0; i < 15; ++i){
         Test.insert(i);
     }
-    Test.printInOrder();
+    cout << Test.contains(0) << endl;
+    cout << Test.contains(14) << endl;
+
+    //Test.printInOrder();
 
 }
