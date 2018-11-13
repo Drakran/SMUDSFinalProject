@@ -50,7 +50,9 @@ public:
     int getSizeOfTree();
     void insert(const T &d);
     void printInOrder();
-    bool contains(const T &d);//contains will use find to search the avl tree
+    /*find: will traverse the tree and see if a node exits.This function is passed by reference
+     because we will modify update existing info inside of the node.*/
+    Node<T>*& find(const T &d);
 private:
     Node<T>* root;
     int treeNodes;
@@ -64,7 +66,7 @@ private:
     void rotateLeftRight(Node<T>* &r);//passing root by reference
     void rotateRightRight(Node<T>* &r);//passing root by reference
     void rotateRightLeft(Node<T>* &r);//passing root by reference
-    Node<T>* find(const T &d);//public function contains will call find
+
 
 };
 
@@ -322,15 +324,7 @@ void AVLTree<T> :: rotateRightLeft(Node<T>* &K2)
 
 //This function will return a ptr to the element in the AVL tree
 template <typename T>
-bool AVLTree<T> :: contains(const T& ValueToFind)
-{
-    //if the return type of find is NOT NULL then the value exists in avl tree
-    return ( find(ValueToFind) != nullptr );
-}
-
-//This function will return a ptr to the element in the AVL tree
-template <typename T>
-Node<T>* AVLTree<T> :: find(const T& ValueToFind)
+Node<T>*& AVLTree<T> :: find(const T& ValueToFind)
 {
     //create a temp node ptr poiting to root
     Node<T>* tempNodePtr = root;

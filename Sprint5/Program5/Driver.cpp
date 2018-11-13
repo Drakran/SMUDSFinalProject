@@ -16,7 +16,4 @@ void Driver :: Testing()
         Test.insert(i);
     }
     Test.printInOrder();
-
-    //Test.printInOrder();
-
 }
