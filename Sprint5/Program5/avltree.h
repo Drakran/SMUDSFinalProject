@@ -54,8 +54,8 @@ public:
 private:
     Node<T>* root;
     int treeNodes;
-    void copy(const AVLTree<T>& rightObject);//used for copy constructor
-    void clear(Node<T>* r);//used for destructor
+    void copy(Node<T>* rightObjNodePtr);//used for copy constructor
+    void clear(Node<T>* &rootPtr);//used for destructor
     void insert(const T &d, Node<T>* &r);//passing root by reference
     void printInOrder(Node<T>* r);
     int getHeight(Node<T>* n);
@@ -79,10 +79,10 @@ AVLTree<T> :: AVLTree()
 template <typename T>
 AVLTree<T> :: AVLTree(const AVLTree<T>& rightObject)
 {
-    //initializing private variables.
-    this->treeNodes = rightObject.treeNodes;
+    this->root = nullptr;
+    this->treeNodes = 0;
     //call copy function passing in the object to be copied.
-    copy(rightObject);
+    copy(rightObject.root);
 }
 
 //deconstructor
@@ -105,7 +105,7 @@ AVLTree<T>& AVLTree<T>:: operator=(const AVLTree<T>& rightObject)
     //calling clear function to delete everything in tree.
     clear(this->root);
     //call copy function passing in the object to be copied.
-    copy(rightObject);
+    copy(rightObject.root);
 
     return *this;
 }
@@ -116,33 +116,26 @@ This object is currently empty however, rightObject may not be empty.
 copy function is used in copy constructor and assignment operator.
 */
 template <typename T>
-void AVLTree<T> :: copy(const AVLTree<T>& rightObject)
+void AVLTree<T> :: copy(Node<T>* rightObjNodePtr)
 {
-    //checking if the right object is empty
-    if(rightObject.root == nullptr){
-        //don't do anything
-        return;
-    }else{
-        //right object is not empty, so we copy rightObject to this object
-
+    if(rightObjNodePtr){
+        insert(rightObjNodePtr->data);
+        copy(rightObjNodePtr->left);
+        copy(rightObjNodePtr->right);
     }
 }
 
 //function that frees dynamic memory.
 template <typename T>
-void AVLTree<T> :: clear(Node<T>* ptrAtThisNode)
+void AVLTree<T> :: clear(Node<T>* &rootPtr)
 {
     //checking if tree is empty
-    if(ptrAtThisNode == nullptr)
-        return;
-    //recursively delete dynamic memory in order:
-    clear(ptrAtThisNode->left);
-    clear(ptrAtThisNode->right);
-    delete ptrAtThisNode;
-    //decrement the amount of tree nodes after each delete
-    --treeNodes;
-    if(treeNodes == 0){
-        root = nullptr;
+    if(rootPtr != nullptr){
+        clear(rootPtr->left);
+        clear(rootPtr->right);
+        delete rootPtr;
+        rootPtr = nullptr;
+        --treeNodes;
     }
 }
 
@@ -184,7 +177,6 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
         insert(t,ptrAtThisNode->left);
         //check for balance factor WHEN INSERTING IN THE LEFT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->left) - getHeight(ptrAtThisNode->right) ==  2){
-        //////////////////////////////////////////////////////////////////////
             //checking for the imabalance factor, checking values inside node to do case 1 or 2
             if( t < ptrAtThisNode->left->data ){
                 //case 1 rotation
@@ -193,7 +185,6 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
                 //case 2 rotation
                 rotateLeftRight(ptrAtThisNode);
             }
-        //////////////////////////////////////////////////////////////////////
         }
     }else
     if(t > ptrAtThisNode->data){
@@ -201,7 +192,6 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
         insert(t,ptrAtThisNode->right);
         //check for balance factor WHEN INSERTING IN THE RIGHT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->right) - getHeight(ptrAtThisNode->left) == 2){
-        //////////////////////////////////////////////////////////////////////
             //checking for the imabalance factor, checking values inside node to do case 3 or 4
             if( t > ptrAtThisNode->right->data ){
                 //case 4 rotation
@@ -210,7 +200,6 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
                 //case 3 rotation
                 rotateRightLeft(ptrAtThisNode);
             }
-        //////////////////////////////////////////////////////////////////////
         }
     }else{//value already existsin map, SPECIAL CASE
     }

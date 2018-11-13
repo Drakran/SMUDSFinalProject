@@ -22,6 +22,15 @@
     Testing both rightright and leftleft functions at the same time: both work
 
     4) RightLeft and Left Right functions both work at the same time.
+
+    5) Rule of three works completely!
+    Comments:
+    Insert functions work perfectly.
+    Rule of three works perfectly.
+    Rotations work perfectly.
+
+    -Approved by Terry. (Note signature maybe forged.)
+
 */
 using namespace std;
 
@@ -36,10 +45,12 @@ void Driver :: Testing()
     Test.insert(10);
     Test.insert(5);
     Test.insert(15);
-    Test.clear();
-    cout << Test.getSizeOfTree() << endl;
-
-
+    Test.insert(0);
+    Test.insert(-5);
+    Test.insert(25);
+    Test.insert(30);
+    AVLTree<int>Test1 = Test;
+    Test1.printInOrder();
 /*********************
  * case 1: LL
 //    Test.insert(-10);
