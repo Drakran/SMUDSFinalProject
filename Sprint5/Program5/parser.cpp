@@ -5,93 +5,57 @@ Parser::Parser()
 
 }
 
-void Parser::getFiles()
+std::vector<std::string> Parser::getFiles(std::string path, std:: string extn)
 {
     /* adapted from:
-
      * https://stackoverflow.com/questions/612097
-
      * /how-can-i-get-the-list-of-files-in-a-directory-using-c-or-c
-
      */
-
-    std::vector<std::string> get_files_at_path_with_extn(std::string path, std::string extn) {
-
-        vector<string> result;
-
-        DIR *dir;
-
-        struct dirent *ent;
-
-
-
-        if ((dir = opendir(path.c_str())) != NULL) {
-
-            while ((ent = readdir(dir)) != NULL) {
-
-                int len = strlen(ent->d_name);
-
-                if (ent->d_type == DT_REG &&
-
-                    len > extn.length() &&
-
-                    strcmp(ent->d_name + len - extn.length(), extn.c_str()) == 0)
-
-                    result.push_back(ent->d_name);
-
-            }
-
-            closedir(dir);
-
+    std::vector<std::string> result;
+    DIR *dir;
+    struct dirent *ent;
+    if ((dir = opendir(path.c_str())) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            int len = strlen(ent->d_name);
+            if (ent->d_type == DT_REG &&
+                len > extn.length() &&
+                strcmp(ent->d_name + len - extn.length(), extn.c_str()) == 0)
+                result.push_back(ent->d_name);
         }
-
-        else {
-
-            throw invalid_argument("Provided path could not be opened");
-
-        }
-
-
-
-        return result;
-
+        closedir(dir);
     }
+    else {
+        throw std::invalid_argument("Provided path could not be opened");
+    }
+    fileNames = result;
+    return result; //If want to send vector
+}
 
-
-
-    int main(int argc, char* argv[]) {
-
-        string dir_path;
-
-        string extention = ".json";
-
-
-
-        if (argc < 2) {
-
-            dir_path = ".";
-
+void Parser::parse()
+{
+    std::string filePath = "./scotus"; // ./Files
+    std::string delimeter = "/";
+    std::string fileNum = "\0";
+    std::string allFilesInFolder = "\0";
+    for(int i = 0; i < 1; i++){
+        std::cout << "\nNEXT FILE: \n";
+        fileNum = fileNames[i];
+        allFilesInFolder = filePath + delimeter + fileNum;
+        std::ifstream firstFile(allFilesInFolder);
+        if(!firstFile){
+            std::cerr << "File could not be read." << std::endl;
+            exit(EXIT_FAILURE);
         }
+        std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
+        const char* json = jstring.c_str(); //String to cstring
+        rapidjson::Document cases;
+        cases.Parse(json);
 
-        else {
+        std::cout << cases["sha1"].GetString();
 
-            dir_path = argv[1];
-
-        }
-
-
-
-        vector<string> files = get_files_at_path_with_extn(dir_path, extention);
-
-
-
-        for (int i = 0; i < files.size(); i++)
-
-            cout << files[i] << endl;
-
-
-
-        return 0;
-
+        //std::cout << jstring;
+        firstFile.close();
     }
 }
+
+
