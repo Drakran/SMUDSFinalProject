@@ -6,9 +6,11 @@ CONFIG -= qt
 SOURCES += \
         main.cpp \
     Driver.cpp \
-    Word.cpp
+    Word.cpp \
+    parser.cpp
 
 HEADERS += \
     Driver.h \
     avltree.h \
-    Word.h
+    Word.h \
+    parser.h
