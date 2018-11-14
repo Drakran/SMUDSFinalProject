@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include "rapidjson/document.h"
@@ -18,6 +19,9 @@
 #include <stdexcept>
 #include <dirent.h>
 #include <fstream>
+
+#include <tinyxml2.h>
+#include <cParser.h>
 
 
 class Parser

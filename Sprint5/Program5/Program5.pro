@@ -7,10 +7,19 @@ SOURCES += \
         main.cpp \
     Driver.cpp \
     Word.cpp \
-    parser.cpp
+    parser.cpp \
+    tinyxml2.cpp \
+    cParser.cpp
 
 HEADERS += \
     Driver.h \
     avltree.h \
     Word.h \
-    parser.h
+    parser.h \
+    tinyxml2.h \
+    cParser.h
+
+
+
+
+
