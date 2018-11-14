@@ -20,16 +20,16 @@ private:
     int height;
 public:
     //default parameters for each child pointers
-    Node(T d, Node<T>* l = nullptr, Node<T>* r = nullptr);
+    Node(T d);
 };
 
 //constructor for node
 template <typename T>
-Node<T>::Node(T d, Node<T>* l, Node<T>* r)
+Node<T>::Node(T d)
 {
     data = d;
-    left = l;
-    right = r;
+    left = nullptr;
+    right = nullptr;
     height = 0;
 }
 
@@ -46,7 +46,7 @@ public:
     ~AVLTree();
     AVLTree<T>& operator=(const AVLTree<T>& rightObject);
     int getSizeOfTree();
-    void insert(const T &d);
+    void insert(const T d);
     void printInOrder();
     /*find: will traverse the tree and see if a node exits.This function is passed by reference
      because we will modify update existing info inside of the node.*/
@@ -60,11 +60,10 @@ private:
     void printInOrder(Node<T>* r);
     int getHeight(Node<T>* n);
     int max(int l, int r);
-    void rotateLeftLeft(Node<T>* &r);//passing root by reference
-    void rotateLeftRight(Node<T>* &r);//passing root by reference
-    void rotateRightRight(Node<T>* &r);//passing root by reference
-    void rotateRightLeft(Node<T>* &r);//passing root by reference
-
+    void rotateWithLeftChild(Node<T>* &r);//passing root by reference
+    void doubleWithLeftChild(Node<T>* &r);//passing root by reference
+    void doubleWithRightChild(Node<T>* &r);//passing root by reference
+    void rotateWithRightChild(Node<T>* &r);//passing root by reference
 
 };
 
@@ -154,7 +153,7 @@ int AVLTree<T> :: getSizeOfTree()
 
 //public insert function that will call private
 template <typename T>
-void AVLTree<T> :: insert(const T &t)
+void AVLTree<T> :: insert(const T t)
 {
     //passing in both values by reference
     insert(t, root);
@@ -167,18 +166,10 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
     //check if the tree is empty
     if(ptrAtThisNode == nullptr){
         //creating the root of the tree
-        ptrAtThisNode = new Node<T>(t, nullptr, nullptr);
-
-        //update height
-        ptrAtThisNode->height++;
-
-        //update counter
-        ++treeNodes;
-        return;
+        ptrAtThisNode = new Node<T>(t);
     }
-
     //checking if next value of the tree goes to left
-    if(t < ptrAtThisNode->data){
+    else if(t < ptrAtThisNode->data){
         //recursive call to insert on left side
         insert(t,ptrAtThisNode->left);
         //check for balance factor WHEN INSERTING IN THE LEFT, if true then its not balanced.
@@ -186,29 +177,29 @@ void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
             //checking for the imabalance factor, checking values inside node to do case 1 or 2
             if( t < ptrAtThisNode->left->data ){
                 //case 1 rotation
-                rotateLeftLeft(ptrAtThisNode);
+                rotateWithLeftChild(ptrAtThisNode);
             }else{
                 //case 2 rotation
-                rotateLeftRight(ptrAtThisNode);
+                doubleWithLeftChild(ptrAtThisNode);
             }
         }
-    }else
-    if(t > ptrAtThisNode->data){
+    }
+    else if(t > ptrAtThisNode->data){
         //recursive call to insert on right side
         insert(t,ptrAtThisNode->right);
         //check for balance factor WHEN INSERTING IN THE RIGHT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->right) - getHeight(ptrAtThisNode->left) == 2){
             //checking for the imabalance factor, checking values inside node to do case 3 or 4
-            if( t > ptrAtThisNode->right->data ){
+            if(ptrAtThisNode->right->data < t){
                 //case 4 rotation
-                rotateRightRight(ptrAtThisNode);
+                rotateWithRightChild(ptrAtThisNode);
             }else{
                 //case 3 rotation
-                rotateRightLeft(ptrAtThisNode);
+                doubleWithRightChild(ptrAtThisNode);
             }
         }
-    }else{//value already existsin map, SPECIAL CASE
     }
+    else{}//value already existsin map, SPECIAL CASE
 
     //update height
     ptrAtThisNode->height = 1 + max( getHeight(ptrAtThisNode->left), getHeight(ptrAtThisNode->right) );
@@ -261,7 +252,20 @@ int AVLTree<T> :: max(int leftChild, int rightChild)
 
 //case 1 rotation
 template <typename T>
-void AVLTree<T> :: rotateLeftLeft(Node<T>* &K2)
+void AVLTree<T> :: doubleWithLeftChild(Node<T>* &K2)
+{
+    //converting case2 to a case1 by rotation
+    rotateWithRightChild(K2->left);
+    //balancing a tree using case1
+    rotateWithLeftChild(K2);
+}
+
+/*
+This is a case two rotation:
+-left child of right substree.
+*/
+template <typename T>
+void AVLTree<T> :: rotateWithLeftChild(Node<T>* &K2)
 {
     //1) Create a pointer to the node left of the value passed in the function
     Node<T>* K1 = K2->left;
@@ -273,25 +277,25 @@ void AVLTree<T> :: rotateLeftLeft(Node<T>* &K2)
     K2->height = 1+ max( getHeight(K2->left), getHeight(K2->right) );
     K1->height = 1+ max( getHeight(K1->left), getHeight(K2) );
     K2 = K1;
-}
-
-/*
-This is a case two rotation:
--left child of right substree.
-*/
-template <typename T>
-void AVLTree<T> :: rotateLeftRight(Node<T>* &K2)
-{
-    //converting case2 to a case1 by rotation
-    rotateRightRight(K2);
-    //balancing a tree using case1
-    rotateLeftLeft(K2);
 
 }
 
 //case 4 rotation
 template <typename T>
-void AVLTree<T> :: rotateRightRight(Node<T>* &K2)
+void AVLTree<T> :: doubleWithRightChild(Node<T>* &K2)
+{
+    //converting case3 to a case1 by rotation
+    rotateWithLeftChild(K2->right);
+    //balancing a tree using case4
+    rotateWithRightChild(K2);
+}
+
+/*
+This is a case three rotation:
+-rightt child of left substree.
+*/
+template <typename T>
+void AVLTree<T> :: rotateWithRightChild(Node<T>* &K2)
 {
     //1) Create a pointer to the node left of the value passed in the function
     Node<T>* K1 = K2->right;
@@ -304,19 +308,6 @@ void AVLTree<T> :: rotateRightRight(Node<T>* &K2)
     //The height of K1 will be the height of its own right + the height of its left or K2
     K1->height = 1+ max( getHeight(K1->right), getHeight(K2) );
     K2 = K1;
-}
-
-/*
-This is a case three rotation:
--rightt child of left substree.
-*/
-template <typename T>
-void AVLTree<T> :: rotateRightLeft(Node<T>* &K2)
-{
-    //converting case3 to a case1 by rotation
-    rotateLeftLeft(K2);
-    //balancing a tree using case4
-    rotateRightRight(K2);
 
 }
 
