@@ -22,6 +22,7 @@
 
 #include <tinyxml2.h>
 #include <cParser.h>
+#include <HtmlParser.hpp>
 
 
 class Parser

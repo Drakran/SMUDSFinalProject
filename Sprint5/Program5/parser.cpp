@@ -1,5 +1,6 @@
 #include "parser.h"
 
+
 Parser::Parser()
 {
 
@@ -37,7 +38,7 @@ void Parser::parse()
     std::string delimeter = "/";
     std::string fileNum = "\0";
     std::string allFilesInFolder = "\0";
-    for(int i = 1; i < 2; i++){
+    for(unsigned i = 0; i < 100; i++){
         std::cout << "\nNEXT FILE: \n";
         fileNum = fileNames[i];
         allFilesInFolder = filePath + delimeter + fileNum;
@@ -46,18 +47,39 @@ void Parser::parse()
             std::cerr << "File could not be read." << std::endl;
             exit(EXIT_FAILURE);
         }
+        //Gets the Json file and Parses it
         std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
         const char* json = jstring.c_str(); //String to cstring
         rapidjson::Document cases;
         cases.Parse(json);
 
-        static const char* html = cases["html"].GetString();
-        //std::cout << html;
+        string plain = cases["plain_text"].GetString();
+        //std::cout << "PLain Text" << plain;
+        std::cout << cases["resource_uri"].GetString() << '\n';
 
-        string plik = allFilesInFolder;
-        cParser obiekt(plik);
-        cout<<"--------------"<<endl;
-        cout<<"Wyniki sa takze w pliku 'parseResult.txt.'";
+        //
+        //
+        if(!cases["html"].IsNull())
+        {
+             string htmlString = cases["html"].GetString();
+             std::cout << htmlString;
+             HtmlParser htmlParser(htmlString);
+             htmlParser.parse();
+        }
+
+
+
+
+        //static const char* html = cases["html"].GetString();
+        //std::cout << htmlString;
+//        if(!)
+//        {
+
+//        }
+
+
+        //Polish dude;
+
 
 //        static const char* xml = "element";
 //       tinyxml2::XMLDocument doc;

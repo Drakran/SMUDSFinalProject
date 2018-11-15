@@ -36,6 +36,7 @@ int main(int argc, char* argv[]) {
         //cout << files[i] << endl;
    }
    parser.parse();
+   std::cout << "hi";
 
        return 0;
 }
