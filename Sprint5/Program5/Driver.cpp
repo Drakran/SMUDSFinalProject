@@ -12,39 +12,28 @@ Driver::Driver()
 
 void Driver :: Testing()
 {
-
-    Word *twoThings = new Word;
-    twoThings->setWord("Terry");
-    Word *threeThings = new Word;
-    threeThings->setWord("Skyler");
-    Word *fourThings = new Word;
-    fourThings->setWord("Sophie");
-    Word *scope = new Word;
-    scope->setWord("Scope");
-    Word *sabado = new Word;
-    sabado->setWord("Sabado");
-
-    //IndexInterface *Peng = new Penguin<int>();
-    IndexInterface<Word*>* Tree = new AVLTree<Word*>();
-    //Peng->Testing();
-    Tree->Testing();
-    //cout << Tree->getSize();
-    Tree->insert(fourThings);
-    Tree->insert(threeThings);
-    Tree->insert(twoThings);
-    Tree->insert(scope);
-    Tree->insert(sabado);
-    //Tree->printInOrder();
-
-    Word *sabado1 = new Word;
-    sabado1->setWord("Sabado");
-
-     if( Tree->contains(sabado1) )
-         cout << "found" <<endl;
-     else
-         cout << "notfound"<< endl;
+    string terryTest = "Terry";
+    string terryTest2 = "terry";
 
 
+    Word T;
+    T.setWord("Terry");
+    T.upDateFileAndCount("file1", 1);
+
+
+    IndexInterface<Word, std::string>* Tree = new AVLTree<Word, std::string>();
+
+    Tree->insert(T, terryTest);
+
+
+    try {
+        Tree->find(terryTest2);
+    } catch (exception &e) {
+        //insert object here
+        cout << e.what() << endl;
+    }
+
+    cout << Tree->find(terryTest).getWord() << endl;
 
 //    srand(time(0));
 //    int randNo;

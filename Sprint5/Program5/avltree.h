@@ -6,36 +6,38 @@
 #include <iomanip>
 #include <IndexInterface.h>
 
-template <typename T> class Node;
-template <typename T> class AVLTree;
+template <typename T,typename K> class Node;
+template <typename T,typename K> class AVLTree;
 
-template <typename T>
+template <typename T, typename K>
 class Node{
 
-friend class AVLTree<T>;
+friend class AVLTree<T,K>;
 
 private:
     T data;
-    Node<T>* left;
-    Node<T>* right;
+    Node<T,K>* left;
+    Node<T,K>* right;
     int height;
+    K key;
 public:
     //default parameters for each child pointers
-    Node(T d);
+    Node(T d, K k);
 };
 
 //constructor for node
-template <typename T>
-Node<T>::Node(T d)
+template <typename T,typename K>
+Node<T,K>::Node(T d, K k)
 {
     data = d;
     left = nullptr;
     right = nullptr;
     height = 0;
+    key = k;
 }
 
-template <typename T>
-class AVLTree: public IndexInterface<T> {
+template <typename T,typename K>
+class AVLTree: public IndexInterface<T,K> {
 /*
 The AVLTree class will use private and public functions to insert.
 The private function(s) are internal function(s) called
@@ -43,45 +45,43 @@ the public function(s).
 */
 public:
     AVLTree();
-    AVLTree(const AVLTree<T>& rightObject);
+    AVLTree(const AVLTree<T,K>& rightObject);
     virtual ~AVLTree();
     virtual void Testing(); //Remove later
-    AVLTree<T>& operator=(const AVLTree<T>& rightObject);
+    AVLTree<T,K>& operator=(const AVLTree<T,K>& rightObject);
     virtual int getSize();
-    virtual void insert( T &d);
+    virtual void insert( T &d, K &k);
     void printInOrder();
     /*find: will traverse the tree and see if a node exits.This function is passed by reference
      because we will modify update existing info inside of the node.*/
-    virtual bool contains(T& d);
-    T& find( T& data );
+    T& find( K& k );
 private:
-    Node<T>* root;
+    Node<T,K>* root;
     int treeNodes;
-    void copy(Node<T>* rightObjNodePtr);//used for copy constructor
-    void clear(Node<T>* &rootPtr);//used for destructor
-    void insert( T &d, Node<T>* &r);//passing root by reference
-    bool contains(T& d, Node<T>* &r);
-    void printInOrder(Node<T>* r);
-    int getHeight(Node<T>* n);
+    void copy(Node<T,K>* rightObjNodePtr);//used for copy constructor
+    void clear(Node<T,K>* &rootPtr);//used for destructor
+    void insert( T &d, K &k, Node<T,K>* &r);//passing root by reference
+    void printInOrder(Node<T,K>* r);
+    int getHeight(Node<T,K>* n);
     int max(int l, int r);
-    void rotateWithLeftChild(Node<T>* &r);//passing root by reference
-    void doubleWithLeftChild(Node<T>* &r);//passing root by reference
-    void doubleWithRightChild(Node<T>* &r);//passing root by reference
-    void rotateWithRightChild(Node<T>* &r);//passing root by reference
+    void rotateWithLeftChild(Node<T,K>* &r);//passing root by reference
+    void doubleWithLeftChild(Node<T,K>* &r);//passing root by reference
+    void doubleWithRightChild(Node<T,K>* &r);//passing root by reference
+    void rotateWithRightChild(Node<T,K>* &r);//passing root by reference
 
 };
 
 
-template<typename T>
-void AVLTree<T>::Testing()
+template <typename T,typename K>
+void AVLTree<T,K>::Testing()
 {
     std::cout << "Approved by Skyler Wang" << std::endl;
 }
 
 
 //default constructor
-template <typename T>
-AVLTree<T> :: AVLTree()
+template <typename T,typename K>
+AVLTree<T,K> :: AVLTree()
 {
     //initializing private variables
     root = nullptr;
@@ -89,8 +89,8 @@ AVLTree<T> :: AVLTree()
 }
 
 //copy constructor
-template <typename T>
-AVLTree<T> :: AVLTree(const AVLTree<T>& rightObject)
+template <typename T,typename K>
+AVLTree<T,K> :: AVLTree(const AVLTree<T,K>& rightObject)
 {
     this->root = nullptr;
     this->treeNodes = 0;
@@ -99,16 +99,16 @@ AVLTree<T> :: AVLTree(const AVLTree<T>& rightObject)
 }
 
 //deconstructor
-template <typename T>
-AVLTree<T> :: ~AVLTree()
+template <typename T,typename K>
+AVLTree<T,K> :: ~AVLTree()
 {
     //calling clear function to delete everything in tree.
     clear(root);
 }
 
 //overloaded assignment operator
-template <typename T>
-AVLTree<T>& AVLTree<T> :: operator=(const AVLTree<T>& rightObject)
+template <typename T,typename K>
+AVLTree<T,K>& AVLTree<T,K> :: operator=(const AVLTree<T,K>& rightObject)
 {
     //checking if we are copying the same object
     if(this == &rightObject){
@@ -128,8 +128,8 @@ This function will copy values, form the right hand side object.
 This object is currently empty however, rightObject may not be empty.
 copy function is used in copy constructor and assignment operator.
 */
-template <typename T>
-void AVLTree<T> :: copy(Node<T>* rightObjNodePtr)
+template <typename T,typename K>
+void AVLTree<T,K> :: copy(Node<T,K>* rightObjNodePtr)
 {
     if(rightObjNodePtr){
         //add a new element from the right object to the left object
@@ -141,8 +141,8 @@ void AVLTree<T> :: copy(Node<T>* rightObjNodePtr)
 }
 
 //function that frees dynamic memory.
-template <typename T>
-void AVLTree<T> :: clear(Node<T>* &rootPtr)
+template <typename T,typename K>
+void AVLTree<T,K> :: clear(Node<T,K>* &rootPtr)
 {
     //checking if tree is empty
     if(rootPtr != nullptr){
@@ -157,38 +157,38 @@ void AVLTree<T> :: clear(Node<T>* &rootPtr)
 }
 
 //function that gets the size of tree
-template <typename T>
-int AVLTree<T> :: getSize()
+template <typename T,typename K>
+int AVLTree<T,K> :: getSize()
 {
     return treeNodes;
 }
 
 //public insert function that will call private
-template <typename T>
-void AVLTree<T> :: insert( T &t)
+template <typename T,typename K>
+void AVLTree<T,K> :: insert( T &t, K &k)
 {
     //passing in both values by reference
-    insert(t, root);
+    insert(t, k, root);
 }
 
 //private insert function
-template <typename T>
-void AVLTree<T> :: insert( T &t, Node<T>* &ptrAtThisNode)
+template <typename T,typename K>
+void AVLTree<T,K> :: insert( T &t, K &k, Node<T,K>* &ptrAtThisNode)
 {
     //check if the tree is empty
     if(ptrAtThisNode == nullptr){
         //creating the root of the tree
-        ptrAtThisNode = new Node<T>(t);
+        ptrAtThisNode = new Node<T,K>(t,k);
         ++treeNodes;
     }
     //checking if next value of the tree goes to left
-    else if(t < ptrAtThisNode->data){
+    else if(k < ptrAtThisNode->key){//////////////////////////////////////////////////
         //recursive call to insert on left side
-        insert(t,ptrAtThisNode->left);
+        insert(t, k,ptrAtThisNode->left);
         //check for balance factor WHEN INSERTING IN THE LEFT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->left) - getHeight(ptrAtThisNode->right) ==  2){
             //checking for the imabalance factor, checking values inside node to do case 1 or 2
-            if( t < ptrAtThisNode->left->data ){
+            if( k < ptrAtThisNode->left->key ){
                 //case 1 rotation
                 rotateWithLeftChild(ptrAtThisNode);
             }else{
@@ -197,13 +197,13 @@ void AVLTree<T> :: insert( T &t, Node<T>* &ptrAtThisNode)
             }
         }
     }
-    else if(t > ptrAtThisNode->data){
+    else if(k > ptrAtThisNode->key){
         //recursive call to insert on right side
-        insert(t,ptrAtThisNode->right);
+        insert(t, k,ptrAtThisNode->right);
         //check for balance factor WHEN INSERTING IN THE RIGHT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->right) - getHeight(ptrAtThisNode->left) == 2){
             //checking for the imabalance factor, checking values inside node to do case 3 or 4
-            if(ptrAtThisNode->right->data < t){
+            if(ptrAtThisNode->right->key < k){
                 //case 4 rotation
                 rotateWithRightChild(ptrAtThisNode);
             }else{
@@ -211,7 +211,7 @@ void AVLTree<T> :: insert( T &t, Node<T>* &ptrAtThisNode)
                 doubleWithRightChild(ptrAtThisNode);
             }
         }
-    }
+    }//////////////////////////////////////////////////////////////////////////////////
     else{}//value already existsin map, SPECIAL CASE
 
     //update height
@@ -219,8 +219,8 @@ void AVLTree<T> :: insert( T &t, Node<T>* &ptrAtThisNode)
 }
 
 //displaying values inside of the avl tree
-template <typename T>
-void AVLTree<T> :: printInOrder()
+template <typename T,typename K>
+void AVLTree<T,K> :: printInOrder()
 {
     //checking if tree is empty
     if(root == nullptr)
@@ -230,8 +230,8 @@ void AVLTree<T> :: printInOrder()
 }
 
 //displaying values inside of the avl tree
-template <typename T>
-void AVLTree<T> :: printInOrder(Node<T>* ptrAtThisNode)
+template <typename T,typename K>
+void AVLTree<T,K> :: printInOrder(Node<T,K>* ptrAtThisNode)
 {
     //recursive call until null
     if(ptrAtThisNode != nullptr){
@@ -245,8 +245,8 @@ void AVLTree<T> :: printInOrder(Node<T>* ptrAtThisNode)
 }
 
 /*This function will use to measure the height of each child.*/
-template <typename T>
-int AVLTree<T> :: getHeight(Node<T>* nPtr)
+template <typename T,typename K>
+int AVLTree<T,K> :: getHeight(Node<T,K>* nPtr)
 {
     //if no children return -1
     if(nPtr== nullptr)
@@ -256,16 +256,16 @@ int AVLTree<T> :: getHeight(Node<T>* nPtr)
 }
 
 /*This function will use to measure the height of each child.*/
-template <typename T>
-int AVLTree<T> :: max(int leftChild, int rightChild)
+template <typename T,typename K>
+int AVLTree<T,K> :: max(int leftChild, int rightChild)
 {
     //returing biggest between left and right
     return leftChild > rightChild ? leftChild : rightChild;
 }
 
 //case 1 rotation
-template <typename T>
-void AVLTree<T> :: doubleWithLeftChild(Node<T>* &K2)
+template <typename T,typename K>
+void AVLTree<T,K> :: doubleWithLeftChild(Node<T,K>* &K2)
 {
     //converting case2 to a case1 by rotation
     rotateWithRightChild(K2->left);
@@ -277,11 +277,11 @@ void AVLTree<T> :: doubleWithLeftChild(Node<T>* &K2)
 This is a case two rotation:
 -left child of right substree.
 */
-template <typename T>
-void AVLTree<T> :: rotateWithLeftChild(Node<T>* &K2)
+template <typename T,typename K>
+void AVLTree<T,K> :: rotateWithLeftChild(Node<T,K>* &K2)
 {
     //1) Create a pointer to the node left of the value passed in the function
-    Node<T>* K1 = K2->left;
+    Node<T,K>* K1 = K2->left;
     //2) Make unbalanced left pointer point to the right of its left
     K2->left = K1->right;
     //3) Make the the right ptr of K1 point to K2
@@ -294,8 +294,8 @@ void AVLTree<T> :: rotateWithLeftChild(Node<T>* &K2)
 }
 
 //case 4 rotation
-template <typename T>
-void AVLTree<T> :: doubleWithRightChild(Node<T>* &K2)
+template <typename T,typename K>
+void AVLTree<T,K> :: doubleWithRightChild(Node<T,K>* &K2)
 {
     //converting case3 to a case1 by rotation
     rotateWithLeftChild(K2->right);
@@ -307,11 +307,11 @@ void AVLTree<T> :: doubleWithRightChild(Node<T>* &K2)
 This is a case three rotation:
 -rightt child of left substree.
 */
-template <typename T>
-void AVLTree<T> :: rotateWithRightChild(Node<T>* &K2)
+template <typename T,typename K>
+void AVLTree<T,K> :: rotateWithRightChild(Node<T,K>* &K2)
 {
     //1) Create a pointer to the node left of the value passed in the function
-    Node<T>* K1 = K2->right;
+    Node<T,K>* K1 = K2->right;
     //2) Make unbalanced right pointer point to the () of its ()
     K2->right = K1->left;
     //3) Make the the left ptr of K1 point to K2
@@ -324,36 +324,20 @@ void AVLTree<T> :: rotateWithRightChild(Node<T>* &K2)
 
 }
 
-template <class T>
-T& AVLTree<T> :: find( T& data )
+template <typename T,typename K>
+T& AVLTree<T,K> :: find( K& data )
 {
-    Node<T>* temp = root;
+    Node<T,K>* temp = root;
     while (temp != nullptr){
-      if (temp->data == data)
-          return temp->data;
-      if (temp->data < data) temp = temp->right;
-      else temp = temp->left;
+      if (temp->key == data)
+          return temp->data;//return object
+      if (temp->key < data)
+          temp = temp->right;
+      else
+          temp = temp->left;
     }
-}
 
-template<class T>
-bool AVLTree<T>::contains( T & d )
-{
-    return contains( d, root );
+    throw std::out_of_range("Error element not found in Tree. Inside find.");
 }
-
-template<class T>
-bool AVLTree<T>::contains( T & d, Node<T>* &r )
-{
-    if( r == nullptr )
-        return false;
-    else if( d < r->data )
-        return contains( d, r->left );
-    else if( r->data < d )
-        return contains( d, r->right );
-    else
-        return true;    // Match
-}
-
 
 #endif
