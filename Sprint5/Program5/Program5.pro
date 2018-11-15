@@ -9,7 +9,6 @@ SOURCES += \
     Word.cpp \
     parser.cpp \
     tinyxml2.cpp \
-    cParser.cpp \
     HtmlParser.cpp
 
 HEADERS += \
@@ -18,7 +17,6 @@ HEADERS += \
     Word.h \
     parser.h \
     tinyxml2.h \
-    cParser.h \
     HtmlParser.hpp
 
 

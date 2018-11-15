@@ -1,5 +1,6 @@
 #include "parser.h"
 
+// time ./Program5 /home/student/Desktop/scotus
 
 Parser::Parser()
 {
@@ -34,12 +35,16 @@ std::vector<std::string> Parser::getFiles(std::string path, std:: string extn)
 
 void Parser::parse()
 {
+    std::vector<std::string> words;
+    std::map<std::string,int> wordCase;
+    std::regex reg("<.*?>"); // <[^/]*>
+    std::regex line("\n");
     std::string filePath = "./scotus"; // ./Files
     std::string delimeter = "/";
     std::string fileNum = "\0";
     std::string allFilesInFolder = "\0";
-    for(unsigned i = 0; i < 100; i++){
-        std::cout << "\nNEXT FILE: \n";
+    for(unsigned i = 0; i < 10; i++){
+        //std::cout << "\nNEXT FILE: \n";
         fileNum = fileNames[i];
         allFilesInFolder = filePath + delimeter + fileNum;
         std::ifstream firstFile(allFilesInFolder);
@@ -53,65 +58,46 @@ void Parser::parse()
         rapidjson::Document cases;
         cases.Parse(json);
 
-        string plain = cases["plain_text"].GetString();
-        //std::cout << "PLain Text" << plain;
-        std::cout << cases["resource_uri"].GetString() << '\n';
+       // string plain = cases["plain_text"].GetString();
 
-        //
-        //
+        //std::cout << htmlString;
+        //std::cout << "PLain Text" << plain;
+        //std::cout << cases["resource_uri"].GetString() << '\n';
         if(!cases["html"].IsNull())
         {
-             string htmlString = cases["html"].GetString();
-             std::cout << htmlString;
-             HtmlParser htmlParser(htmlString);
-             htmlParser.parse();
+            std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+            //std::string html = (std::regex_replace(cases["html"].GetString(),reg, " "));
+            //std::istringstream ss{std::regex_replace(html,line, " ")};
+            std::string temp;
+            //std::cout << ss.str();
+            //words(std::istream_iterator<std::string>{ss},std::istream_iterator<std::string>{});
+            while(ss >> temp)
+            {
+                //words.push_back(temp);
+                ++wordCase[temp];
+                //ss.ignore();
+            }
         }
 
-
-
-
-        //static const char* html = cases["html"].GetString();
-        //std::cout << htmlString;
-//        if(!)
+//        for(int x = 0; x < words.size(); x++)
 //        {
+//            std::cout << "WORDS:" << words[x] << '\n';
+//        }
 
+//        for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)
+//        {
+//            std::cout << "Key: " << iter->first << " Value:" << iter->second << '\n';
 //        }
 
 
-        //Polish dude;
-
-
-//        static const char* xml = "element";
-//       tinyxml2::XMLDocument doc;
-//       doc.Parse(html);
-//       std::cout << doc.Error();
-//       doc.Print();
-      // std::cout << doc.ErrorID();
-
-
-        // basic init
-            //myhtml_t* myhtml = myhtml_create();
-//            myhtml_init(myhtml, MyHTML_OPTIONS_DEFAULT, 1, 0);
-
-//            // first tree init
-//            myhtml_tree_t* tree = myhtml_tree_create();
-//            myhtml_tree_init(tree, myhtml);
-
-//            // parse html
-//            myhtml_parse(tree, MyENCODING_UTF_8, html, std::strlen(html));
-
-//            // print result
-//            // or see serialization function with callback: myhtml_serialization_tree_callback
-//            mycore_string_raw_t str = {0};
-//            myhtml_serialization_tree_buffer(myhtml_tree_get_document(tree), &str);
-//            printf("%s\n", str.data);
-
-//            // release resources
-//            mycore_string_raw_destroy(&str, false);
-//            myhtml_tree_destroy(tree);
-//            myhtml_destroy(myhtml);
-
-        //std::cout << jstring;
+        //HtmlPaser Slow
+//        if(!cases["html"].IsNull())
+//        {
+//             string htmlString = cases["html"].GetString();
+//             //std::cout << htmlString;
+//             HtmlParser htmlParser(htmlString);
+//             htmlParser.parse();
+//        }
         firstFile.close();
     }
 }
