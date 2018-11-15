@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <iomanip>
+#include <IndexInterface.h>
 
 template <typename T> class Node;
 template <typename T> class AVLTree;
@@ -34,7 +35,7 @@ Node<T>::Node(T d)
 }
 
 template <typename T>
-class AVLTree {
+class AVLTree: public IndexInterface<T> {
 /*
 The AVLTree class will use private and public functions to insert.
 The private function(s) are internal function(s) called
@@ -43,20 +44,23 @@ the public function(s).
 public:
     AVLTree();
     AVLTree(const AVLTree<T>& rightObject);
-    ~AVLTree();
+    virtual ~AVLTree();
+    virtual void Testing(); //Remove later
     AVLTree<T>& operator=(const AVLTree<T>& rightObject);
-    int getSizeOfTree();
-    void insert(const T d);
+    virtual int getSize();
+    virtual void insert( T &d);
     void printInOrder();
     /*find: will traverse the tree and see if a node exits.This function is passed by reference
      because we will modify update existing info inside of the node.*/
-    Node<T>*& find(const T &d);
+    virtual bool contains(T& d);
+    T& find( T& data );
 private:
     Node<T>* root;
     int treeNodes;
     void copy(Node<T>* rightObjNodePtr);//used for copy constructor
     void clear(Node<T>* &rootPtr);//used for destructor
-    void insert(const T &d, Node<T>* &r);//passing root by reference
+    void insert( T &d, Node<T>* &r);//passing root by reference
+    bool contains(T& d, Node<T>* &r);
     void printInOrder(Node<T>* r);
     int getHeight(Node<T>* n);
     int max(int l, int r);
@@ -66,6 +70,14 @@ private:
     void rotateWithRightChild(Node<T>* &r);//passing root by reference
 
 };
+
+
+template<typename T>
+void AVLTree<T>::Testing()
+{
+    std::cout << "Approved by Skyler Wang" << std::endl;
+}
+
 
 //default constructor
 template <typename T>
@@ -146,14 +158,14 @@ void AVLTree<T> :: clear(Node<T>* &rootPtr)
 
 //function that gets the size of tree
 template <typename T>
-int AVLTree<T> :: getSizeOfTree()
+int AVLTree<T> :: getSize()
 {
     return treeNodes;
 }
 
 //public insert function that will call private
 template <typename T>
-void AVLTree<T> :: insert(const T t)
+void AVLTree<T> :: insert( T &t)
 {
     //passing in both values by reference
     insert(t, root);
@@ -161,12 +173,13 @@ void AVLTree<T> :: insert(const T t)
 
 //private insert function
 template <typename T>
-void AVLTree<T> :: insert(const T &t, Node<T>* &ptrAtThisNode)
+void AVLTree<T> :: insert( T &t, Node<T>* &ptrAtThisNode)
 {
     //check if the tree is empty
     if(ptrAtThisNode == nullptr){
         //creating the root of the tree
         ptrAtThisNode = new Node<T>(t);
+        ++treeNodes;
     }
     //checking if next value of the tree goes to left
     else if(t < ptrAtThisNode->data){
@@ -311,22 +324,36 @@ void AVLTree<T> :: rotateWithRightChild(Node<T>* &K2)
 
 }
 
-//This function will return a ptr to the element in the AVL tree
-template <typename T>
-Node<T>*& AVLTree<T> :: find(const T& ValueToFind)
+template <class T>
+T& AVLTree<T> :: find( T& data )
 {
-    //create a temp node ptr poiting to root
-    Node<T>* tempNodePtr = root;
-    while (tempNodePtr != nullptr){
-        if (tempNodePtr->data == ValueToFind)//ptr found
-            return tempNodePtr;
-        if (tempNodePtr->data < ValueToFind)//searching right
-            tempNodePtr = tempNodePtr->right;
-        else                        //searching left
-            tempNodePtr= tempNodePtr->left;
+    Node<T>* temp = root;
+    while (temp != nullptr){
+      if (temp->data == data)
+          return temp->data;
+      if (temp->data < data) temp = temp->right;
+      else temp = temp->left;
     }
-    //returning null if not found
-    return nullptr;
 }
+
+template<class T>
+bool AVLTree<T>::contains( T & d )
+{
+    return contains( d, root );
+}
+
+template<class T>
+bool AVLTree<T>::contains( T & d, Node<T>* &r )
+{
+    if( r == nullptr )
+        return false;
+    else if( d < r->data )
+        return contains( d, r->left );
+    else if( r->data < d )
+        return contains( d, r->right );
+    else
+        return true;    // Match
+}
+
 
 #endif
