@@ -11,4 +11,5 @@ SOURCES += \
 HEADERS += \
     Driver.h \
     avltree.h \
-    Word.h
+    Word.h \
+    IndexInterface.h

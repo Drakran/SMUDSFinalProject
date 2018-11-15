@@ -9,6 +9,21 @@ Word :: Word()
     caseWord = "\0";
 }
 
+bool Word :: operator<(const Word& rightObj)
+{
+    return this->caseWord < rightObj.caseWord;
+}
+
+bool Word :: operator>(const Word& rightObj)
+{
+    return this->caseWord > rightObj.caseWord;
+}
+
+bool Word :: operator==(const Word& rightObj)
+{
+    return this->caseWord == rightObj.caseWord;
+}
+
 void Word :: setWord(std::string w)
 {
     caseWord = w;
@@ -27,4 +42,10 @@ void Word :: upDateFileAndCount(std::string fileId, int countOfWord)
 std::map<std::string, int> Word :: getFileAndCount()
 {
     return FileIdAndCount;
+}
+
+std::ostream & operator<<(std::ostream &out, const Word& w)
+{
+    out << w.caseWord;
+    return out;
 }
