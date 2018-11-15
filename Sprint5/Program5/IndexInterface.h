@@ -2,7 +2,7 @@
 #define INDEXINTERFACE_H
 #include <Word.h>
 
-template<typename T>
+template<typename T,typename K>
 class IndexInterface
 {
 public:
@@ -11,20 +11,19 @@ public:
     virtual ~IndexInterface() = 0;
     virtual void Testing() = 0;
     virtual int getSize() = 0;
-    virtual void insert( T &d ) = 0;
-    virtual T& find( T& data ) = 0;
+    virtual void insert( T &d,K &k ) = 0;
+    virtual T& find( K& data ) = 0;
     virtual void printInOrder();
-    virtual bool contains(T& d) = 0;
 
 private:
 
 };
-template<typename T>
-inline IndexInterface<T>::IndexInterface(){}
-template<typename T>
-inline IndexInterface<T>::~IndexInterface(){}
-template<typename T>
-inline void IndexInterface<T> :: printInOrder(){
+template<typename T,typename K>
+inline IndexInterface<T,K>::IndexInterface(){}
+template<typename T,typename K>
+inline IndexInterface<T,K>::~IndexInterface(){}
+template<typename T,typename K>
+inline void IndexInterface<T,K> :: printInOrder(){
    std::cout << "Jaime FULL APPROVAL";
 }
 
