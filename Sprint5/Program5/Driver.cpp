@@ -12,28 +12,30 @@ Driver::Driver()
 
 void Driver :: Testing()
 {
-    string terryTest = "Terry";
-    string terryTest2 = "terry";
-
-
-    Word T;
-    T.setWord("Terry");
-    T.upDateFileAndCount("file1", 1);
-
-
     IndexInterface<Word, std::string>* Tree = new AVLTree<Word, std::string>();
 
+    string terryTest = "Terry";
+    Word T;
+    T.setWord( terryTest );
+    T.upDateFileAndCount("file1", 1);
     Tree->insert(T, terryTest);
 
+    string teTest = "Te";
+    Word te;
+    te.setWord( teTest );
+    te.upDateFileAndCount("file111", 10);
+    Tree->insert(te, teTest);
 
-    try {
-        Tree->find(terryTest2);
-    } catch (exception &e) {
-        //insert object here
-        cout << e.what() << endl;
-    }
 
-    cout << Tree->find(terryTest).getWord() << endl;
+    string erryTest = "erry";
+    Word e;
+    e.setWord( erryTest );
+    e.upDateFileAndCount("file1121", 90);
+    Tree->insert(e, erryTest);
+
+    cout << Tree->find(terryTest) << endl;
+
+
 
 //    srand(time(0));
 //    int randNo;
