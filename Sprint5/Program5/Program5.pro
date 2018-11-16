@@ -58,7 +58,8 @@ HEADERS += \
     Driver.h \
     porter2_stemmer.h \
     hash.h \
-    string_view.h
+    string_view.h \
+    indexinterface.h
 
 
 

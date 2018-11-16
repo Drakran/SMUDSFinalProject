@@ -77,10 +77,7 @@ void Porter2Stemmer::trim(std::string& word)
 {
     if (word == "<s>" || word == "</s>")
         return;
-
-    std::transform(word.begin(), word.end(), word.begin(), ::tolower);
-    auto it
-        = std::remove_if(word.begin(), word.end(), [](char ch)
+    auto it = std::remove_if(word.begin(), word.end(), [](char ch)
                          {
                              return !((ch >= 'a' && ch <= 'z') || ch == '\'');
                          });

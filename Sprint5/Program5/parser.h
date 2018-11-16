@@ -24,17 +24,17 @@
 #include <fstream>
 #include <regex>
 #include <porter2_stemmer.h>
-
-
-
-
+#include <set>
+#include <map>
 class Parser
 {
 public:
     Parser();
     std::vector<std::string> getFiles(std::string,std::string);
     void parse();
+    bool isStopWord(std::string);
 private:
+    std::set<std::string> stopWords;
     std::vector<std::string> fileNames;
 };
 
