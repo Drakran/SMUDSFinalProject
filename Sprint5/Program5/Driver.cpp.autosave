@@ -40,7 +40,7 @@ void Driver :: Testing()
 //    S.upDateFileAndCount("file1", 1);
 //    Tree->insert(S, skylerTest);
 
-    Tree->printInOrder();
+    //Tree->printInOrder();
     cout << "\nNumber of words in the tree: " << Tree->getSize() <<endl;
     delete Tree;
 }

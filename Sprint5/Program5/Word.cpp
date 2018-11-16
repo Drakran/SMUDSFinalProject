@@ -29,7 +29,7 @@ void Word :: setWord(std::string w)
     caseWord = w;
 }
 
-std::string Word :: getWord()
+std::string& Word :: getWord()
 {
     return caseWord;
 }
