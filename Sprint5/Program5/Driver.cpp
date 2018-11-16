@@ -27,6 +27,10 @@ void Driver :: Testing()
     S.upDateFileAndCount("file1", 1);
     Tree->insert(S, skylerTest);
 
+    int two = 2;
+    Tree->setTotalNumberOfFiles(two);
+    cout << Tree->getTotalNumberOfFiles() << endl;
+
     Tree->printInOrder();
     delete Tree;
 }
