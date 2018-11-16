@@ -59,10 +59,15 @@ bool Parser::isStopWord(std::string s)
     return true;
 }
 
+/*The Parse function parses all the words for a set number of cases
+ * using regex
+ */
+
 void Parser::parse()
 {
+    //This is the map of all the words and number of times it appears
     std::map<std::string,int> wordCase;
-    std::regex reg("<.*?>"); // <[^/]*>
+    std::regex reg("<.*?>"); // <[^/]*> //TH
     std::regex line("\n");
     std::string filePath = "./scotus"; // ./Files
     std::string delimeter = "/";
@@ -84,6 +89,11 @@ void Parser::parse()
         const char* json = jstring.c_str(); //String to cstring
         rapidjson::Document cases;
         cases.Parse(json);
+
+//        if(strcmp(cases["plain_text"].GetString(), "") != 0)
+//        {
+
+//        }
 
         std::multimap<std::string, std::string> keepTrack;//Keep track of already stemmed words
         //Can be substitute by using a 'dictionary' text file
@@ -116,6 +126,7 @@ void Parser::parse()
 //        std::cout << "Key: " << iter->first << " Value:" << iter->second <<  '\n';
 //    }
 }
+
 
 
 
