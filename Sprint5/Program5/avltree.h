@@ -47,14 +47,14 @@ public:
     AVLTree();
     AVLTree(const AVLTree<T,K>& rightObject);
     virtual ~AVLTree();
-    virtual void Testing(); //Remove later
     AVLTree<T,K>& operator=(const AVLTree<T,K>& rightObject);
     virtual int getSize();
     virtual void insert( T &d, K &k);
-    void printInOrder();
     /*find: will traverse the tree and see if a node exits.This function is passed by reference
      because we will modify update existing info inside of the node.*/
-    T& find( K& k );
+    virtual T& find( K& k );
+    virtual void printInOrder();
+
 private:
     Node<T,K>* root;
     int treeNodes;
@@ -70,14 +70,6 @@ private:
     void rotateWithRightChild(Node<T,K>* &r);//passing root by reference
 
 };
-
-
-template <typename T,typename K>
-void AVLTree<T,K>::Testing()
-{
-    std::cout << "Approved by Skyler Wang" << std::endl;
-}
-
 
 //default constructor
 template <typename T,typename K>
@@ -103,7 +95,7 @@ template <typename T,typename K>
 AVLTree<T,K> :: ~AVLTree()
 {
     //calling clear function to delete everything in tree.
-    clear(root);
+    clear(this->root);
 }
 
 //overloaded assignment operator
@@ -133,7 +125,7 @@ void AVLTree<T,K> :: copy(Node<T,K>* rightObjNodePtr)
 {
     if(rightObjNodePtr){
         //add a new element from the right object to the left object
-        insert(rightObjNodePtr->data);
+        insert(rightObjNodePtr->data, rightObjNodePtr->key);
         //copy recursively in order
         copy(rightObjNodePtr->left);
         copy(rightObjNodePtr->right);
@@ -151,9 +143,9 @@ void AVLTree<T,K> :: clear(Node<T,K>* &rootPtr)
         clear(rootPtr->right);
         delete rootPtr;
         //make ptr null
-        rootPtr = nullptr;
         --treeNodes;
     }
+    rootPtr = nullptr;
 }
 
 //function that gets the size of tree
@@ -211,7 +203,7 @@ void AVLTree<T,K> :: insert( T &t, K &k, Node<T,K>* &ptrAtThisNode)
                 doubleWithRightChild(ptrAtThisNode);
             }
         }
-    }//////////////////////////////////////////////////////////////////////////////////
+    }
     else{}//value already existsin map, SPECIAL CASE
 
     //update height
@@ -248,7 +240,7 @@ void AVLTree<T,K> :: printInOrder(Node<T,K>* ptrAtThisNode)
 template <typename T,typename K>
 int AVLTree<T,K> :: getHeight(Node<T,K>* nPtr)
 {
-    //if no children return -1
+    //if no children return 0
     if(nPtr== nullptr)
         return 0;
     //returing height of the child.
@@ -324,8 +316,12 @@ void AVLTree<T,K> :: rotateWithRightChild(Node<T,K>* &K2)
 
 }
 
+/*NOTE THIS FUNCTION HAS NEEDS A TRY AND CATCH TO BE IMPLEMENTED.
+    IF THE OBJECTS EXISTS IN TREE THEN IT WILL RETURN IT,
+    IF NOT IT WILL THROW AN EXCEPTION.
+*/
 template <typename T,typename K>
-T& AVLTree<T,K> :: find( K& data )
+T& AVLTree<T,K> :: find( K& data )// FIND BY KEY
 {
     Node<T,K>* temp = root;
     while (temp != nullptr){
