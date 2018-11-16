@@ -26,12 +26,16 @@
 #include <porter2_stemmer.h>
 #include <set>
 #include <map>
+#include <unordered_map>
+#include <Word.h>
+#include <IndexInterface.h>
+
 class Parser
 {
 public:
     Parser();
     std::vector<std::string> getFiles(std::string,std::string);
-    void parse();
+    void parse(std::string, std::string,  IndexInterface<Word,std::string>&);
     bool isStopWord(std::string);
 private:
     std::set<std::string> stopWords;

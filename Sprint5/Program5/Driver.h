@@ -2,15 +2,17 @@
 #define DRIVER_H
 #include <iostream>
 #include <avltree.h>
-
-using namespace std;
+#include <parser.h>
+#include <exception>
 
 class Driver
 {
 public:
-    Driver();
+    Driver(std::string,std::string);
     void Testing();
 private:
+    std::string file;
+    std::string word;
 
 };
 

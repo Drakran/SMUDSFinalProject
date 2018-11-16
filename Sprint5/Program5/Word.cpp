@@ -3,29 +3,49 @@
 #include <string>
 #include <map>
 
-using namespace std;
 /*getters and setters for private variables for each word object*/
 Word :: Word()
 {
     caseWord = "\0";
 }
 
-void Word :: setWord(string w)
+bool Word :: operator<(const Word& rightObj)
+{
+    return this->caseWord < rightObj.caseWord;
+}
+
+bool Word :: operator>(const Word& rightObj)
+{
+    return this->caseWord > rightObj.caseWord;
+}
+
+bool Word :: operator==(const Word& rightObj)
+{
+    return this->caseWord == rightObj.caseWord;
+}
+
+void Word :: setWord(std::string w)
 {
     caseWord = w;
 }
 
-string Word :: getWord()
+std::string& Word :: getWord()
 {
     return caseWord;
 }
 
-void Word :: upDateFileAndCount(string fileId, int countOfWord)
+void Word :: upDateFileAndCount(std::string fileId, int countOfWord)
 {
     FileIdAndCount.emplace(fileId, countOfWord);
 }
 
-map<string, int> Word :: getFileAndCount()
+std::map<std::string, int> Word :: getFileAndCount()
 {
     return FileIdAndCount;
+}
+
+std::ostream & operator<<(std::ostream &out, const Word& w)
+{
+    out << w.caseWord;
+    return out;
 }

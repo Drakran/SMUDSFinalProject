@@ -63,62 +63,71 @@ bool Parser::isStopWord(std::string s)
  * using regex
  */
 
-void Parser::parse()
+void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Word,std::string>& index)
 {
-    //This is the map of all the words and number of times it appears
+    //This is the map of all the words and number of times it appear
+    std::map<std::string,std::map<std::string,int>> wordtoCases;
     std::map<std::string,int> wordCase;
     std::regex reg("<.*?>"); // <[^/]*> //TH
     std::regex line("\n");
-    std::string filePath = "./scotus"; // ./Files
     std::string delimeter = "/";
-    std::string fileNum = "\0";
-    std::string allFilesInFolder = "\0";
-    for(unsigned i = 0; i < 500; i++){
-        //std::cout << "\nNEXT FILE: \n";
-        fileNum = fileNames[i];
-        allFilesInFolder = filePath + delimeter + fileNum;
-        std::ifstream firstFile(allFilesInFolder);
-        if(!firstFile){
-            std::cerr << "File could not be read." << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        //Gets the Json file and Parses it
-        std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
-        std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);
-        firstFile.close();
-        const char* json = jstring.c_str(); //String to cstring
-        rapidjson::Document cases;
-        cases.Parse(json);
+    //fileNum = fileNames[i];
+    std::ifstream firstFile(filePath);
+    if(!firstFile){
+        std::cerr << "File could not be read." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    //Gets the Json file and Parses it
+    std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
+    std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);
+    firstFile.close();
+    const char* json = jstring.c_str(); //String to cstring
+    rapidjson::Document cases;
+    cases.Parse(json);
 
-//        if(strcmp(cases["plain_text"].GetString(), "") != 0)
-//        {
+    //        if(strcmp(cases["plain_text"].GetString(), "") != 0)
+    //        {
 
-//        }
+    //        }
 
-        std::multimap<std::string, std::string> keepTrack;//Keep track of already stemmed words
-        //Can be substitute by using a 'dictionary' text file
-        if(!cases["html"].IsNull())
+    std::map<std::string, std::string> keepTrack;//Keep track of already stemmed words
+    //Can be substitute by using a 'dictionary' text file
+    if(!cases["html"].IsNull())
+    {
+        std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+        std::string temp; //A single word
+        while(ss >> temp)
         {
-            std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-            std::string temp;
-            while(ss >> temp)
+            temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
+            if(isStopWord(temp))
+                temp = "";
+            else
             {
-                temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
-                if(isStopWord(temp))
-                    temp = "";
+                if(keepTrack.find(temp) != keepTrack.end())
+                    ++wordCase[keepTrack.find(temp)->second];
                 else
                 {
-                    if(keepTrack.find(temp) != keepTrack.end())
-                         ++wordCase[keepTrack.find(temp)->second];
-                    else
-                    {
-                        std::string temp2 = temp;
-                        Porter2Stemmer::stem(temp);
-                        keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
-                        ++wordCase[temp];
-                    }
+                    std::string temp2 = temp;
+                    Porter2Stemmer::stem(temp);
+                    keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
+                    ++wordCase[temp];
+
                 }
             }
+        }
+    }
+    //One Case is done
+    for(auto iter: wordCase )
+    {
+        Word caseWord;
+        caseWord.setWord(iter.first);
+        caseWord.upDateFileAndCount(fileNum, iter.second);
+        try {
+            //check if object exists and update that word object
+            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);
+        } catch (std::exception &e) {
+            //object doesnt exitst so we insert in avl tree
+            index.insert( caseWord, caseWord.getWord() );
         }
     }
 //    for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)

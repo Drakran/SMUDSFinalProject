@@ -1,24 +1,26 @@
-#ifndef WORD_H
+﻿#ifndef WORD_H
 #define WORD_H
 #include <iostream>
 #include <string>
 #include <map>
 
-using namespace std;
-
 class Word
 {
 public:
     Word();
-    void setWord(string w);
-    string getWord();
-    void upDateFileAndCount(string f, int c);
-    map<string, int> getFileAndCount();
+    bool operator<(const Word& rightObj);
+    bool operator>(const Word& rightObj);
+    bool operator==(const Word& rightObj);
+    friend std::ostream & operator<<(std::ostream &out, const Word& w);
+    void setWord(std::string w);
+    std::string& getWord();
+    void upDateFileAndCount(std::string f, int c);
+    std::map<std::string, int> getFileAndCount();
 private:
-    string caseWord;
+    std::string caseWord;
     /*first element in map will be the file identifier
     second element in map will be the apprerances in that file*/
-    map<string, int> FileIdAndCount;
+    std::map<std::string, int> FileIdAndCount;
 };
 
 #endif // WORD_H
