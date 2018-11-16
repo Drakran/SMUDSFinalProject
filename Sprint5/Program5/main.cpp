@@ -8,6 +8,8 @@
 #include <parser.h>
 #include <Driver.h>
 #include <avltree.h>
+#include <chrono>
+
 
 using namespace std;
 
@@ -31,13 +33,12 @@ int main(int argc, char* argv[]) {
        dir_path = argv[1];
    }
    vector<string> files = parser.getFiles(dir_path, extention);    //this will output all of files in format of: numberOfFile.json
-//comment out this cout otherwise you see the name of each file (77000 files).
+////comment out this cout otherwise you see the name of each file (77000 files).
    cerr << files.size();
    for (int i = 0; i < files.size(); i++){
         //cout << files[i] << endl;
    }
    parser.parse();
    //std::cout << argv[1];
-
        return 0;
 }

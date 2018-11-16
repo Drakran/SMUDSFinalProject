@@ -7,7 +7,8 @@ SOURCES += \
     main.cpp \
     parser.cpp \
     Driver.cpp \
-    Word.cpp
+    Word.cpp \
+    porter2_stemmer.cpp
 
 HEADERS += \
     Driver.h \
@@ -54,7 +55,10 @@ HEADERS += \
     Driver.h \
     parser.h \
     Word.h \
-    Driver.h
+    Driver.h \
+    porter2_stemmer.h \
+    hash.h \
+    string_view.h
 
 
 

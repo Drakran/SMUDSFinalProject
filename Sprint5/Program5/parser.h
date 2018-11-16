@@ -23,6 +23,7 @@
 #include <dirent.h>
 #include <fstream>
 #include <regex>
+#include <porter2_stemmer.h>
 
 
 

@@ -35,7 +35,6 @@ std::vector<std::string> Parser::getFiles(std::string path, std:: string extn)
 
 void Parser::parse()
 {
-    std::vector<std::string> words;
     std::map<std::string,int> wordCase;
     std::regex reg("<.*?>"); // <[^/]*>
     std::regex line("\n");
@@ -43,7 +42,7 @@ void Parser::parse()
     std::string delimeter = "/";
     std::string fileNum = "\0";
     std::string allFilesInFolder = "\0";
-    for(unsigned i = 0; i < 3; i++){
+    for(unsigned i = 0; i < 1000; i++){
         //std::cout << "\nNEXT FILE: \n";
         fileNum = fileNames[i];
         allFilesInFolder = filePath + delimeter + fileNum;
@@ -54,6 +53,7 @@ void Parser::parse()
         }
         //Gets the Json file and Parses it
         std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
+        firstFile.close();
         const char* json = jstring.c_str(); //String to cstring
         rapidjson::Document cases;
         cases.Parse(json);
@@ -69,38 +69,30 @@ void Parser::parse()
             //std::string html = (std::regex_replace(cases["html"].GetString(),reg, " "));
             //std::istringstream ss{std::regex_replace(html,line, " ")};
             std::string temp;
+            //temp = "Meow";
+
             //std::cout << ss.str();
             //words(std::istream_iterator<std::string>{ss},std::istream_iterator<std::string>{});
             while(ss >> temp)
             {
-                //words.push_back(temp);
+                temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
+                Porter2Stemmer::stem(temp);
                 ++wordCase[temp];
                 //ss.ignore();
             }
         }
 
-//        for(int x = 0; x < words.size(); x++)
-//        {
-//            std::cout << "WORDS:" << words[x] << '\n';
-//        }
-
-
-
-
-        //HtmlPaser Slow
-//        if(!cases["html"].IsNull())
-//        {
-//             string htmlString = cases["html"].GetString();
-//             //std::cout << htmlString;
-//             HtmlParser htmlParser(htmlString);
-//             htmlParser.parse();
-//        }
-        firstFile.close();
     }
 //    for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)
 //    {
-//        std::cout << "Key: " << iter->first << " Value:" << iter->second << '\n';
+//        std::cout << "Key: " << iter->first << " Value:" << iter->second <<  '\n';
 //    }
+//    std:: string test = "seems";
+//    Porter2Stemmer::stem(test);
+
+
+//    std::cout << "Skyler " << test << std::endl;
 }
+
 
 
