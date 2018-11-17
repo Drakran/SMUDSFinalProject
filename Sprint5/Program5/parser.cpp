@@ -1,6 +1,5 @@
 #include "parser.h"
 
-// time ./Program5 /home/student/Desktop/scotus
 std::string strArray[155] = {"a", "about", "above", "after", "again", "against", "all", "am", "an",
                              "and", "any", "are", "as", "at", "be", "because", "been", "before", "being",
                              "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing",
