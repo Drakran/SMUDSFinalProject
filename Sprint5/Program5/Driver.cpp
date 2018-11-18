@@ -37,7 +37,7 @@ void Driver :: Testing()
     std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //To test different number of files
-    int filesToTest = 100;
+    int filesToTest = 3;
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < filesToTest; ++i)
     {
@@ -45,7 +45,7 @@ void Driver :: Testing()
         filePath = file + delimiter + files[i];
         parser.parse(filePath,files[i], *Tree);
     }
-
+/*
     //1) Number of Words Parsed.(  counter of each instance of an object )
     std::cout << "Number of Words Parsed: " << parser.getOverallWordTotal() << std::endl;
     //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
@@ -59,6 +59,6 @@ void Driver :: Testing()
     } catch (std::exception &e ) {
        std::cerr << "The word does not exist in any of the current files." << "\n";
     }
-
+*/
     delete Tree;
 }
