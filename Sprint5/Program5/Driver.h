@@ -4,6 +4,9 @@
 #include <avltree.h>
 #include <parser.h>
 #include <exception>
+#include <IndexInterface.h>
+#include <random>
+#include <stdexcept>
 
 class Driver
 {
@@ -12,7 +15,7 @@ public:
     void Testing();
 private:
     std::string file;
-    std::string word;
+    std::string wordToFind;
 
 };
 

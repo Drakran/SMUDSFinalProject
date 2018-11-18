@@ -37,9 +37,12 @@ public:
     std::vector<std::string> getFiles(std::string,std::string);
     void parse(std::string, std::string,  IndexInterface<Word,std::string>&);
     bool isStopWord(std::string);
+    void incrementOverallWordTotal(int &wordsInThisFile);
+    int getOverallWordTotal();
 private:
     std::set<std::string> stopWords;
     std::vector<std::string> fileNames;
+    int OverallWordTotal;
 };
 
 #endif // PARSER_H
