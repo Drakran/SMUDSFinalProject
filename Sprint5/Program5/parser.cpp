@@ -106,9 +106,10 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
     //First if is testing html
     if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
     {
-        //Regex or not?
-        //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-        std::istringstream ss{(cases["html"].GetString())};
+
+        //Can Switch regex or not by commeting this line and remove comment on next
+        std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+        //std::istringstream ss{(cases["html"].GetString())};
         parseCase(wordCase, ss);
     }
     //This else then checks plain text
@@ -155,6 +156,9 @@ int Parser :: getOverallWordTotal()
  */
 void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& textType)
 {
+
+
+
     std::string temp; //A single word
     while(textType >> temp)
     {
