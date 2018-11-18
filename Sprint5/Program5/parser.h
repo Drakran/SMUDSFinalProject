@@ -43,6 +43,9 @@ private:
     std::set<std::string> stopWords;
     std::vector<std::string> fileNames;
     int OverallWordTotal;
+    std::map<std::string, std::string> keepTrack;
+    void parseCase(std::map<std::string,int>&, std::istringstream&);
+    std::regex reg;
 };
 
 #endif // PARSER_H

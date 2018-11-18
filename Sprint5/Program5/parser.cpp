@@ -21,6 +21,7 @@ std::string strArray[155] = {"a", "about", "above", "after", "again", "against",
 Parser::Parser()
 {
     OverallWordTotal = 0;
+    reg = ("<.*?>");
     for(int i = 0; i < 155; i++)//153 is number of stop words
         stopWords.insert(strArray[i]);
 }
@@ -68,7 +69,7 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
     //This is the map of all the words and number of times it appear
     std::map<std::string,std::map<std::string,int>> wordtoCases;
     std::map<std::string,int> wordCase;
-    std::regex reg("<.*?>"); // <[^/]*> //TH
+ // <[^/]*> //TH
     std::regex line("\n");
     std::string delimeter = "/";
     //fileNum = fileNames[i];
@@ -78,43 +79,43 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         exit(EXIT_FAILURE);
     }
     //Gets the Json file and Parses it
-    std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
-    std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);
+    //std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
+
+    std::stringstream sstr;
+    sstr << firstFile.rdbuf();
+    std::string jstring = sstr.str();
+
+//    std::string jstring;
+//    firstFile.seekg(0, std::ios::end);
+//    jstring.resize(firstFile.tellg());
+//    firstFile.seekg(0, std::ios::beg);
+//    firstFile.read(&jstring[0], jstring.size());
+
     firstFile.close();
+
+
+    std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);
     const char* json = jstring.c_str(); //String to cstring
     rapidjson::Document cases;
     cases.Parse(json);
 
-    //        if(strcmp(cases["plain_text"].GetString(), "") != 0)
-    //        {
 
-    //        }
 
-    std::map<std::string, std::string> keepTrack;//Keep track of already stemmed words
+    //Keep track of already stemmed words
     //Can be substitute by using a 'dictionary' text file
-    if(!cases["html"].IsNull())
+    //First if is testing html
+    if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
     {
-        std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-        std::string temp; //A single word
-        while(ss >> temp)
-        {
-            temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
-            if(isStopWord(temp))
-                temp = "";
-            else
-            {
-                if(keepTrack.find(temp) != keepTrack.end())
-                    ++wordCase[keepTrack.find(temp)->second];
-                else
-                {
-                    std::string temp2 = temp;
-                    Porter2Stemmer::stem(temp);
-                    keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
-                    ++wordCase[temp];
-
-                }
-            }
-        }
+        //Regex or not?
+        //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+        std::istringstream ss{(cases["html"].GetString())};
+        parseCase(wordCase, ss);
+    }
+    //This else then checks plain text
+    else
+    {
+        std::istringstream ss{(cases["plain_text"].GetString())};
+        parseCase(wordCase, ss);
     }
     //One Case is done (creating an indivual case)
     for(auto iter: wordCase )
@@ -144,6 +145,37 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
 int Parser :: getOverallWordTotal()
 {
     return OverallWordTotal;
+}
+
+/*The Private Function that parses the words for a case
+ * and stores them inside the temporary map for that case of
+ * unique words and number of types the appear
+ * @param wordCase the map
+ * @param textType html or plaintext
+ */
+void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& textType)
+{
+    std::string temp; //A single word
+    while(textType >> temp)
+    {
+
+        temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
+        if(isStopWord(temp))
+            temp = "";
+        else
+        {
+            if(keepTrack.find(temp) != keepTrack.end())
+                ++wordCase[keepTrack.find(temp)->second];
+            else
+            {
+                std::string temp2 = temp;
+                Porter2Stemmer::stem(temp);
+                keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
+                ++wordCase[temp];
+
+            }
+        }
+    }
 }
 
 
