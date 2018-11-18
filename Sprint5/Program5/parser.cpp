@@ -20,6 +20,7 @@ std::string strArray[155] = {"a", "about", "above", "after", "again", "against",
 
 Parser::Parser()
 {
+    OverallWordTotal = 0;
     for(int i = 0; i < 155; i++)//153 is number of stop words
         stopWords.insert(strArray[i]);
 }
@@ -115,12 +116,14 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
             }
         }
     }
-    //One Case is done
+    //One Case is done (creating an indivual case)
     for(auto iter: wordCase )
     {
         Word caseWord;
         caseWord.setWord(iter.first);
         caseWord.upDateFileAndCount(fileNum, iter.second);
+        //counting every single word parsed including repeteaded words.
+        ++OverallWordTotal;
         try {
             //check if object exists and update that word object
             index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);
@@ -129,10 +132,18 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
             index.insert( caseWord, caseWord.getWord() );
         }
     }
-//    for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)
-//    {
-//        std::cout << "Key: " << iter->first << " Value:" << iter->second <<  '\n';
-//    }
+/*
+    //this is one to output each
+    for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)
+    {
+        std::cout << "Key: " << iter->first << " Value:" << iter->second <<  '\n';
+    }
+*/
+}
+
+int Parser :: getOverallWordTotal()
+{
+    return OverallWordTotal;
 }
 
 
