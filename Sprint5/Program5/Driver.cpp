@@ -4,6 +4,8 @@
 #include <random>
 #include <stdexcept>
 #include <exception>
+#include <porter2_stemmer.h>
+
 
 //1) Number of Words Parsed.                        (  counter of each instance of an object )
 //2) Number of Unique words (Tree Nodes).           ( Tree->getSize() )
@@ -18,6 +20,8 @@ Driver::Driver(std::string fileName, std::string wordFind)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
+    //the word will first be stemmed.
+    Porter2Stemmer::stem(wordFind);
     //this will be the word we look for in avl tree
     wordToFind = wordFind;
 }
