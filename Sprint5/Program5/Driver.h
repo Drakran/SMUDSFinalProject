@@ -7,6 +7,8 @@
 #include <IndexInterface.h>
 #include <random>
 #include <stdexcept>
+#include <porter2_stemmer.h>
+
 
 class Driver
 {
