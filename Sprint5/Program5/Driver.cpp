@@ -10,7 +10,7 @@
 //1) Number of Words Parsed.                        (  counter of each instance of an object )
 //2) Number of Unique words (Tree Nodes).           ( Tree->getSize() )
 //3) Number of documents parsed.                    ( counter of documents parsed.)
-//4) Number of unique documents with adjudication. ( map.size() )
+//4) Number of unique documents with adjudication.  ( map.size() )
 
 
 //to check time:
@@ -68,6 +68,7 @@ void Driver :: Testing()
     std::cout << "Number of Words Parsed: " << parser.getOverallWordTotal() << std::endl;
     //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
     std::cout << "Number of Unique words (Tree Nodes): " << Tree->getSize() << "\n";
+    std::cout << "Total number of documents parsed: " << files.size() << '\n';
     std::cout << "Number of unique documents with " << wordDisplayed << " is: " << count << '\n';
 
     delete Tree;
