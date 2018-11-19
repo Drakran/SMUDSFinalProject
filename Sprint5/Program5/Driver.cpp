@@ -20,8 +20,6 @@ Driver::Driver(std::string fileName, std::string wordFind)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
-    //the word will first be stemmed.
-    Porter2Stemmer::stem(wordFind);
     //this will be the word we look for in avl tree
     wordToFind = wordFind;
 }
@@ -40,9 +38,16 @@ void Driver :: Testing()
     //3) the vector named files has all of files in the folder.
     std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
+<<<<<<< HEAD
     //filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     int filesToTest = 100;
     //this for loop will parse from 0 to filesToTest number of files.
+=======
+    //To test different number of files
+    int filesToTest = files.size();
+
+    //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
+>>>>>>> origin
     for(unsigned i = 0; i < filesToTest; ++i)
     {
         //filepath contains the name of each file (77000 files).
@@ -55,7 +60,8 @@ void Driver :: Testing()
     //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
     std::cout << "Number of Unique words (Tree Nodes): " << Tree->getSize() << "\n";
     //4) Number of unique documents with adjudication. ( map.size() )
-    std::cout << "Number of unique documents with adjudication: \n";
+    std::cout << "Number of unique documents with " << wordToFind << ":\n";
+    Porter2Stemmer::stem(wordToFind);
     try {
         for( auto it : Tree->find(wordToFind).getFileAndCount() ){
             std::cout << it.first << std::endl;

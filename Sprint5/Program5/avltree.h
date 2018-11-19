@@ -4,7 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <iomanip>
-#include <IndexInterface.h>
+#include "IndexInterface.h"
 
 template <typename T,typename K> class Node;
 template <typename T,typename K> class AVLTree;
@@ -174,34 +174,31 @@ void AVLTree<T,K> :: insert( T &t, K &k, Node<T,K>* &ptrAtThisNode)
         ++treeNodes;
     }
     //checking if next value of the tree goes to left
-    else if(k < ptrAtThisNode->key){//////////////////////////////////////////////////
+    else if(k < ptrAtThisNode->key)
+    {
         //recursive call to insert on left side
         insert(t, k,ptrAtThisNode->left);
         //check for balance factor WHEN INSERTING IN THE LEFT, if true then its not balanced.
-        if(getHeight(ptrAtThisNode->left) - getHeight(ptrAtThisNode->right) ==  2){
+        if(getHeight(ptrAtThisNode->left) - getHeight(ptrAtThisNode->right) ==  2)
+        {
             //checking for the imabalance factor, checking values inside node to do case 1 or 2
-            if( k < ptrAtThisNode->left->key ){
-                //case 1 rotation
+            if( k < ptrAtThisNode->left->key )//case 1 rotation
                 rotateWithLeftChild(ptrAtThisNode);
-            }else{
-                //case 2 rotation
+            else //case 2 rotation
                 doubleWithLeftChild(ptrAtThisNode);
-            }
         }
     }
-    else if(k > ptrAtThisNode->key){
+    else if(k > ptrAtThisNode->key)
+    {
         //recursive call to insert on right side
         insert(t, k,ptrAtThisNode->right);
         //check for balance factor WHEN INSERTING IN THE RIGHT, if true then its not balanced.
         if(getHeight(ptrAtThisNode->right) - getHeight(ptrAtThisNode->left) == 2){
             //checking for the imabalance factor, checking values inside node to do case 3 or 4
-            if(ptrAtThisNode->right->key < k){
-                //case 4 rotation
+            if(ptrAtThisNode->right->key < k)//case 4 rotation
                 rotateWithRightChild(ptrAtThisNode);
-            }else{
-                //case 3 rotation
+            else//case 3 rotation
                 doubleWithRightChild(ptrAtThisNode);
-            }
         }
     }
     else{}//value already existsin map, SPECIAL CASE
@@ -226,7 +223,8 @@ template <typename T,typename K>
 void AVLTree<T,K> :: printInOrder(Node<T,K>* ptrAtThisNode)
 {
     //recursive call until null
-    if(ptrAtThisNode != nullptr){
+    if(ptrAtThisNode != nullptr)
+    {
         //1st. Getting everything to left
         printInOrder(ptrAtThisNode->left);
         //2nd. Outputting values. //setw(ptrAtThisNode->height *4) to print in tree format
