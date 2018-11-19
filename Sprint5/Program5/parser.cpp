@@ -1,5 +1,6 @@
 #include "parser.h"
 
+//stop words
 std::string strArray[155] = {"a", "about", "above", "after", "again", "against", "all", "am", "an",
                              "and", "any", "are", "as", "at", "be", "because", "been", "before", "being",
                              "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing",
@@ -21,7 +22,8 @@ std::string strArray[155] = {"a", "about", "above", "after", "again", "against",
 Parser::Parser()
 {
     OverallWordTotal = 0;
-    for(int i = 0; i < 155; i++)//153 is number of stop words
+    reg = ("<.*?>");
+    for(int i = 0; i < 155; i++)//155 is number of stop words
         stopWords.insert(strArray[i]);
 }
 
@@ -44,12 +46,13 @@ std::vector<std::string> Parser::getFiles(std::string path, std:: string extn)
         }
         closedir(dir);
     }
-    else {
+    else
         throw std::invalid_argument("Provided path could not be opened");
-    }
+
     fileNames = result;
     return result; //If want to send vector
 }
+
 bool Parser::isStopWord(std::string s)
 {
     std::set<std::string>::iterator it;
@@ -62,59 +65,46 @@ bool Parser::isStopWord(std::string s)
 /*The Parse function parses all the words for a set number of cases
  * using regex
  */
-
 void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Word,std::string>& index)
 {
     //This is the map of all the words and number of times it appear
     std::map<std::string,std::map<std::string,int>> wordtoCases;
     std::map<std::string,int> wordCase;
-    std::regex reg("<.*?>"); // <[^/]*> //TH
     std::regex line("\n");
-    std::string delimeter = "/";
-    //fileNum = fileNames[i];
+
     std::ifstream firstFile(filePath);
     if(!firstFile){
         std::cerr << "File could not be read." << std::endl;
         exit(EXIT_FAILURE);
     }
     //Gets the Json file and Parses it
-    std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
-    std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);
+    std::stringstream sstr;
+    sstr << firstFile.rdbuf();
+    std::string jstring = sstr.str();
+
     firstFile.close();
+
+    std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);//lowercase
     const char* json = jstring.c_str(); //String to cstring
     rapidjson::Document cases;
     cases.Parse(json);
 
-    //        if(strcmp(cases["plain_text"].GetString(), "") != 0)
-    //        {
-
-    //        }
-
-    std::map<std::string, std::string> keepTrack;//Keep track of already stemmed words
+    //Keep track of already stemmed words
     //Can be substitute by using a 'dictionary' text file
-    if(!cases["html"].IsNull())
+    //First if is testing html
+    if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
     {
-        std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-        std::string temp; //A single word
-        while(ss >> temp)
-        {
-            temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
-            if(isStopWord(temp))
-                temp = "";
-            else
-            {
-                if(keepTrack.find(temp) != keepTrack.end())
-                    ++wordCase[keepTrack.find(temp)->second];
-                else
-                {
-                    std::string temp2 = temp;
-                    Porter2Stemmer::stem(temp);
-                    keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
-                    ++wordCase[temp];
 
-                }
-            }
-        }
+        //Can Switch regex or not by commeting this line and remove comment on next
+        //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+        std::istringstream ss{(cases["html"].GetString())};
+        parseCase(wordCase, ss);
+    }
+    //This else then checks plain text
+    else
+    {
+        std::istringstream ss{(cases["plain_text"].GetString())};
+        parseCase(wordCase, ss);
     }
     //One Case is done (creating an indivual case)
     for(auto iter: wordCase )
@@ -124,13 +114,12 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         caseWord.upDateFileAndCount(fileNum, iter.second);
         //counting every single word parsed including repeteaded words.
         ++OverallWordTotal;
-        try {
+        try{
             //check if object exists and update that word object
-            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);
-        } catch (std::exception &e) {
+            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);}
+        catch (std::exception &e){
             //object doesnt exitst so we insert in avl tree
-            index.insert( caseWord, caseWord.getWord() );
-        }
+            index.insert( caseWord, caseWord.getWord() );}
     }
 /*
     //this is one to output each
@@ -144,6 +133,37 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
 int Parser :: getOverallWordTotal()
 {
     return OverallWordTotal;
+}
+
+/*The Private Function that parses the words for a case
+ * and stores them inside the temporary map for that case of
+ * unique words and number of types the appear
+ * @param wordCase the map
+ * @param textType html or plaintext
+ */
+void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& textType)
+{
+    std::string temp; //A single word
+    while(textType >> temp)
+    {
+
+        temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
+        if(isStopWord(temp))
+            temp = "";
+        else
+        {
+            if(keepTrack.find(temp) != keepTrack.end())
+                ++wordCase[keepTrack.find(temp)->second];
+            else
+            {
+                std::string temp2 = temp;
+                Porter2Stemmer::stem(temp);
+                keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
+                ++wordCase[temp];
+
+            }
+        }
+    }
 }
 
 
