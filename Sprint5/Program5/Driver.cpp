@@ -20,6 +20,8 @@ Driver::Driver(std::string fileName, std::string wordFind)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
+    //the word will first be stemmed.
+    Porter2Stemmer::stem(wordFind);
     //this will be the word we look for in avl tree
     wordToFind = wordFind;
 }
