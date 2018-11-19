@@ -41,7 +41,7 @@ void Driver :: Testing()
     std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //To test different number of files
-    int filesToTest = 10000;
+    int filesToTest = files.size();
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < filesToTest; ++i)
     {
