@@ -42,6 +42,7 @@ void Driver :: Testing()
 
     //To test different number of files
     int filesToTest = files.size();
+
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < filesToTest; ++i)
     {
