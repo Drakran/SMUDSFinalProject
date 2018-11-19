@@ -4,6 +4,8 @@
 #include <random>
 #include <stdexcept>
 #include <exception>
+#include <porter2_stemmer.h>
+
 
 //1) Number of Words Parsed.                        (  counter of each instance of an object )
 //2) Number of Unique words (Tree Nodes).           ( Tree->getSize() )
@@ -37,7 +39,8 @@ void Driver :: Testing()
     std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //To test different number of files
-    int filesToTest = 1000;
+    int filesToTest = files.size();
+
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < filesToTest; ++i)
     {
@@ -51,7 +54,8 @@ void Driver :: Testing()
     //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
     std::cout << "Number of Unique words (Tree Nodes): " << Tree->getSize() << "\n";
     //4) Number of unique documents with adjudication. ( map.size() )
-    std::cout << "Number of unique documents with adjudication: \n";
+    std::cout << "Number of unique documents with " << wordToFind << ":\n";
+    Porter2Stemmer::stem(wordToFind);
     try {
         for( auto it : Tree->find(wordToFind).getFileAndCount() ){
             std::cout << it.first << std::endl;
