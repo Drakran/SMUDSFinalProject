@@ -68,7 +68,7 @@ void Driver :: Testing()
     std::cout << "Number of Words Parsed: " << parser.getOverallWordTotal() << std::endl;
     //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
     std::cout << "Number of Unique words (Tree Nodes): " << Tree->getSize() << "\n";
-    std::cout << "Number of unique documents with " << wordDisplayed << "is: " << count << '\n';
+    std::cout << "Number of unique documents with " << wordDisplayed << " is: " << count << '\n';
 
     delete Tree;
 }
