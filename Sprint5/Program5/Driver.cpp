@@ -10,7 +10,7 @@
 //1) Number of Words Parsed.                        (  counter of each instance of an object )
 //2) Number of Unique words (Tree Nodes).           ( Tree->getSize() )
 //3) Number of documents parsed.                    ( counter of documents parsed.)
-//4) Number of unique documents with adjudication. ( map.size() )
+//4) Number of unique documents with adjudication.  ( map.size() )
 
 
 //to check time:
@@ -38,37 +38,38 @@ void Driver :: Testing()
     //3) the vector named files has all of files in the folder.
     std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
-<<<<<<< HEAD
-    //filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    int filesToTest = 100;
-    //this for loop will parse from 0 to filesToTest number of files.
-=======
     //To test different number of files
-    int filesToTest = files.size();
+    //int filesToTest = file.size();
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
->>>>>>> origin
-    for(unsigned i = 0; i < filesToTest; ++i)
+    for(unsigned i = 0; i < files.size(); ++i)
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
         parser.parse(filePath,files[i], *Tree);
     }
 
-    //1) Number of Words Parsed.(  counter of each instance of an object )
-    std::cout << "Number of Words Parsed: " << parser.getOverallWordTotal() << std::endl;
-    //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
-    std::cout << "Number of Unique words (Tree Nodes): " << Tree->getSize() << "\n";
+
     //4) Number of unique documents with adjudication. ( map.size() )
-    std::cout << "Number of unique documents with " << wordToFind << ":\n";
+    std::string wordDisplayed = wordToFind;
+
     Porter2Stemmer::stem(wordToFind);
+    int count{0};
     try {
         for( auto it : Tree->find(wordToFind).getFileAndCount() ){
-            std::cout << it.first << std::endl;
+            //std::cout << it.first << std::endl;
+            count++;
         }
     } catch (std::exception &e ) {
        std::cerr << "The word does not exist in any of the current files." << "\n";
     }
+    //std::cerr << "Total number of files in folder: " << files.size() << '\n';
+    //1) Number of Words Parsed.(  counter of each instance of an object )
+    std::cout << "Number of Words Parsed: " << parser.getOverallWordTotal() << std::endl;
+    //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
+    std::cout << "Number of Unique words (Tree Nodes): " << Tree->getSize() << "\n";
+    std::cout << "Total number of documents parsed: " << files.size() << '\n';
+    std::cout << "Number of unique documents with " << wordDisplayed << " is: " << count << '\n';
 
     delete Tree;
 }
