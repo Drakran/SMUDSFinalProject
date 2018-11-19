@@ -1,6 +1,6 @@
 #ifndef INDEXINTERFACE_H
 #define INDEXINTERFACE_H
-#include <Word.h>
+#include "Word.h"
 
 template<typename T,typename K>
 class IndexInterface
