@@ -1,5 +1,6 @@
 #include "parser.h"
 
+//stop words
 std::string strArray[155] = {"a", "about", "above", "after", "again", "against", "all", "am", "an",
                              "and", "any", "are", "as", "at", "be", "because", "been", "before", "being",
                              "below", "between", "both", "but", "by", "could", "did", "do", "does", "doing",
@@ -22,7 +23,7 @@ Parser::Parser()
 {
     OverallWordTotal = 0;
     reg = ("<.*?>");
-    for(int i = 0; i < 155; i++)//153 is number of stop words
+    for(int i = 0; i < 155; i++)//155 is number of stop words
         stopWords.insert(strArray[i]);
 }
 
@@ -45,12 +46,13 @@ std::vector<std::string> Parser::getFiles(std::string path, std:: string extn)
         }
         closedir(dir);
     }
-    else {
+    else
         throw std::invalid_argument("Provided path could not be opened");
-    }
+
     fileNames = result;
     return result; //If want to send vector
 }
+
 bool Parser::isStopWord(std::string s)
 {
     std::set<std::string>::iterator it;
@@ -63,50 +65,37 @@ bool Parser::isStopWord(std::string s)
 /*The Parse function parses all the words for a set number of cases
  * using regex
  */
-
 void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Word,std::string>& index)
 {
     //This is the map of all the words and number of times it appear
     std::map<std::string,std::map<std::string,int>> wordtoCases;
     std::map<std::string,int> wordCase;
- // <[^/]*> //TH
     std::regex line("\n");
-    std::string delimeter = "/";
-    //fileNum = fileNames[i];
+
     std::ifstream firstFile(filePath);
     if(!firstFile){
         std::cerr << "File could not be read." << std::endl;
         exit(EXIT_FAILURE);
     }
     //Gets the Json file and Parses it
-    //std::string jstring( (std::istreambuf_iterator<char>(firstFile) ),(std::istreambuf_iterator<char>() ) );
-
     std::stringstream sstr;
     sstr << firstFile.rdbuf();
     std::string jstring = sstr.str();
 
-//    std::string jstring;
-//    firstFile.seekg(0, std::ios::end);
-//    jstring.resize(firstFile.tellg());
-//    firstFile.seekg(0, std::ios::beg);
-//    firstFile.read(&jstring[0], jstring.size());
-
     firstFile.close();
 
-
-    std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);
+    std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);//lowercase
     const char* json = jstring.c_str(); //String to cstring
     rapidjson::Document cases;
     cases.Parse(json);
-
-
 
     //Keep track of already stemmed words
     //Can be substitute by using a 'dictionary' text file
     //First if is testing html
     if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
     {
-        //Regex or not?
+
+        //Can Switch regex or not by commeting this line and remove comment on next
         //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
         std::istringstream ss{(cases["html"].GetString())};
         parseCase(wordCase, ss);
@@ -125,13 +114,12 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         caseWord.upDateFileAndCount(fileNum, iter.second);
         //counting every single word parsed including repeteaded words.
         ++OverallWordTotal;
-        try {
+        try{
             //check if object exists and update that word object
-            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);
-        } catch (std::exception &e) {
+            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);}
+        catch (std::exception &e){
             //object doesnt exitst so we insert in avl tree
-            index.insert( caseWord, caseWord.getWord() );
-        }
+            index.insert( caseWord, caseWord.getWord() );}
     }
 /*
     //this is one to output each
