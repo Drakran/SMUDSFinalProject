@@ -20,8 +20,6 @@ Driver::Driver(std::string fileName, std::string wordFind)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
-    //the word will first be stemmed.
-    Porter2Stemmer::stem(wordFind);
     //this will be the word we look for in avl tree
     wordToFind = wordFind;
 }
@@ -41,11 +39,8 @@ void Driver :: Testing()
     std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //To test different number of files
-<<<<<<< HEAD
     int filesToTest = files.size();
-=======
-    int filesToTest = 10000;
->>>>>>> b4419c38dc0c370f13ede6b6ba0d3c036a2569d4
+
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < filesToTest; ++i)
     {
