@@ -31,7 +31,6 @@ class Parser
 {
 public:
     Parser();
-    Parser(std::string);
     std::vector<std::string> getFiles(std::string,std::string);
     void parse(std::string, std::string,  IndexInterface<Word,std::string>&);
     bool isStopWord(std::string); //check if a word is a stop word, return true if it is
@@ -42,9 +41,7 @@ private:
     std::vector<std::string> fileNames;
     int OverallWordTotal;
     std::map<std::string, std::string> keepTrack;
-    void parseCase(std::multimap<int, <std::string,int>>&, std::istringstream&);
+    void parseCase(std::map<std::string,int>&, std::istringstream&);
     std::regex reg;
-    std::string wordToFind;
 };
-
 #endif // PARSER_H

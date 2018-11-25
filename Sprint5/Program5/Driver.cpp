@@ -30,7 +30,7 @@ void Driver :: Testing()
     std::string wordDisplayed = wordToFind;
     Porter2Stemmer::stem(wordToFind); //stem query
     std::string extention = ".json";
-    Parser parser = Parser(wordToFind);
+    Parser parser = Parser();
     std::string delimiter = "/";
     std::string filePath;
 
@@ -44,7 +44,7 @@ void Driver :: Testing()
     //int filesToTest = file.size();
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    for(unsigned i = 0; i < files.size(); ++i)
+    for(unsigned i = 0; i < 1000; ++i)
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
@@ -56,7 +56,8 @@ void Driver :: Testing()
     int count{0};
     try {
         for( auto it : Tree->find(wordToFind).getFileAndCount() ){
-            //std::cout << it.first << std::endl;
+            std::cout << "Word is " << it.first << " Number of appearance: ";
+            std::cout << it.second << std::endl;
             count++;
         }
     } catch (std::exception &e ) {

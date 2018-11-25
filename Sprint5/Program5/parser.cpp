@@ -98,7 +98,7 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         //Can Switch regex or not by commeting this line and remove comment on next
         //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
         std::istringstream ss{(cases["html"].GetString())};
-        parseCase(wordCase, ss, wordToFind);
+        parseCase(wordCase, ss);
     }
     //This else then checks plain text
     else
@@ -142,28 +142,27 @@ int Parser :: getOverallWordTotal()
  * @param wordCase the map
  * @param textType html or plaintext
  */
-void Parser::parseCase(std::multimap<int, <std::string,int>>& wordCase, std::istringstream& textType)
+void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& textType)
 {
     std::string temp; //A single word
     int count = 0;//keep track of number of wordToFind appears in document
     while(textType >> temp)
     {
         temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
-        if(temp == wordToFind)
-            count++;
+//        if(temp == wordToFind)
+//            count++;
         if(isStopWord(temp))
             temp = "";
         else
         {
             if(keepTrack.find(temp) != keepTrack.end())
-                wordCase
-                //++wordCase[keepTrack.find(temp)->second];
+                ++wordCase[keepTrack.find(temp)->second];
             else
             {
                 std::string temp2 = temp;
                 Porter2Stemmer::stem(temp);
                 keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
-                //++wordCase[temp];
+                ++wordCase[temp];
             }
         }
     }
