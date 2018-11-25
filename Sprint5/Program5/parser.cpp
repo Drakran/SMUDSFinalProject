@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <map>
 
 //stop words
 std::string strArray[155] = {"a", "about", "above", "after", "again", "against", "all", "am", "an",
@@ -114,20 +115,22 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         caseWord.upDateFileAndCount(fileNum, iter.second);
         //counting every single word parsed including repeteaded words.
         ++OverallWordTotal;
+
         try{
             //check if object exists and update that word object
-            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);}
-        catch (std::exception &e){
+            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);
+        }catch (std::exception &e){
             //object doesnt exitst so we insert in avl tree
-            index.insert( caseWord, caseWord.getWord() );}
+            index.insert( caseWord, caseWord.getWord() );
+        }
     }
-/*
-    //this is one to output each
+    /*
+    //this is one to output each individual word
     for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)
     {
-        std::cout << "Key: " << iter->first << " Value:" << iter->second <<  '\n';
+
     }
-*/
+    */
 }
 
 int Parser :: getOverallWordTotal()

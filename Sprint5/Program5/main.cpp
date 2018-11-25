@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "Driver.h"
 #include "avltree.h"
+#include <map>
 
 using namespace std;
 

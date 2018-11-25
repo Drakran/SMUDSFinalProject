@@ -59,7 +59,8 @@ HEADERS += \
     porter2_stemmer.h \
     hash.h \
     string_view.h \
-    IndexInterface.h
+    IndexInterface.h \
+    hashtable.h
 
 
 
