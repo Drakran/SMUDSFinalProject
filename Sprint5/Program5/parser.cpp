@@ -98,7 +98,7 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         //Can Switch regex or not by commeting this line and remove comment on next
         //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
         std::istringstream ss{(cases["html"].GetString())};
-        parseCase(wordCase, ss);
+        parseCase(wordCase, ss, wordToFind);
     }
     //This else then checks plain text
     else
@@ -112,8 +112,9 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         Word caseWord;
         caseWord.setWord(iter.first);
         caseWord.upDateFileAndCount(fileNum, iter.second);
-        //counting every single word parsed including repeteaded words.
+        //counting every single word parsed including repeated words.
         ++OverallWordTotal;
+
         try{
             //check if object exists and update that word object
             index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);}
@@ -141,26 +142,28 @@ int Parser :: getOverallWordTotal()
  * @param wordCase the map
  * @param textType html or plaintext
  */
-void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& textType)
+void Parser::parseCase(std::multimap<int, <std::string,int>>& wordCase, std::istringstream& textType)
 {
     std::string temp; //A single word
+    int count = 0;//keep track of number of wordToFind appears in document
     while(textType >> temp)
     {
-
         temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
+        if(temp == wordToFind)
+            count++;
         if(isStopWord(temp))
             temp = "";
         else
         {
             if(keepTrack.find(temp) != keepTrack.end())
-                ++wordCase[keepTrack.find(temp)->second];
+                wordCase
+                //++wordCase[keepTrack.find(temp)->second];
             else
             {
                 std::string temp2 = temp;
                 Porter2Stemmer::stem(temp);
                 keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
-                ++wordCase[temp];
-
+                //++wordCase[temp];
             }
         }
     }
