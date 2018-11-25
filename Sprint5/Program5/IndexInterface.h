@@ -1,6 +1,7 @@
 #ifndef INDEXINTERFACE_H
 #define INDEXINTERFACE_H
 #include "Word.h"
+#include "vector"
 
 template<typename T,typename K>
 class IndexInterface
@@ -23,6 +24,5 @@ template<typename T,typename K>
 inline IndexInterface<T,K>::~IndexInterface(){}
 template<typename T,typename K>
 inline void IndexInterface<T,K> :: printInOrder(){}
-
 
 #endif // INDEXINTERFACE_H
