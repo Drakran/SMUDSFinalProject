@@ -13,9 +13,12 @@ class Driver
 public:
     Driver(std::string,std::string);
     void Testing();
+    void makingStorage();
 private:
     std::string file;
     std::string wordToFind;
+    IndexInterface<Word, std::string>* Tree = new AVLTree<Word, std::string>();
+//  IndexInterface<Word, std::string>* HashTable = new HashTable<Word, std::string>();
 
 };
 

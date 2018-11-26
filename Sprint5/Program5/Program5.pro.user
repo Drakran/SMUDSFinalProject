@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.7.0, 2018-11-26T01:48:58. -->
+<!-- Written by QtCreator 4.7.0, 2018-11-26T02:07:06. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -309,7 +309,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Program52</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/student/Desktop/CSE2341-18F-search-engine-Skyler-Tran-Terry-Wang-Jaime-Goicoechea/Sprint5/Program5/Program5.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
-    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">scotus &quot;AND adjudication affirmation&quot;</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">scotus &quot;OR adjudication affirmation&quot;</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">Program5.pro</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default">/home/student/Desktop/CSE2341-18F-search-engine-Skyler-Tran-Terry-Wang-Jaime-Goicoechea/Sprint5/build-Program5-Desktop_Qt_5_10_0_GCC_64bit-Debug</value>
