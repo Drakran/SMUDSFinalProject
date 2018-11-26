@@ -19,30 +19,10 @@ int main(int argc, char* argv[])
        cin >> choice;
        if(choice[0] == '1')
        {
-           string dir_path;
-
-           if (argc < 2) {
-               dir_path = ".";
-           }
-           else {
-               dir_path = argv[1];
-           }
-
-           Driver Manager(argv[1],argv[2]);
-           Manager.Testing();
        }
        if(choice[0] == '2')
        {
-           string dir_path;
-
-           if (argc < 2) {
-               dir_path = ".";
-           }
-           else {
-               dir_path = argv[1];
-           }
-
-           Driver Manager(argv[1],argv[2]);
+           Driver Manager(argv[1]);
            Manager.Testing();
 
        }

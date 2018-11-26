@@ -11,7 +11,7 @@
 class Driver
 {
 public:
-    Driver(std::string,std::string);
+    Driver(std::string);
     void Testing();
     void makingStorage();
 private:

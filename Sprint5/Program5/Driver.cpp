@@ -17,17 +17,16 @@
 //to check time:
 //cd Desktop/CSE....../Sprint5/build...../
 // time ./Program5 /home/student/Desktop/scotus <wordToFind>
-Driver::Driver(std::string fileName, std::string wordFind)
+Driver::Driver(std::string fileName)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
-    //this will be the word we look for in avl tree
-    wordToFind = wordFind;
+//    //this will be the word we look for in avl tree
+//    wordToFind = wordFind;
 }
 
 void Driver::makingStorage()
 {
-
     std::string extention = ".json";
     Parser parser = Parser();
     std::string delimiter = "/";
@@ -47,10 +46,13 @@ void Driver::makingStorage()
 }
 void Driver :: Testing()
 {
-    std::string wordDisplayed = wordToFind;
-    std::stringstream ss(wordDisplayed);
+    std::string query;
+    std::cout << "Enter your query: ";
+    std::cin >> query;
+    std::string wordToFind = query;
+    std::stringstream ss(query);
     ss >> wordToFind;
-    if(wordToFind == "AND")
+    if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
     {
         std::map<std::string, int> andDocument;
         while(ss >> wordToFind)
@@ -84,7 +86,7 @@ void Driver :: Testing()
         }
     }
 
-    else if(wordToFind == "OR")
+    else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
     {
         std::map<std::string, int> orDocument;
         while(ss >> wordToFind)
