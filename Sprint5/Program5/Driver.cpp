@@ -44,7 +44,7 @@ void Driver :: Testing()
     //int filesToTest = file.size();
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    for(unsigned i = 0; i < 1000; ++i)
+    for(unsigned i = 0; i < 100; ++i)
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
@@ -54,16 +54,26 @@ void Driver :: Testing()
 
     //4) Number of unique documents with adjudication. ( map.size() )
     int count{0};
+    std::map<int, std::string, std::greater<int>> rranking;
+    std::map<int, std::string, std::greater<int>>::iterator it;
+
     try {
         for( auto it : Tree->find(wordToFind).getFileAndCount() ){
-            std::cout << "Word is " << it.first << " Number of appearance: ";
-            std::cout << it.second << std::endl;
+            rranking.insert(make_pair(it.second, it.first));
+            //std::cout << "Word is " << it.first << " Number of appearance: ";
+            //std::cout << it.second << std::endl;
             count++;
         }
     } catch (std::exception &e ) {
        std::cerr << "The word does not exist in any of the current files." << "\n";
     }
-    //std::cerr << "Total number of files in folder: " << files.size() << '\n';
+    it = rranking.begin();
+    for(int i = 0; i < rranking.size(); i++)
+    {
+        std::cout << "Most appear in " << (*it).second << " with " <<
+                     (*it).first << " instances." << std::endl;
+        it++;
+    }
     //1) Number of Words Parsed.(  counter of each instance of an object )
     std::cout << "Number of Words Parsed: " << parser.getOverallWordTotal() << std::endl;
     //2) Number of Unique words (Tree Nodes).( Tree->getSize() ) check
