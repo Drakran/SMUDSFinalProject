@@ -25,6 +25,11 @@ Driver::Driver(std::string fileName)
 //    wordToFind = wordFind;
 }
 
+Driver::~Driver()
+{
+    delete Tree;
+}
+
 void Driver::makingStorage()
 {
     std::string extention = ".json";
@@ -76,9 +81,11 @@ void Driver :: Testing()
             }
             for(auto it : rranking)
             {
-                std::cout << "Most appear in " << (it).second << " with " <<
-                             (it).first << " instances." << std::endl;
+                if(it == *rranking.begin())
+                    std::cout << "Most appear in ";
+                std::cout << (it).second << "(" << (it).first << " instances)/";
             }
+            std::cout << '\n';
         }
         for(auto it : andDocument)
         {
@@ -111,9 +118,12 @@ void Driver :: Testing()
             }
             for(auto it : rranking)
             {
-                std::cout << "Most appear in " << (it).second << " with " <<
-                             (it).first << " instances." << std::endl;
+                if(it == *rranking.begin())
+                    std::cout << "Most appear in ";
+                std::cout << "/" << (it).second << "(" <<
+                             (it).first << " instances)/";
             }
+            std::cout << '\n';
         }
         for(auto it : orDocument)
         {
@@ -121,5 +131,4 @@ void Driver :: Testing()
                              it.first << '\n';
         }
     }
-    delete Tree;
 }
