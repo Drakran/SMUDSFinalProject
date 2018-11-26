@@ -149,8 +149,6 @@ void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& 
     while(textType >> temp)
     {
         temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
-//        if(temp == wordToFind)
-//            count++;
         if(isStopWord(temp))
             temp = "";
         else
