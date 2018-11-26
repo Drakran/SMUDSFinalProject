@@ -16,6 +16,9 @@ public:
     ~Driver();
     void Testing();
     void makingStorage();
+    void andQuery(std::stringstream&);
+    void orQuery(std::stringstream&);
+    void notQuery(std::stringstream&);
 private:
     std::string file;
     std::string wordToFind;

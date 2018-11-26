@@ -14,24 +14,74 @@ int main(int argc, char* argv[])
     */
    bool condition = true;
    char choice[20];
-   Driver Manager(argv[1]);
    while(condition)
    {     
-       std::cout << "Choose an option: \n1. Maintainance mode\n2. Query mode\n3. Beast mode\n0. Quit\n";
+       std::cout << "Choose an option: \n1. Maintenance mode\n2. Interactive mode\n3. Beast mode\n0. Quit\n";
        cin >> choice;
        if(choice[0] == '1')
        {
-           cout<<"Entering maintainance mode....\n";
-           Manager.makingStorage();
-           cout<<"Exiting maintainance mode...\n";
-           std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+           char choiceMaintenance[20];
+           bool conditionMaintenance = true;
+           cout<<"Entering maintenance mode....\n";
+           while(conditionMaintenance)
+           {
+               std::cout << "Choose an option: \n1. Add opinions \n2. Clear index\n0. Back\n";
+               cin >> choiceMaintenance;
+               string path;
+               if(choiceMaintenance[0] == '1')
+               {
+                   cin.ignore();
+                   std::cout<<"Enter path: " ;
+                   std::cin>>path;
+                   Driver Manager(argv[1]);
+                   Manager.makingStorage();
+                   //Update index from new opinions goes here
+
+
+
+
+               }
+               if(choiceMaintenance[0] == '2')
+               {
+                   //Clear index goes here
+                   //Delete .txt file
+               }
+               if(choiceMaintenance[0] == '0')
+               {
+                   cout<<"Exiting maintenance mode...\n";
+                   std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+                   conditionMaintenance = false;
+               }
+           }
        }
        if(choice[0] == '2')
        {
-           cout<<"Entering query mode....\n";
-           Manager.Testing();
-           cout<<"Exiting query mode...\n";
-           std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+           cout<<"Entering interactive mode...\n";
+           char choiceMaintenance[20];
+           bool conditionInteractive = true;
+           while(conditionInteractive)
+           {
+               std::cout << "Choose an option: \n1. AVLTree \n2. HashTable\n0. Back\n";
+               cin >> choiceMaintenance;
+               string path;
+               if(choiceMaintenance[0] == '1')
+               {
+                   Driver Manager(argv[1]);
+                   Manager.Testing();
+               }
+               if(choiceMaintenance[0] == '2')
+               {
+                   //HashTable implementation goes here
+
+
+
+               }
+               if(choiceMaintenance[0] == '0')
+               {
+                   cout<<"Exiting interactive mode...\n";
+                   conditionInteractive = false;
+               }
+           }
        }
        if(choice[0] == '3')
        {
@@ -44,7 +94,6 @@ int main(int argc, char* argv[])
        {
            condition = false;
            cout << "Stopping program.....\n";
-           std::this_thread::sleep_for(std::chrono::milliseconds(2000));
        }
    }
    return 0;

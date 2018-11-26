@@ -23,6 +23,7 @@ Driver::Driver(std::string fileName)
     file = fileName;
 //    //this will be the word we look for in avl tree
 //    wordToFind = wordFind;
+
 }
 
 Driver::~Driver()
@@ -49,20 +50,19 @@ void Driver::makingStorage()
         parser.parse(filePath,files[i], *Tree);
     }
 }
-void Driver :: Testing()
+
+void Driver::andQuery(std::stringstream & ss)
 {
-    std::string query;
-    std::cin.ignore();
-    std::cout << "Enter your query: ";
-    getline(std::cin, query);
-    std::string wordToFind = query;
-    std::stringstream ss(query);
-    ss >> wordToFind;
-    if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
+    std::map<std::string, int> andDocument;
+    int countWord = 0;
+    int notWord = 0;
+    while(ss >> wordToFind)
     {
-        std::map<std::string, int> andDocument;
-        while(ss >> wordToFind)
+        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+            notWord++;
+        else
         {
+            countWord++;
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             makingStorage(); //make Tree
@@ -87,19 +87,32 @@ void Driver :: Testing()
             }
             std::cout << '\n';
         }
-        for(auto it : andDocument)
-        {
-            if(it.second == 2)
-                std::cout << "Document satisfying condition is " <<
-                             it.first << '\n';
-        }
     }
-
-    else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
+    for(auto it : andDocument)
     {
-        std::map<std::string, int> orDocument;
-        while(ss >> wordToFind)
+        if(countWord == countWord + notWord)
         {
+            if(it.second == countWord)
+                std::cout << "Document satisfying condition is " << it.first << '\n';
+        }
+        else
+            if(it.second == countWord - notWord)
+                std::cout << "Document satisfying condition is " << it.first << '\n';
+    }
+}
+
+void Driver::orQuery(std::stringstream & ss)
+{
+    std::map<std::string, int> orDocument;
+    int countWord = 0;
+    int notWord = 0;
+    while(ss >> wordToFind)
+    {
+        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+            notWord++;
+        else
+        {
+            countWord++;
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             makingStorage(); //make Tree
@@ -120,15 +133,98 @@ void Driver :: Testing()
             {
                 if(it == *rranking.begin())
                     std::cout << "Most appear in ";
-                std::cout << "/" << (it).second << "(" <<
-                             (it).first << " instances)/";
+                std::cout << (it).second << "(" << (it).first << " instances)/";
             }
             std::cout << '\n';
         }
-        for(auto it : orDocument)
+    }
+    for(auto it : orDocument)
+    {
+        if(countWord == countWord + notWord)
+            std::cout << "Document satisfying condition is " << it.first << '\n';
+//        else
+//        {
+//            if(it.second != countWord)
+//                std::cout << "Document satisfying condition is " << it.first << '\n';
+//        }
+    }
+}
+
+void Driver::notQuery(std::stringstream& ss)
+{
+    int countWord = 0;
+    countWord++;
+    std::map<std::string, int> document;
+    std::cout << "Word is " << wordToFind << '\n';
+    Porter2Stemmer::stem(wordToFind); //stem query
+    makingStorage(); //make Tree
+    int count{0};
+    std::map<int, std::string, std::greater<int>> rranking;
+    try {
+        for( auto it : Tree->find(wordToFind).getFileAndCount() )
         {
-            std::cout << "Document satisfying condition is " <<
-                             it.first << '\n';
+            rranking.insert(make_pair(it.second, it.first));
+            std::cout << it.first << '\n'; //-- QA purpose
+            ++document[it.first];
+            count++;
         }
+    } catch (std::exception &e ) {
+       std::cerr << "The word does not exist in any of the current files." << "\n";
+    }
+    for(auto it : rranking)
+    {
+        if(it == *rranking.begin())
+            std::cout << "Most appear in ";
+        std::cout << (it).second << "(" << (it).first << " instances)/";
+    }
+    std::cout << '\n';
+    while(ss >> wordToFind)
+    {
+        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+        {
+            countWord++;
+            ss >> wordToFind;
+            std::cout << "Word is " << wordToFind << '\n';
+            Porter2Stemmer::stem(wordToFind); //stem query
+            try {
+                for( auto it : Tree->find(wordToFind).getFileAndCount() )
+                {
+                    //std::cout << it.first << '\n'; //-- QA purpose
+                    if(document.find(it.first) == document.end()){}
+                    else
+                        ++document[it.first];
+                }
+            } catch (std::exception &e ) {
+               std::cerr << "The word does not exist in any of the current files." << "\n";
+            }
+            for(auto it : document)
+                if(it.second == countWord - 1)
+                    std::cout << "Document satisfying condition is " << it.first << '\n';
+        }
+    }
+}
+
+void Driver :: Testing()
+{
+    std::string query;
+    std::cin.ignore();
+    std::cout << "Enter your query: ";
+    getline(std::cin, query);
+    std::string wordToFind = query;
+    std::stringstream ss(query);
+    ss >> wordToFind;
+    if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
+    {
+        andQuery(ss);
+    }
+
+    else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
+    {
+        orQuery(ss);
+    }
+
+    else
+    {
+        notQuery(ss);
     }
 }
