@@ -77,10 +77,27 @@ void Driver :: Testing()
     TableTest2->printInOrder();
     std::cout<< "\n----------------------------------------\n";
 */
+
+    //tests for subscript operator
+    std::cout<< "----------------------------------------\nTests:\n";
+    std::string tempS = "expand";
+    //trying to get the size of the map where the word is stored.
+    //this function returns an object by using a key.
+    std::cout<< "Number of appreances of expand: " <<Table->operator[](tempS).getFileAndCount().size() <<'\n';
+
+    //testing for something not on the table
+    std::string tempS2 = "skyler tran";
+    try {
+        //trying to get the size of the map where the word is stored.
+        int i = Table->operator[](tempS2).getFileAndCount().size() <<'\n';
+    }catch(std::exception &e){
+        std::cout<< "Skyler Tran does not exist on hashtable.\n";
+    }
+    std::cout<< "----------------------------------------";
+
+
     //display the size of the data structure
-    std::cout<< "Size of hashtable: "<<Table->getSize() << '\n';
-
-
+    std::cout<< "\nSize of hashtable: "<<Table->getSize() << '\n';
     //display all elements in data structure
     Table->printInOrder();
     delete Table;

@@ -23,7 +23,7 @@ public:
     HashTable(const HashTable<T,K> &rightObj);
     ~HashTable();
     HashTable<T,K>& operator=(const HashTable<T,K> &rightObj);
-    T& operator[](K& lookUpKey);
+    virtual T& operator[](K& lookUpKey);
     virtual int getSize();
     virtual void insert( T &d, K &k);//value first then key
     /*find: will traverse the table and see if a key exists at that index.
