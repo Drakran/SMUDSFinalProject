@@ -6,6 +6,7 @@
 #include <exception>
 #include <IndexInterface.h>
 #include <random>
+#include <thread>
 #include <stdexcept>
 #include <porter2_stemmer.h>
 class Driver

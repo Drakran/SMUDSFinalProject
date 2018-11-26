@@ -34,7 +34,7 @@ void Driver::makingStorage()
 
     std::vector<std::string> files = parser.getFiles(file, extention);    //this will output all of files in format of: numberOfFile.json
     //3) the vector named files has all of files in the folder.
-    std::cerr << "Total number of files in folder: " << files.size() << std::endl;
+    //std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < 100; ++i)
@@ -47,8 +47,9 @@ void Driver::makingStorage()
 void Driver :: Testing()
 {
     std::string query;
+    std::cin.ignore();
     std::cout << "Enter your query: ";
-    std::cin >> query;
+    getline(std::cin, query);
     std::string wordToFind = query;
     std::stringstream ss(query);
     ss >> wordToFind;
@@ -57,6 +58,7 @@ void Driver :: Testing()
         std::map<std::string, int> andDocument;
         while(ss >> wordToFind)
         {
+            std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             makingStorage(); //make Tree
             int count = 0;
@@ -91,6 +93,7 @@ void Driver :: Testing()
         std::map<std::string, int> orDocument;
         while(ss >> wordToFind)
         {
+            std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             makingStorage(); //make Tree
             int count{0};
