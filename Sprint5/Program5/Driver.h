@@ -8,23 +8,28 @@
 #include <random>
 #include <thread>
 #include <stdexcept>
+#include "hashtable.h"
 #include <porter2_stemmer.h>
 class Driver
 {
 public:
     Driver(std::string);
     ~Driver();
-    void Testing();
-    void makingStorage();
-    void andQuery(std::stringstream&);
-    void orQuery(std::stringstream&);
-    void notQuery(std::stringstream&);
+    void TestingWithAVLTree();
+    void TestingWithHashTable();
+    void makingStorageAVLTree();
+    void makingStorageHashTable();
+    void andQueryAVL(std::stringstream&);
+    void orQueryAVL(std::stringstream&);
+    void notQueryAVL(std::stringstream&);
+    void andQueryHT(std::stringstream&);
+    void orQueryHT(std::stringstream&);
+    void notQueryHT(std::stringstream&);
 private:
     std::string file;
     std::string wordToFind;
     IndexInterface<Word, std::string>* Tree = new AVLTree<Word, std::string>();
-//  IndexInterface<Word, std::string>* HashTable = new HashTable<Word, std::string>();
-
+    IndexInterface<Word, std::string>* Table = new HashTable<Word, std::string>();
 };
 
 #endif // DRIVER_H

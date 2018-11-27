@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
                    std::cout<<"Enter path: " ;
                    std::cin>>path;
                    Driver Manager(argv[1]);
-                   Manager.makingStorage();
+                   Manager.makingStorageAVLTree();
                    //Update index from new opinions goes here
 
 
@@ -67,14 +67,12 @@ int main(int argc, char* argv[])
                if(choiceMaintenance[0] == '1')
                {
                    Driver Manager(argv[1]);
-                   Manager.Testing();
+                   Manager.TestingWithAVLTree();
                }
                if(choiceMaintenance[0] == '2')
                {
-                   //HashTable implementation goes here
-
-
-
+                   Driver Manager(argv[1]);
+                   Manager.TestingWithHashTable();
                }
                if(choiceMaintenance[0] == '0')
                {

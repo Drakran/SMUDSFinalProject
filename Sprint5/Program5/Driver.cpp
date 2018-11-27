@@ -29,9 +29,10 @@ Driver::Driver(std::string fileName)
 Driver::~Driver()
 {
     delete Tree;
+    delete Table;
 }
 
-void Driver::makingStorage()
+void Driver::makingStorageAVLTree()
 {
     std::string extention = ".json";
     Parser parser = Parser();
@@ -51,7 +52,27 @@ void Driver::makingStorage()
     }
 }
 
-void Driver::andQuery(std::stringstream & ss)
+void Driver::makingStorageHashTable()
+{
+    std::string extention = ".json";
+    Parser parser = Parser();
+    std::string delimiter = "/";
+    std::string filePath;
+
+    std::vector<std::string> files = parser.getFiles(file, extention);    //this will output all of files in format of: numberOfFile.json
+    //3) the vector named files has all of files in the folder.
+    //std::cerr << "Total number of files in folder: " << files.size() << std::endl;
+
+    //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
+    for(unsigned i = 0; i < 100; ++i)
+    {
+        //filepath contains the name of each file (77000 files).
+        filePath = file + delimiter + files[i];
+        parser.parse(filePath,files[i], *Table);
+    }
+}
+
+void Driver::andQueryAVL(std::stringstream & ss)
 {
     std::map<std::string, int> andDocument;
     int countWord = 0;
@@ -65,7 +86,7 @@ void Driver::andQuery(std::stringstream & ss)
             countWord++;
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
-            makingStorage(); //make Tree
+            makingStorageAVLTree(); //make Tree
             int count = 0;
             std::map<int, std::string, std::greater<int>> rranking;
             try {
@@ -101,7 +122,7 @@ void Driver::andQuery(std::stringstream & ss)
     }
 }
 
-void Driver::orQuery(std::stringstream & ss)
+void Driver::orQueryAVL(std::stringstream & ss)
 {
     std::map<std::string, int> orDocument;
     int countWord = 0;
@@ -115,7 +136,7 @@ void Driver::orQuery(std::stringstream & ss)
             countWord++;
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
-            makingStorage(); //make Tree
+            makingStorageAVLTree(); //make Tree
             int count{0};
             std::map<int, std::string, std::greater<int>> rranking;
             try {
@@ -150,14 +171,14 @@ void Driver::orQuery(std::stringstream & ss)
     }
 }
 
-void Driver::notQuery(std::stringstream& ss)
+void Driver::notQueryAVL(std::stringstream& ss)
 {
     int countWord = 0;
     countWord++;
     std::map<std::string, int> document;
     std::cout << "Word is " << wordToFind << '\n';
     Porter2Stemmer::stem(wordToFind); //stem query
-    makingStorage(); //make Tree
+    makingStorageAVLTree(); //make Tree
     int count{0};
     std::map<int, std::string, std::greater<int>> rranking;
     try {
@@ -204,7 +225,20 @@ void Driver::notQuery(std::stringstream& ss)
     }
 }
 
-void Driver :: Testing()
+void Driver::andQueryHT(std::stringstream&)
+{
+
+}
+void Driver::orQueryHT(std::stringstream&)
+{
+
+}
+void Driver::notQueryHT(std::stringstream&)
+{
+
+}
+
+void Driver :: TestingWithAVLTree()
 {
     std::string query;
     std::cin.ignore();
@@ -214,17 +248,70 @@ void Driver :: Testing()
     std::stringstream ss(query);
     ss >> wordToFind;
     if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
-    {
-        andQuery(ss);
-    }
-
+        andQueryAVL(ss);
     else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
-    {
-        orQuery(ss);
-    }
-
+        orQueryAVL(ss);
     else
-    {
-        notQuery(ss);
-    }
+        notQueryAVL(ss);
 }
+
+void Driver :: TestingWithHashTable()
+{
+        makingStorageHashTable();
+        //display the size of the data structure
+        std::cout<< "Size of hashtable: "<<Table->getSize() << '\n';
+
+        //display all elements in data structure, use it for 400 files or less
+        //Table->printInOrder();
+
+        /*
+        This is to test the find function in the hashtable
+        */
+        int counter = 0;
+        int counter2 = 0;
+        std::string testAdj = "adjudication";
+        std::string testSkyler = "Skyler Tran";
+
+    //this word exists on the hashtable
+        std::cout << "Number of unique documents with " << testAdj << ": ";
+        Porter2Stemmer::stem(testAdj);
+        try {
+            //this iterator is to traverse the map in inside the word object,
+            //and keep count of each file inside of map
+            for( auto it : Table->find(testAdj).getFileAndCount() ){
+                ++counter;
+            }
+        } catch (std::exception &e ) {
+            //if this outputs the word is not in the hashtable
+           std::cerr << "\nThe word does not exist in any of the current files." << "\n";
+        }
+        std::cout << counter << '\n';
+
+    //this word does not exists on table
+        std::cout << "Number of unique documents with " << testSkyler << ": ";
+        try {
+            //this iterator is to traverse the map in inside the word object,
+            //and keep count of each file inside of map
+            for( auto it : Table->find(testSkyler).getFileAndCount() ){
+                ++counter2;
+            }
+        } catch (std::exception &e ) {
+            //if this outputs the word is not in the hashtable
+           std::cerr << "\nThe word does not exist in any of the current files." << "\n";
+        }
+
+//        std::string query;
+//        std::cin.ignore();
+//        std::cout << "Enter your query: ";
+//        getline(std::cin, query);
+//        std::string wordToFind = query;
+//        std::stringstream ss(query);
+//        ss >> wordToFind;
+//        if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
+//            andQueryHT(ss);
+//        else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
+//            orQueryHT(ss);
+//        else
+//            notQueryHT(ss);
+}
+
