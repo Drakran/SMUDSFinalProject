@@ -122,13 +122,6 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
             //object doesnt exitst so we insert in avl tree
             index.insert( caseWord, caseWord.getWord() );}
     }
-/*
-    //this is one to output each
-    for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)
-    {
-        std::cout << "Key: " << iter->first << " Value:" << iter->second <<  '\n';
-    }
-*/
 }
 
 int Parser :: getOverallWordTotal()
@@ -149,8 +142,6 @@ void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& 
     while(textType >> temp)
     {
         temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
-//        if(temp == wordToFind)
-//            count++;
         if(isStopWord(temp))
             temp = "";
         else
