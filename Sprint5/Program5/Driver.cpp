@@ -255,9 +255,45 @@ void Driver::andQueryHT(std::stringstream&)
     //display the size of the data structure
     std::cout<< "Size of hashtable: "<<Table->getSize() << '\n';
 
+    //display all elements in data structure, use it for 400 files or less
+    //Table->printInOrder();
 
-    //display all elements in data structure
-    Table->printInOrder();
+    /*
+    This is to test the find function in the hashtable
+    */
+    int counter = 0;
+    int counter2 = 0;
+    std::string testAdj = "adjudication";
+    std::string testSkyler = "Skyler Tran";
+
+//this word exists on the hashtable
+    std::cout << "Number of unique documents with " << testAdj << ": ";
+    Porter2Stemmer::stem(testAdj);
+    try {
+        //this iterator is to traverse the map in inside the word object,
+        //and keep count of each file inside of map
+        for( auto it : Table->find(testAdj).getFileAndCount() ){
+            ++counter;
+        }
+    } catch (std::exception &e ) {
+        //if this outputs the word is not in the hashtable
+       std::cerr << "\nThe word does not exist in any of the current files." << "\n";
+    }
+    std::cout << counter << '\n';
+
+//this word does not exists on table
+    std::cout << "Number of unique documents with " << testSkyler << ": ";
+    try {
+        //this iterator is to traverse the map in inside the word object,
+        //and keep count of each file inside of map
+        for( auto it : Table->find(testSkyler).getFileAndCount() ){
+            ++counter2;
+        }
+    } catch (std::exception &e ) {
+        //if this outputs the word is not in the hashtable
+       std::cerr << "\nThe word does not exist in any of the current files." << "\n";
+    }
+
     delete Table;
     //delete Tree;
 }
