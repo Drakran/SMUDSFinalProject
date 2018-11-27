@@ -202,7 +202,7 @@ unsigned int HashTable<T,K> ::  getHashKeyIndex( K& key)
     /*this temp variable will hold the index
     *where this string belongs too in the array of
     * containers. */
-    unsigned hashedKeyIndex = computeHash(key);
+    unsigned int hashedKeyIndex = computeHash(key);
     /*this is used to compute boundries which will
      *  go from 0 - 100,000 */
     hashedKeyIndex = hashedKeyIndex % sizeOfTable;
