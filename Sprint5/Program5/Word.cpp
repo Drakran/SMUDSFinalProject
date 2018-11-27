@@ -39,7 +39,7 @@ void Word :: upDateFileAndCount(std::string fileId, int countOfWord)
     FileIdAndCount.emplace(fileId, countOfWord);
 }
 
-std::map<std::string, int> Word :: getFileAndCount()
+std::map<std::string, int>& Word :: getFileAndCount()
 {
     return FileIdAndCount;
 }

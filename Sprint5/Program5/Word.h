@@ -15,7 +15,7 @@ public:
     void setWord(std::string w);
     std::string& getWord();
     void upDateFileAndCount(std::string f, int c);
-    std::map<std::string, int> getFileAndCount();
+    std::map<std::string, int>& getFileAndCount();
 private:
     std::string caseWord;
     /*first element in map will be the file identifier

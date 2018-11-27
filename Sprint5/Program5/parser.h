@@ -44,5 +44,4 @@ private:
     void parseCase(std::map<std::string,int>&, std::istringstream&);
     std::regex reg;
 };
-
 #endif // PARSER_H

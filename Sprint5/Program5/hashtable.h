@@ -159,7 +159,8 @@ void HashTable<T,K> ::  insert( T &data, K &key)
 */
 template <typename T,typename K>
 T&  HashTable<T,K> :: find( K& lookUpKey )
-{    
+{
+
     //getting index of key
     unsigned int index = getHashKeyIndex(lookUpKey);
 

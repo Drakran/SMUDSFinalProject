@@ -1,5 +1,4 @@
 #include "parser.h"
-#include <map>
 
 //stop words
 std::string strArray[155] = {"a", "about", "above", "after", "again", "against", "all", "am", "an",
@@ -113,24 +112,16 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         Word caseWord;
         caseWord.setWord(iter.first);
         caseWord.upDateFileAndCount(fileNum, iter.second);
-        //counting every single word parsed including repeteaded words.
+        //counting every single word parsed including repeated words.
         ++OverallWordTotal;
 
         try{
             //check if object exists and update that word object
-            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);
-        }catch (std::exception &e){
+            index.find(caseWord.getWord()).upDateFileAndCount( fileNum, iter.second);}
+        catch (std::exception &e){
             //object doesnt exitst so we insert in avl tree
-            index.insert( caseWord, caseWord.getWord() );
-        }
+            index.insert( caseWord, caseWord.getWord() );}
     }
-    /*
-    //this is one to output each individual word
-    for(std::map<std::string,int>::iterator iter = wordCase.begin(); iter!=wordCase.end(); iter++)
-    {
-
-    }
-    */
 }
 
 int Parser :: getOverallWordTotal()
@@ -147,9 +138,9 @@ int Parser :: getOverallWordTotal()
 void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& textType)
 {
     std::string temp; //A single word
+    int count = 0;//keep track of number of wordToFind appears in document
     while(textType >> temp)
     {
-
         temp.erase (std::remove_if (temp.begin (), temp.end (), ispunct), temp.end ());
         if(isStopWord(temp))
             temp = "";
@@ -163,12 +154,10 @@ void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& 
                 Porter2Stemmer::stem(temp);
                 keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
                 ++wordCase[temp];
-
             }
         }
     }
 }
-
 
 
 

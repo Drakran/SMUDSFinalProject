@@ -30,5 +30,4 @@ inline void IndexInterface<T,K> :: printInOrder(){}
 template<typename T,typename K>
 inline T& IndexInterface<T,K> :: operator[](K& lookUpKey){}
 
-
 #endif // INDEXINTERFACE_H
