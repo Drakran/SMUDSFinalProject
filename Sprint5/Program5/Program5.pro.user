@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <!-- Written by QtCreator 4.7.2, 2018-11-27T14:08:57. -->
 =======
 <!-- Written by QtCreator 4.7.0, 2018-11-26T04:50:44. -->
 >>>>>>> 8939613d7207113d76f92534ae31811188d09899
+=======
+<!-- Written by QtCreator 4.7.2, 2018-11-25T13:40:31. -->
+>>>>>>> origin
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -314,10 +318,14 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/sj/Desktop/CSE2341-18F-search-engine-Skyler-Tran-Terry-Wang-Jaime-Goicoechea/Sprint5/Program5/Program5.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">/home/sj/Desktop/scotus adjudication</value>
 =======
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">scotus &quot;OR adjudication affirmation&quot;</value>
 >>>>>>> 8939613d7207113d76f92534ae31811188d09899
+=======
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">/home/sj/Desktop/scotus adjudication</value>
+>>>>>>> origin
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">Program5.pro</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default">/home/sj/Desktop/CSE2341-18F-search-engine-Skyler-Tran-Terry-Wang-Jaime-Goicoechea/Sprint5/build-Program5-Desktop_Qt_5_11_2_GCC_64bit-Debug</value>

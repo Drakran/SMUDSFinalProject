@@ -2,6 +2,7 @@
 #define DRIVER_H
 #include <iostream>
 #include <avltree.h>
+#include <hashtable.h>
 #include <parser.h>
 #include <exception>
 #include <IndexInterface.h>

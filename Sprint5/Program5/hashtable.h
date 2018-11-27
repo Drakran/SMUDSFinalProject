@@ -23,7 +23,11 @@ public:
     HashTable(const HashTable<T,K> &rightObj);
     ~HashTable();
     HashTable<T,K>& operator=(const HashTable<T,K> &rightObj);
+<<<<<<< HEAD
     virtual T& operator[](K& lookUpKey);
+=======
+    T& operator[](K& lookUpKey);
+>>>>>>> origin
     virtual int getSize();
     virtual void insert( T &d, K &k);//value first then key
     /*find: will traverse the table and see if a key exists at that index.
@@ -159,7 +163,11 @@ void HashTable<T,K> ::  insert( T &data, K &key)
 */
 template <typename T,typename K>
 T&  HashTable<T,K> :: find( K& lookUpKey )
+<<<<<<< HEAD
 {
+=======
+{    
+>>>>>>> origin
     //getting index of key
     unsigned int index = getHashKeyIndex(lookUpKey);
 
@@ -202,7 +210,11 @@ unsigned int HashTable<T,K> ::  getHashKeyIndex( K& key)
     /*this temp variable will hold the index
     *where this string belongs too in the array of
     * containers. */
+<<<<<<< HEAD
     unsigned int hashedKeyIndex = computeHash(key);
+=======
+    unsigned hashedKeyIndex = computeHash(key);
+>>>>>>> origin
     /*this is used to compute boundries which will
      *  go from 0 - 100,000 */
     hashedKeyIndex = hashedKeyIndex % sizeOfTable;

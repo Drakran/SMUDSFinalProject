@@ -54,7 +54,6 @@ void Driver::makingStorageAVLTree()
     }
 }
 
-<<<<<<< HEAD
 void Driver::makingStorageHashTable()
 {
     std::string extention = ".json";
@@ -230,7 +229,6 @@ void Driver::notQueryAVL(std::stringstream& ss)
 
 void Driver::andQueryHT(std::stringstream&)
 {
-=======
 /*
     std::cout<< "----------------------------------------\nTests:\n";
     // TESTS FOR FIND FUNCTION
@@ -262,9 +260,6 @@ void Driver::andQueryHT(std::stringstream&)
     Table->printInOrder();
     delete Table;
     //delete Tree;
-
->>>>>>> origin
-
 }
 void Driver::orQueryHT(std::stringstream&)
 {
