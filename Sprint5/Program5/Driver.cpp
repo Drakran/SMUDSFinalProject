@@ -44,7 +44,7 @@ void Driver :: Testing()
     //int filesToTest = file.size();
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    for(unsigned i = 0; i < 1000; ++i)
+    for(unsigned i = 0; i < 100; ++i)
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
@@ -56,7 +56,7 @@ void Driver :: Testing()
     int count{0};
     try {
         for( auto it : Tree->find(wordToFind).getFileAndCount() ){
-            std::cout << "Word is " << it.first << " Number of appearance: ";
+            std::cout << "File is " << it.first << " Number of appearance: ";
             std::cout << it.second << std::endl;
             count++;
         }
