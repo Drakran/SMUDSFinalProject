@@ -43,7 +43,7 @@ void Driver :: Testing()
     std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //To test different number of files
-    int filesToTest = 5;
+    int filesToTest = 100;
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < filesToTest; ++i)
@@ -54,52 +54,48 @@ void Driver :: Testing()
         parser.parse(filePath,files[i], *Table);
     }
 
-/*
-    std::cout<< "----------------------------------------\nTests:\n";
-    // TESTS FOR FIND FUNCTION
-    std::string tempS = "expand";
-    std::string tempS2 = "Sklyer Tran";
-    //This tests with something that exists in hashtable
-    std::cout<<"Inside test, this word exists: \t"<< Table->find(tempS).getWord()<< '\n';
-    //This tests with something that does not exists in hashtable
-    try {
-       Table->find(tempS2).getWord();
-    } catch (std::exception& e) {
-        std::cout<<"This key does not have an object in the hashtable: \n" << e.what() << '\n';
-    }
-
-    //TESTS FOR COPY CONSTRUCTOR AND ASSIGNMENT OPERATOR
-    IndexInterface<Word, std::string>* TableTest = new HashTable<Word, std::string>();
-    TableTest = Table;
-    TableTest->printInOrder();
-
-    IndexInterface<Word, std::string>* TableTest2(Table); //= new HashTable<Word, std::string>();
-    TableTest2->printInOrder();
-    std::cout<< "\n----------------------------------------\n";
-*/
-
-    //tests for subscript operator
-    std::cout<< "----------------------------------------\nTests:\n";
-    std::string tempS = "expand";
-    //trying to get the size of the map where the word is stored.
-    //this function returns an object by using a key.
-    std::cout<< "Number of appreances of expand: " <<Table->operator[](tempS).getFileAndCount().size() <<'\n';
-
-    //testing for something not on the table
-    std::string tempS2 = "skyler tran";
-    try {
-        //trying to get the size of the map where the word is stored.
-        int i = Table->operator[](tempS2).getFileAndCount().size() <<'\n';
-    }catch(std::exception &e){
-        std::cout<< "Skyler Tran does not exist on hashtable.\n";
-    }
-    std::cout<< "----------------------------------------";
-
-
     //display the size of the data structure
-    std::cout<< "\nSize of hashtable: "<<Table->getSize() << '\n';
-    //display all elements in data structure
-    Table->printInOrder();
+    std::cout<< "Size of hashtable: "<<Table->getSize() << '\n';
+
+    //display all elements in data structure, use it for 400 files or less
+    //Table->printInOrder();
+
+    /*
+    This is to test the find function in the hashtable
+    */
+    int counter = 0;
+    int counter2 = 0;
+    std::string testAdj = "adjudication";
+    std::string testSkyler = "Skyler Tran";
+
+//this word exists on the hashtable
+    std::cout << "Number of unique documents with " << testAdj << ": ";
+    Porter2Stemmer::stem(testAdj);
+    try {
+        //this iterator is to traverse the map in inside the word object,
+        //and keep count of each file inside of map
+        for( auto it : Table->find(testAdj).getFileAndCount() ){
+            ++counter;
+        }
+    } catch (std::exception &e ) {
+        //if this outputs the word is not in the hashtable
+       std::cerr << "\nThe word does not exist in any of the current files." << "\n";
+    }
+    std::cout << counter << '\n';
+
+//this word does not exists on table
+    std::cout << "Number of unique documents with " << testSkyler << ": ";
+    try {
+        //this iterator is to traverse the map in inside the word object,
+        //and keep count of each file inside of map
+        for( auto it : Table->find(testSkyler).getFileAndCount() ){
+            ++counter2;
+        }
+    } catch (std::exception &e ) {
+        //if this outputs the word is not in the hashtable
+       std::cerr << "\nThe word does not exist in any of the current files." << "\n";
+    }
+
     delete Table;
     //delete Tree;
 
