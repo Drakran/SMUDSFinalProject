@@ -26,8 +26,10 @@ public:
     void andQueryHT(std::stringstream&);
     void orQueryHT(std::stringstream&);
     void notQueryHT(std::stringstream&);
+    void basicStat();
 private:
     std::string file;
+    int filesToIndex;
     std::string wordToFind;
     IndexInterface<Word, std::string>* Tree = new AVLTree<Word, std::string>();
     IndexInterface<Word, std::string>* Table = new HashTable<Word, std::string>();

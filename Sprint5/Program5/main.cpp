@@ -31,16 +31,12 @@ int main(int argc, char* argv[])
                string path;
                if(choiceMaintenance[0] == '1')
                {
-                   cin.ignore();
+                   cin.ignore(); //path currently = /home/student/Desktop/scotus
                    std::cout<<"Enter path: " ;
                    std::cin>>path;
                    Driver Manager(argv[1]);
                    Manager.makingStorageAVLTree();
                    //Update index from new opinions goes here
-
-
-
-
                }
                if(choiceMaintenance[0] == '2')
                {
@@ -62,7 +58,7 @@ int main(int argc, char* argv[])
            bool conditionInteractive = true;
            while(conditionInteractive)
            {
-               std::cout << "Choose an option: \n1. AVLTree \n2. HashTable\n0. Back\n";
+               std::cout << "Choose an option: \n1. AVLTree \n2. HashTable\n3. Basic Statistics\n0. Back\n";
                cin >> choiceMaintenance;
                if(choiceMaintenance[0] == '1')
                {
@@ -73,6 +69,11 @@ int main(int argc, char* argv[])
                {
                    Driver Manager(argv[1]);
                    Manager.TestingWithHashTable();
+               }
+               if(choiceMaintenance[0] == '3')
+               {
+                   Driver Manager(argv[1]);
+                   Manager.basicStat();
                }
                if(choiceMaintenance[0] == '0')
                {

@@ -25,6 +25,8 @@ Driver::Driver(std::string fileName)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
+    //number of files to index
+    filesToIndex = 400;
 }
 
 Driver::~Driver()
@@ -46,7 +48,7 @@ void Driver::makingStorageAVLTree()
     //std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    for(unsigned i = 0; i < 100; ++i)
+    for(unsigned i = 0; i < filesToIndex; ++i)
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
@@ -66,7 +68,7 @@ void Driver::makingStorageHashTable()
     //std::cerr << "Total number of files in folder: " << files.size() << std::endl;
 
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    for(unsigned i = 0; i < 100; ++i)
+    for(unsigned i = 0; i < filesToIndex; ++i)
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
@@ -82,7 +84,7 @@ void Driver::andQueryAVL(std::stringstream & ss)
     while(ss >> wordToFind)
     {
         if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
-            notWord++;
+            notWord++;//count number of 'NOT' string
         else
         {
             countWord++;
@@ -333,11 +335,11 @@ void Driver::notQueryHT(std::stringstream& ss)
     std::map<std::string, int> document;
     std::cout << "Word is " << wordToFind << '\n';
     Porter2Stemmer::stem(wordToFind); //stem query
-    makingStorageHashTable(); //make Tree
+    makingStorageHashTable(); //make HashTable
     int count{0};
     std::map<int, std::string, std::greater<int>> rranking;
     try {
-        for( auto it : Table->find(wordToFind).getFileAndCount() )
+        for( auto it : Tree->find(wordToFind).getFileAndCount() )
         {
             rranking.insert(make_pair(it.second, it.first));
             std::cout << it.first << '\n'; //-- QA purpose
@@ -454,5 +456,26 @@ void Driver :: TestingWithHashTable()
             orQueryHT(ss);
         else
             notQueryHT(ss);
+}
+
+void Driver::basicStat()
+{
+    double avgWord;
+    if(Table->getSize() > 1)
+    {
+        std::cout << "Total opinions indexed: " << filesToIndex << '\n';
+        avgWord = Table->getSize() / filesToIndex;
+        std::cout << "Average words per opinion: " << avgWord << '\n';
+    }
+    else if(Tree->getSize() > 1)
+    {
+        std::cout << "Total opinions indexed: " << filesToIndex << '\n';
+        avgWord = Tree->getSize() / filesToIndex;
+        std::cout << "Average words per opinion: " << avgWord << '\n';
+    }
+    else
+        std::cout << "No data structure has been initialized!!!\n";
+
+    //Top 50 most frequent words implementation??!!?!??!!
 }
 
