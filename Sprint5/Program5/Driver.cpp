@@ -339,7 +339,7 @@ void Driver::notQueryHT(std::stringstream& ss)
     int count{0};
     std::map<int, std::string, std::greater<int>> rranking;
     try {
-        for( auto it : Tree->find(wordToFind).getFileAndCount() )
+        for( auto it : Table->find(wordToFind).getFileAndCount() )
         {
             rranking.insert(make_pair(it.second, it.first));
             std::cout << it.first << '\n'; //-- QA purpose
@@ -447,7 +447,6 @@ void Driver :: TestingWithHashTable()
         std::cin.ignore();
         std::cout << "Enter your query: ";
         getline(std::cin, query);
-        std::string wordToFind = query;
         std::stringstream ss(query);
         ss >> wordToFind;
         if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
