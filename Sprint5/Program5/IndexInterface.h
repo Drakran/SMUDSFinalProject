@@ -17,6 +17,8 @@ public:
     //virtual functions, CAN BE OVERWRITEN BUT DO NOT HAVE TO.
     virtual void printInOrder();
     virtual T& operator[](K& lookUpKey);
+    virtual std::map<int, std::string, std::greater<int>>& top50Common() = 0;
+
 private:
 
 };
@@ -29,5 +31,6 @@ template<typename T,typename K>
 inline void IndexInterface<T,K> :: printInOrder(){}
 template<typename T,typename K>
 inline T& IndexInterface<T,K> :: operator[](K& lookUpKey){}
-
+template<typename T,typename K>
+std::map<int, std::string, std::greater<int>>& top50Common(){}
 #endif // INDEXINTERFACE_H

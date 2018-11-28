@@ -15,8 +15,9 @@ int main(int argc, char* argv[])
     */
    bool condition = true;
    char choice[20];
+   Driver Manager(argv[1]);
    while(condition)
-   {     
+   {
        std::cout << "Choose an option: \n1. Maintenance mode\n2. Interactive mode\n3. Beast mode\n0. Quit\n";
        cin >> choice;
        if(choice[0] == '1')
@@ -34,7 +35,6 @@ int main(int argc, char* argv[])
                    cin.ignore(); //path currently = /home/student/Desktop/scotus
                    std::cout<<"Enter path: " ;
                    std::cin>>path;
-                   Driver Manager(argv[1]);
                    Manager.makingStorageAVLTree();
                    //Update index from new opinions goes here
                }
@@ -62,17 +62,14 @@ int main(int argc, char* argv[])
                cin >> choiceMaintenance;
                if(choiceMaintenance[0] == '1')
                {
-                   Driver Manager(argv[1]);
                    Manager.TestingWithAVLTree();
                }
                if(choiceMaintenance[0] == '2')
                {
-                   Driver Manager(argv[1]);
                    Manager.TestingWithHashTable();
                }
                if(choiceMaintenance[0] == '3')
                {
-                   Driver Manager(argv[1]);
                    Manager.basicStat();
                }
                if(choiceMaintenance[0] == '0')

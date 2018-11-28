@@ -54,6 +54,10 @@ public:
      because we will modify update existing info inside of the node.*/
     virtual T& find( K& k );
     virtual void printInOrder();
+    virtual std::map<int, std::string, std::greater<int>>& top50Common();
+    std::map<int, std::string, std::greater<int>> top50;
+    void getWordObject();
+    void getWordObject(Node<T,K>* ptrAtThisNode);
 
 private:
     Node<T,K>* root;
@@ -280,7 +284,6 @@ void AVLTree<T,K> :: rotateWithLeftChild(Node<T,K>* &K2)
     K2->height = 1+ max( getHeight(K2->left), getHeight(K2->right) );
     K1->height = 1+ max( getHeight(K1->left), getHeight(K2) );
     K2 = K1;
-
 }
 
 //case 4 rotation
@@ -332,6 +335,43 @@ T& AVLTree<T,K> :: find( K& data )// FIND BY KEY
     }
 
     throw std::out_of_range("Error element not found in Tree. Inside find.");
+}
+
+template <typename T,typename K>
+void AVLTree<T,K> :: getWordObject()
+{
+    //checking if tree is empty
+    if(root == nullptr)
+        throw std::out_of_range("Error trying to print empty AVL tree. Inside printInOrder.");
+    //calling private printInOrder method
+    getWordObject(root);
+}
+
+//displaying values inside of the avl tree
+template <typename T,typename K>
+void AVLTree<T,K> :: getWordObject(Node<T,K>* ptrAtThisNode)
+{
+    //recursive call until null
+    if(ptrAtThisNode != nullptr)
+    {
+        //1st. Getting everything to left
+        getWordObject(ptrAtThisNode->left);
+        //2nd. Outputting values. //setw(ptrAtThisNode->height *4) to print in tree format
+        int count = 0;
+        for(auto it : ptrAtThisNode->data.getFileAndCount())
+            count += it.second;
+        top50.insert(make_pair(count, ptrAtThisNode->key));
+        //3rd. Getting evertyhing to the right.
+        getWordObject(ptrAtThisNode->right);
+    }
+}
+
+//Function to get a map of every word and its commoness
+template <typename T,typename K>
+std::map<int, std::string, std::greater<int>>& AVLTree<T,K>::top50Common()
+{
+    getWordObject();
+    return top50;
 }
 
 #endif

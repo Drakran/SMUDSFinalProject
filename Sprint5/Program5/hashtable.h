@@ -30,6 +30,10 @@ public:
      *The index is computed by getting the hash of a key(string).*/
     virtual T& find( K& k );
     virtual void printInOrder();
+    void makingTop50(); //equivalent to AVL getWordObject
+    std::map<int, std::string, std::greater<int>> top50;
+    virtual std::map<int, std::string, std::greater<int>>& top50Common();
+
 private:
     /*This function will return an index of where to store a certain element
     * based on the hash calculated by this function.*/
@@ -186,6 +190,7 @@ void  HashTable<T,K> :: printInOrder()
     //This first for loop is to acces each individual list in list array.
     for(int i = 0; i < sizeOfTable; ++i){
         //SKYLER SEE THIS PLEASE!!! UNCOMMENT THE NEXT LINE,YOU CAN SEE ITS AN ARRAY OF LISTS
+        //Skyler has been here!!
         //std::cout<< "Size of index "<< i << " is: " << TableList->size() <<"\n";
         //this second for loop is to iterate through each list that contains a pair
         for(auto it = TableList[i].begin(); it != TableList[i].end(); ++it ){
@@ -211,6 +216,31 @@ unsigned int HashTable<T,K> ::  getHashKeyIndex( K& key)
     return hashedKeyIndex;
 }
 
+template <typename T,typename K>
+void HashTable<T,K>::makingTop50()
+{
+    int count = 0;
+    //This first for loop is to acces each individual list in list array.
+    for(int i = 0; i < sizeOfTable; ++i)
+    {
+        //this second for loop is to iterate through each list that contains a pair
+        for(auto it = TableList[i].begin(); it != TableList[i].end(); ++it )
+        {
+            count = 0;
+            //the key it.(first), it.second is the word object itself.
+            for(auto inner : it->second.getFileAndCount())
+                count += inner.second;
+            top50.insert(make_pair(count, it->first));
+        }
+    }
+}
+
+template <typename T,typename K>
+std::map<int, std::string, std::greater<int>>& HashTable<T,K> :: top50Common()
+{
+    makingTop50();
+    return top50;
+}
 /*Citations:
  * The hash function was used from an example in StackOverflow:
 *https://stackoverflow.com/questions/33809770/hash-function-that-can-return-a-integer-range-based-on-string

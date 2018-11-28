@@ -460,21 +460,39 @@ void Driver :: TestingWithHashTable()
 void Driver::basicStat()
 {
     double avgWord;
+    int counter = 0;
     if(Table->getSize() > 1)
     {
         std::cout << "Total opinions indexed: " << filesToIndex << '\n';
         avgWord = Table->getSize() / filesToIndex;
         std::cout << "Average words per opinion: " << avgWord << '\n';
+        for(auto it : Table->top50Common())
+        {
+            counter++;
+            if(counter == 50)
+                break;
+            std::cout << it.second << " ";
+            std::cout << it.first << '\n';
+        }
     }
     else if(Tree->getSize() > 1)
     {
         std::cout << "Total opinions indexed: " << filesToIndex << '\n';
         avgWord = Tree->getSize() / filesToIndex;
         std::cout << "Average words per opinion: " << avgWord << '\n';
+        for(auto it : Tree->top50Common())
+        {
+            counter++;
+            if(counter == 50)
+                break;
+            std::cout << it.second << " ";
+            std::cout << it.first << '\n';
+        }
     }
     else
         std::cout << "No data structure has been initialized!!!\n";
 
-    //Top 50 most frequent words implementation??!!?!??!!
 }
+
+
 

@@ -27,6 +27,7 @@ public:
     void orQueryHT(std::stringstream&);
     void notQueryHT(std::stringstream&);
     void basicStat();
+
 private:
     std::string file;
     int filesToIndex;
