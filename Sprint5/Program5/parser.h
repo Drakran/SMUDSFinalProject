@@ -36,6 +36,7 @@ public:
     bool isStopWord(std::string); //check if a word is a stop word, return true if it is
     void incrementOverallWordTotal(int &wordsInThisFile);
     int getOverallWordTotal();
+    void parseOneFile(std::string, std::string);
 private:
     std::set<std::string> stopWords;
     std::vector<std::string> fileNames;
