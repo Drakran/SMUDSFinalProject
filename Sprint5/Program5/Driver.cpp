@@ -26,7 +26,7 @@ Driver::Driver(std::string fileName)
     //this is the name of the directory where all of the files are found.
     file = fileName;
     //number of files to index
-    filesToIndex = 400;
+    filesToIndex = 20;
 }
 
 Driver::~Driver()
@@ -51,6 +51,31 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
+        if(filesToIndex <= 100)
+        {
+            if(i % 51 == 0)
+                std::cout << "Be patient please...\n";
+        }
+        else if(filesToIndex <= 1001 && filesToIndex > 101)
+        {
+            if(i % 450 == 0)
+                std::cout << "Be patient please...\n";
+        }
+        else if(filesToIndex <= 10001 && filesToIndex > 1001)
+        {
+            if(i % 1001 == 0)
+                std::cout << "Be patient please...\n";
+        }
+        else if(filesToIndex <= 40001 && filesToIndex > 10001)
+        {
+            if(i % 10001 == 0)
+                std::cout << "Be patient please...\n";
+        }
+        else if(filesToIndex <= files.size() && filesToIndex > 40001)
+        {
+            if(i % 15001 == 0)
+                std::cout << "Be patient please...\n";
+        }
         parser.parse(filePath,files[i], *dataStructure);
     }
 }
@@ -61,26 +86,36 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
     std::map<std::string, int> andDocument;
     //counter for the number of times this words appears.
     int countWord = 0;
+    int flag = 100; //use for "NOT"
     //counter for
-    int notWord = 0;
     while(ss >> wordToFind)
     {
         if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
-            notWord++;//count number of 'NOT' string
+        {
+            ss >> wordToFind;
+            std::cout << "Word is " << wordToFind << '\n';
+            Porter2Stemmer::stem(wordToFind); //stem query
+            try {
+                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                {
+                    //std::cout << it.first << '\n'; //-- QA purpose
+                   andDocument.find(it.first)->second = flag;
+                }
+            } catch (std::exception &e ) {
+               std::cerr << "The word does not exist in any of the current files." << "\n";
+            }
+        }
         else
         {
             countWord++;
-            //here
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
-            int count = 0;
             std::map<int, std::string, std::greater<int>> rranking;
             try {
                 for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
                 {
                     rranking.insert(make_pair(it.second, it.first));
                     //std::cout << it.first << '\n'; -- QA purpose
-                    count++;
                     ++andDocument[it.first];
                 }
             } catch (std::exception &e ) {
@@ -102,16 +137,9 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
     std::vector<std::string> andDocumentFinal;
     for(auto it : andDocument)
     {
-        if(countWord == countWord + notWord)
+        if(it.second != flag)
         {
             if(it.second == countWord)
-            {
-                //std::cout << "Document satisfying condition is " << it.first << '\n';
-                andDocumentFinal.push_back(it.first);
-            }
-        }
-        else{
-            if(it.second == countWord - notWord)
             {
                 //std::cout << "Document satisfying condition is " << it.first << '\n';
                 andDocumentFinal.push_back(it.first);
@@ -188,15 +216,26 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
 void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
 {
     std::map<std::string, int> orDocument;
-    int countWord = 0;
-    int notWord = 0;
+    int flag = 100;
     while(ss >> wordToFind)
     {
         if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
-            notWord++;
+        {
+            ss >> wordToFind;
+            std::cout << "Word is " << wordToFind << '\n';
+            Porter2Stemmer::stem(wordToFind); //stem query
+            try {
+                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                {
+                    //std::cout << it.first << '\n'; //-- QA purpose
+                    orDocument.find(it.first)->second = flag;
+                }
+            } catch (std::exception &e ) {
+               std::cerr << "The word does not exist in any of the current files." << "\n";
+            }
+        }
         else
         {
-            countWord++;
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             int count{0};
@@ -205,7 +244,7 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
                 for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
                 {
                     rranking.insert(make_pair(it.second, it.first));
-                    //std::cout << it.first << '\n'; -- QA purpose
+                    //std::cout << it.first << '\n'; //-- QA purpose
                     count++;
                     ++orDocument[it.first];
                 }
@@ -225,15 +264,10 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
     std::vector<std::string> orDocumentFinal;
     for(auto it : orDocument)
     {
-        if(countWord == countWord + notWord)
+        if(it.second != flag)
         {
             orDocumentFinal.push_back(it.first);
         }
-//        else
-//        {
-//            if(it.second != countWord)
-//                std::cout << "Document satisfying condition is " << it.first << '\n';
-//        }
     }
     //we will output the next menu ONLY if there is something in the menu
     if( orDocumentFinal.size() > 0){
@@ -302,8 +336,8 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
 
 void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
 {
-    int countWord = 0;
-    countWord++;
+    std::string test_ = wordToFind;
+    int flag = 100;
     //this map will contain the document the word appears in with number with an int containing the flag(or)
     std::map<std::string, int> document;
     std::cout << "Word is " << wordToFind << '\n';
@@ -318,7 +352,6 @@ void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
         //appreances in the map from word class.
         for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
         {
-            //std::cout<< it.first << "\n";//QA purposes
             //pushing pair to rraking map
             rranking.insert(make_pair(it.second, it.first));
             //std::cout << it.first << '\t'; //-- QA purpose to view files in word class map
@@ -339,23 +372,24 @@ void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
         std::cout << (it).second << "(" << (it).first << " instances)/";
     }
     std::cout << '\n';
-    while(ss >> wordToFind)
+    if(ss.str() != test_)
     {
-        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+        while(ss >> wordToFind)
         {
-            countWord++;
-            ss >> wordToFind;
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            try {
-                for( auto it : dataStructure->find(wordToFind).getFileAndCount() ){
-                    //std::cout << it.first << '\n'; //-- QA purpose
-                    if(document.find(it.first) == document.end()){}
-                    else
-                        ++document[it.first];
+            if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+            {
+                ss >> wordToFind;
+                std::cout << "Word is " << wordToFind << '\n';
+                Porter2Stemmer::stem(wordToFind); //stem query
+                try {
+                    for( auto it : dataStructure->find(wordToFind).getFileAndCount() ){
+                        //std::cout << it.first << '\n'; //-- QA purpose
+                        //if(document.find(it.first) == document.end()){}
+                        document.find(it.first)->second = flag;
+                    }
+                } catch (std::exception &e ) {
+                   std::cerr << "The word does not exist in any of the current files." << "\n";
                 }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
             }
         }
     }
@@ -369,8 +403,8 @@ void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
     std::vector<std::string> notDocumentFinal;
     for(auto itForNot : document)
     {
-        if(itForNot.second != countWord){
-            //std::cout<< "HEREEEE " << it.first << '\n';//QA
+        if(itForNot.second != flag){
+            //std::cout<< "HEREEEE " << itForNot.first << '\n';//QA
             notDocumentFinal.push_back(itForNot.first);
         }
     }
@@ -468,7 +502,6 @@ void Driver::stat(IndexInterface<Word, std::string>*& dataStructure)
 
 void Driver :: TestingWithAVLTree()
 {
-    makingStorage(Tree);
     std::string query;
     std::cin.ignore();
     std::cout << "Enter your query: ";
@@ -526,8 +559,6 @@ void Driver :: TestingWithHashTable()
 //            //if this outputs the word is not in the hashtable
 //           std::cerr << "\nThe word does not exist in any of the current files." << "\n";
 //        }
-
-        makingStorage(Table);
         std::string query;
         std::cin.ignore();
         std::cout << "Enter your query: ";
@@ -546,6 +577,7 @@ void Driver::userInterface()
 {
     bool condition = true;
     char choice[20];
+    int counter_ = 0;
     while(condition)
     {
         std::cout << "Choose an option: \n1. Maintenance mode\n2. Interactive mode\n3. Beast mode\n0. Quit\n";
@@ -595,10 +627,20 @@ void Driver::userInterface()
                 std::cin >> choiceMaintenance;
                 if(choiceMaintenance[0] == '1')
                 {
+                    if(counter_ == 0)
+                    {
+                        makingStorage(Tree);
+                        counter_++;
+                    }
                     TestingWithAVLTree();
                 }
                 if(choiceMaintenance[0] == '2')
                 {
+                    if(counter_ == 0)
+                    {
+                        makingStorage(Table);
+                        counter_++;
+                    }
                     TestingWithHashTable();
                 }
                 if(choiceMaintenance[0] == '3')
