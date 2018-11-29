@@ -1,4 +1,4 @@
-#include "Driver.h"
+﻿#include "Driver.h"
 #include "r_ranking.h"
 #include <iostream>
 #include <avltree.h>
@@ -78,8 +78,11 @@ void Driver::makingStorageHashTable()
 
 void Driver::andQueryAVL(std::stringstream & ss)
 {
+    //making a map containing the
     std::map<std::string, int> andDocument;
+    //counter for the number of times this words appears.
     int countWord = 0;
+    //counter for
     int notWord = 0;
     while(ss >> wordToFind)
     {
@@ -88,6 +91,7 @@ void Driver::andQueryAVL(std::stringstream & ss)
         else
         {
             countWord++;
+            //here
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             makingStorageAVLTree(); //make Tree
@@ -113,17 +117,94 @@ void Driver::andQueryAVL(std::stringstream & ss)
             std::cout << '\n';
         }
     }
+    //better ui
+    std::cout<<'\n';
+
+    //this vector will contain all the words that are in both the documents based on relevancy ranking.
+    std::vector<std::string> andDocumentFinal;
     for(auto it : andDocument)
     {
         if(countWord == countWord + notWord)
         {
             if(it.second == countWord)
-                std::cout << "Document satisfying condition is " << it.first << '\n';
+            {
+                //std::cout << "Document satisfying condition is " << it.first << '\n';
+                andDocumentFinal.push_back(it.first);
+            }
         }
-        else
+        else{
             if(it.second == countWord - notWord)
-                std::cout << "Document satisfying condition is " << it.first << '\n';
+            {
+                //std::cout << "Document satisfying condition is " << it.first << '\n';
+                andDocumentFinal.push_back(it.first);
+            }
+        }
     }
+    //it will ONLY go to the next menu if there is at least one file in the vector
+    if(andDocumentFinal.size() > 0){
+        //counter to keep track the number of outputs
+        int fifteenBegin = 0;
+        int fifteenEnd = 14;
+        char choice[20];
+        //temp string to display 15 outputs at a time
+        std::string display15Files = "yes";
+        //creating an iterator to keep track of document map on while loop
+        std::vector<std::string>::iterator itForDocuFinal  = andDocumentFinal.begin();
+        //this will display the first 15 files and ask the user if they want to see more.
+        //it(is an iterator of a vector) and will iterate through the document
+
+
+        while(itForDocuFinal != andDocumentFinal.end() && fifteenBegin < fifteenEnd ){
+
+            std::cout << "Document satisfying condition is " << *itForDocuFinal << '\n';
+            //move to next element in vector
+            ++itForDocuFinal;
+            //increment counter in outputs
+            ++fifteenBegin;
+            //If there is more than 15 results we will ask the user if they want to see more.
+            if( fifteenBegin == fifteenEnd-1 ){
+                //ask user if they want to see more results
+                std::cout<< "\nWould you like to see more results? \nEnter (y) for yes or (n) for no: ";
+                //flushing cin to have clean input
+                std::cin.clear();
+                //let user enter option
+                std::cin>>choice;
+                //if the choise is yes we will display more options
+                if(choice[0] == 'y'){
+                    //increase the size of end to display more options
+                    fifteenEnd += 14;
+                }else
+                    break;
+            }
+        }
+
+        //ask the user if they want to see a specific document
+        std::string LookUpFile = "\0";
+        //iterator that does not point anywhere
+        std::vector<std::string>::iterator LookUpIt  = andDocumentFinal.end();
+        //we will keep on asking the user to enter a valid document
+        while(LookUpIt == andDocumentFinal.end() && LookUpFile != "q"){
+            //prompt user to enter
+            std::cout<<"\nEnter the document name to see the first 300 words.(ex: 12345.json or q to quit): ";
+            //flushing cin to have clean input
+            std::cin.clear();
+            //let user enter option
+            std::cin>>LookUpFile;
+            //break upon user request
+            if(LookUpFile == "q")
+                break;
+            //iterator to look up the user input
+            LookUpIt = find( andDocumentFinal.begin(), andDocumentFinal.end(),LookUpFile);
+            if(LookUpIt != andDocumentFinal.end()){
+                //temp file path to get the 300 words from file
+                Parser penguinTerry;
+                penguinTerry.parseOneFile(file, *LookUpIt);
+            }
+            //it will keep on asking the user to enter the correct file if it did not find word
+        }
+    }
+    //this is to make the UI more clear.
+    std::cout<<"\n===================================================================================\n";
 }
 
 void Driver::orQueryAVL(std::stringstream & ss)
@@ -163,39 +244,118 @@ void Driver::orQueryAVL(std::stringstream & ss)
             std::cout << '\n';
         }
     }
+    //creating a vector to store all files
+    std::vector<std::string> orDocumentFinal;
     for(auto it : orDocument)
     {
         if(countWord == countWord + notWord)
-            std::cout << "Document satisfying condition is " << it.first << '\n';
+        {
+            orDocumentFinal.push_back(it.first);
+        }
 //        else
 //        {
 //            if(it.second != countWord)
 //                std::cout << "Document satisfying condition is " << it.first << '\n';
 //        }
     }
+    //we will output the next menu ONLY if there is something in the menu
+    if( orDocumentFinal.size() > 0){
+        //counter to keep track the number of outputs
+        int fifteenBegin = 0;
+        int fifteenEnd = 14;
+        char choice[20];
+        //temp string to display 15 outputs at a time
+        std::string display15Files = "yes";
+        //creating an iterator to keep track of document map on while loop
+        std::vector<std::string>::iterator itForDocuFinal  = orDocumentFinal.begin();
+        //this will display the first 15 files and ask the user if they want to see more.
+        //it(is an iterator of a vector) and will iterate through the document
+        while(itForDocuFinal != orDocumentFinal.end() && fifteenBegin < fifteenEnd ){
+
+            std::cout << "Document satisfying condition is " << *itForDocuFinal << '\n';
+            //move to next element in vector
+            ++itForDocuFinal;
+            //increment counter in outputs
+            ++fifteenBegin;
+            //If there is more than 15 results we will ask the user if they want to see more.
+            if( fifteenBegin == fifteenEnd-1 ){
+                //ask user if they want to see more results
+                std::cout<< "\nWould you like to see more results? \nEnter (y) for yes or (n) for no: ";
+                //flushing cin to have clean input
+                std::cin.clear();
+                //let user enter option
+                std::cin>>choice;
+                //if the choise is yes we will display more options
+                if(choice[0] == 'y'){
+                    //increase the size of end to display more options
+                    fifteenEnd += 14;
+                }else
+                    break;
+            }
+        }
+
+        //ask the user if they want to see a specific document
+        std::string LookUpFile = "\0";
+        //iterator that does not point anywhere
+        std::vector<std::string>::iterator LookUpIt  = orDocumentFinal.end();
+        //we will keep on asking the user to enter a valid document
+        while(LookUpIt == orDocumentFinal.end() && LookUpFile != "q"){
+            //prompt user to enter
+            std::cout<<"\nEnter the document name to see the first 300 words.(ex: 12345.json or q to quit): ";
+            //flushing cin to have clean input
+            std::cin.clear();
+            //let user enter option
+            std::cin>>LookUpFile;
+            //break upon user request
+            if(LookUpFile == "q")
+                break;
+            //iterator to look up the user input
+            LookUpIt = find( orDocumentFinal.begin(), orDocumentFinal.end(),LookUpFile);
+            if(LookUpIt != orDocumentFinal.end()){
+                //temp file path to get the 300 words from file
+                Parser penguinTerry;
+                penguinTerry.parseOneFile(file, *LookUpIt);
+            }
+            //it will keep on asking the user to enter the correct file if it did not find word
+        }
+    }
+    //this is to make the UI more clear.
+    std::cout<<"\n===================================================================================\n";
 }
 
 void Driver::notQueryAVL(std::stringstream& ss)
 {
     int countWord = 0;
     countWord++;
+    //this map will contain the document the word appears in with number with an int containing the flag(or)
     std::map<std::string, int> document;
     std::cout << "Word is " << wordToFind << '\n';
     Porter2Stemmer::stem(wordToFind); //stem query
     makingStorageAVLTree(); //make Tree
     int count{0};
+    //this map will be used to store the relevancy ranking.
     std::map<int, std::string, std::greater<int>> rranking;
+    //we will look for the word in the avl tree, if found we will copy the map inside word object
+    //to the rranking map that is sorted by the number of times a word appears and the file it appears in.
     try {
+        //this iterator will copy the word class map to rranking map sorted by the highsest number of
+        //appreances in the map from word class.
         for( auto it : Tree->find(wordToFind).getFileAndCount() )
         {
+            //std::cout<< it.first << "\n";//QA purposes
+            //pushing pair to rraking map
             rranking.insert(make_pair(it.second, it.first));
-            std::cout << it.first << '\n'; //-- QA purpose
+            //std::cout << it.first << '\t'; //-- QA purpose to view files in word class map
+            //this map contains the names of the files where this word appears
             ++document[it.first];
+            //counter to keep track of number of files.
             count++;
         }
+    //if it outputs this message the word was not found.
     } catch (std::exception &e ) {
        std::cerr << "The word does not exist in any of the current files." << "\n";
     }
+    //This will output the rraking map, it is sorted with highest number of appareaces
     for(auto it : rranking)
     {
         if(it == *rranking.begin())
@@ -212,8 +372,7 @@ void Driver::notQueryAVL(std::stringstream& ss)
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             try {
-                for( auto it : Tree->find(wordToFind).getFileAndCount() )
-                {
+                for( auto it : Tree->find(wordToFind).getFileAndCount() ){
                     //std::cout << it.first << '\n'; //-- QA purpose
                     if(document.find(it.first) == document.end()){}
                     else
@@ -222,11 +381,86 @@ void Driver::notQueryAVL(std::stringstream& ss)
             } catch (std::exception &e ) {
                std::cerr << "The word does not exist in any of the current files." << "\n";
             }
-            for(auto it : document)
-                if(it.second == countWord - 1)
-                    std::cout << "Document satisfying condition is " << it.first << '\n';
         }
     }
+    /*
+    *SKYLER PLEASE CHECK THIS ITERATOR OUT!!!
+    * this iterator will output only the files that appear in the first word and
+    * not in the second one!!!
+    * if we do itForNot == countWord this will display the files where THEY BOTH APPEAR
+    * if we do itForNOt!=  will display the files where onnly the first word appears but not second!!
+    */
+    std::vector<std::string> notDocumentFinal;
+    for(auto itForNot : document)
+    {
+        if(itForNot.second != countWord){
+            //std::cout<< "HEREEEE " << it.first << '\n';//QA
+            notDocumentFinal.push_back(itForNot.first);
+        }
+    }
+    //making sure the size of the vector is bigger than 0
+    if(notDocumentFinal.size() > 0){
+        //counter to keep track the number of outputs
+        int fifteenBegin = 0;
+        int fifteenEnd = 14;
+        char choice[20];
+        //temp string to display 15 outputs at a time
+        std::string display15Files = "yes";
+        //creating an iterator to keep track of document map on while loop
+        std::vector<std::string>::iterator itForDocuFinal  = notDocumentFinal.begin();
+        //this will display the first 15 files and ask the user if they want to see more.
+        //it(is an iterator of map) and will iterate through the document
+        while(itForDocuFinal != notDocumentFinal.end() && fifteenBegin < fifteenEnd ){
+
+            std::cout << "Document satisfying condition is " << *itForDocuFinal<< '\n';
+            //move to next element in map
+            ++itForDocuFinal;
+            //increment counter in outputs
+            ++fifteenBegin;
+            //If there is more than 15 results we will ask the user if they want to see more.
+            if( fifteenBegin == fifteenEnd-1 ){
+                //ask user if they want to see more results
+                std::cout<< "\nWould you like to see more results? \nEnter (y) for yes or (n) for no: ";
+                //flushing cin to have clean input
+                std::cin.clear();
+                //let user enter option
+                std::cin>>choice;
+                //if the choise is yes we will display more options
+                if(choice[0] == 'y'){
+                    //increase the size of end to display more options
+                    fifteenEnd += 14;
+                }else
+                    break;
+            }
+        }
+        //ask the user if they want to see a specific document
+        std::string LookUpFile = "\0";
+        //iterator that does not point anywhere
+        std::vector<std::string>::iterator LookUpIt  = notDocumentFinal.end();
+        //we will keep on asking the user to enter a valid document
+        while(LookUpIt == notDocumentFinal.end() && LookUpFile != "q"){
+            //prompt user to enter
+            std::cout<<"\nEnter the document name to see the first 300 words.(ex: 12345.json or q to quit): ";
+            //flushing cin to have clean input
+            std::cin.clear();
+            //let user enter option
+            std::cin>>LookUpFile;
+            //break upon user request
+            if(LookUpFile == "q")
+                break;
+            //iterator to look up the user input
+            LookUpIt = find( notDocumentFinal.begin(), notDocumentFinal.end(),LookUpFile);
+            //word exists
+            if( LookUpIt != notDocumentFinal.end() ){
+                //temp file path to get the 300 words from file
+                Parser penguinTerry;
+                penguinTerry.parseOneFile(file, *LookUpIt);
+            }
+            //if the word cannot be found it will keep on asking the user to input the right choice.
+        }
+    }
+    //this is to make the UI more clear.
+    std::cout<<"\n===================================================================================\n";
 }
 
 void Driver::andQueryHT(std::stringstream & ss)
@@ -384,12 +618,18 @@ void Driver::notQueryHT(std::stringstream& ss)
 
 void Driver :: TestingWithAVLTree()
 {
+    //This is the word the user will enter
     std::string query;
+    //flushing cin to have clean input
     std::cin.ignore();
+    //prompt user to enter word they are looking for
     std::cout << "Enter your query: ";
+    //readingin the word(s) the user entered.
     getline(std::cin, query);
+    //converting string to string stream
     std::stringstream ss(query);
     ss >> wordToFind;
+    //checking and/or/not flags, output will vary depending on these flags.
     if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
         andQueryAVL(ss);
     else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
