@@ -35,28 +35,7 @@ Driver::~Driver()
     delete Table;
 }
 
-void Driver::makingStorageAVLTree()
-{
-
-    std::string extention = ".json";
-    Parser parser = Parser();
-    std::string delimiter = "/";
-    std::string filePath;
-
-    std::vector<std::string> files = parser.getFiles(file, extention);    //this will output all of files in format of: numberOfFile.json
-    //3) the vector named files has all of files in the folder.
-    //std::cerr << "Total number of files in folder: " << files.size() << std::endl;
-
-    //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    for(unsigned i = 0; i < filesToIndex; ++i)
-    {
-        //filepath contains the name of each file (77000 files).
-        filePath = file + delimiter + files[i];
-        parser.parse(filePath,files[i], *Tree);
-    }
-}
-
-void Driver::makingStorageHashTable()
+void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
 {
     std::string extention = ".json";
     Parser parser = Parser();
@@ -72,11 +51,11 @@ void Driver::makingStorageHashTable()
     {
         //filepath contains the name of each file (77000 files).
         filePath = file + delimiter + files[i];
-        parser.parse(filePath,files[i], *Table);
+        parser.parse(filePath,files[i], *dataStructure);
     }
 }
 
-void Driver::andQueryAVL(std::stringstream & ss)
+void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
 {
     //making a map containing the
     std::map<std::string, int> andDocument;
@@ -94,11 +73,10 @@ void Driver::andQueryAVL(std::stringstream & ss)
             //here
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
-            makingStorageAVLTree(); //make Tree
             int count = 0;
             std::map<int, std::string, std::greater<int>> rranking;
             try {
-                for( auto it : Tree->find(wordToFind).getFileAndCount() )
+                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
                 {
                     rranking.insert(make_pair(it.second, it.first));
                     //std::cout << it.first << '\n'; -- QA purpose
@@ -207,7 +185,7 @@ void Driver::andQueryAVL(std::stringstream & ss)
     std::cout<<"\n===================================================================================\n";
 }
 
-void Driver::orQueryAVL(std::stringstream & ss)
+void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
 {
     std::map<std::string, int> orDocument;
     int countWord = 0;
@@ -221,11 +199,10 @@ void Driver::orQueryAVL(std::stringstream & ss)
             countWord++;
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
-            makingStorageAVLTree(); //make Tree
             int count{0};
             std::map<int, std::string, std::greater<int>> rranking;
             try {
-                for( auto it : Tree->find(wordToFind).getFileAndCount() )
+                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
                 {
                     rranking.insert(make_pair(it.second, it.first));
                     //std::cout << it.first << '\n'; -- QA purpose
@@ -323,7 +300,7 @@ void Driver::orQueryAVL(std::stringstream & ss)
     std::cout<<"\n===================================================================================\n";
 }
 
-void Driver::notQueryAVL(std::stringstream& ss)
+void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
 {
     int countWord = 0;
     countWord++;
@@ -331,7 +308,6 @@ void Driver::notQueryAVL(std::stringstream& ss)
     std::map<std::string, int> document;
     std::cout << "Word is " << wordToFind << '\n';
     Porter2Stemmer::stem(wordToFind); //stem query
-    makingStorageAVLTree(); //make Tree
     int count{0};
     //this map will be used to store the relevancy ranking.
     std::map<int, std::string, std::greater<int>> rranking;
@@ -340,7 +316,7 @@ void Driver::notQueryAVL(std::stringstream& ss)
     try {
         //this iterator will copy the word class map to rranking map sorted by the highsest number of
         //appreances in the map from word class.
-        for( auto it : Tree->find(wordToFind).getFileAndCount() )
+        for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
         {
             //std::cout<< it.first << "\n";//QA purposes
             //pushing pair to rraking map
@@ -372,7 +348,7 @@ void Driver::notQueryAVL(std::stringstream& ss)
             std::cout << "Word is " << wordToFind << '\n';
             Porter2Stemmer::stem(wordToFind); //stem query
             try {
-                for( auto it : Tree->find(wordToFind).getFileAndCount() ){
+                for( auto it : dataStructure->find(wordToFind).getFileAndCount() ){
                     //std::cout << it.first << '\n'; //-- QA purpose
                     if(document.find(it.first) == document.end()){}
                     else
@@ -463,184 +439,52 @@ void Driver::notQueryAVL(std::stringstream& ss)
     std::cout<<"\n===================================================================================\n";
 }
 
-void Driver::andQueryHT(std::stringstream & ss)
+void Driver::basicStat()
 {
-    std::map<std::string, int> andDocument;
-    int countWord = 0;
-    int notWord = 0;
-    while(ss >> wordToFind)
-    {
-        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
-            notWord++;
-        else
-        {
-            countWord++;
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            makingStorageHashTable(); //make Tree
-            int count = 0;
-            std::map<int, std::string, std::greater<int>> rranking;
-            try {
-                for( auto it : Table->find(wordToFind).getFileAndCount() )
-                {
-                    rranking.insert(make_pair(it.second, it.first));
-                    //std::cout << it.first << '\n'; -- QA purpose
-                    count++;
-                    ++andDocument[it.first];
-                }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
-            }
-            for(auto it : rranking)
-            {
-                if(it == *rranking.begin())
-                    std::cout << "Most appear in ";
-                std::cout << (it).second << "(" << (it).first << " instances)/";
-            }
-            std::cout << '\n';
-        }
-    }
-    for(auto it : andDocument)
-    {
-        if(countWord == countWord + notWord)
-        {
-            if(it.second == countWord)
-                std::cout << "Document satisfying condition is " << it.first << '\n';
-        }
-        else
-            if(it.second == countWord - notWord)
-                std::cout << "Document satisfying condition is " << it.first << '\n';
-    }
+    if(Table->getSize() > 1)
+        stat(Table);
+    else if(Tree->getSize() > 1)
+        stat(Tree);
+    else
+        std::cout << "No data structure has been initialized!!!\n";
 }
 
-void Driver::orQueryHT(std::stringstream & ss)
+void Driver::stat(IndexInterface<Word, std::string>*& dataStructure)
 {
-    std::map<std::string, int> orDocument;
-    int countWord = 0;
-    int notWord = 0;
-    while(ss >> wordToFind)
+    double avgWord;
+    int counter = 0;
+    std::cout << "Total opinions indexed: " << filesToIndex << '\n';
+    avgWord = dataStructure->getSize() / filesToIndex;
+    std::cout << "Average words per opinion: " << avgWord << '\n';
+    for(auto it : dataStructure->top50Common())
     {
-        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
-            notWord++;
-        else
-        {
-            countWord++;
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            makingStorageHashTable(); //make Tree
-            int count{0};
-            std::map<int, std::string, std::greater<int>> rranking;
-            try {
-                for( auto it : Table->find(wordToFind).getFileAndCount() )
-                {
-                    rranking.insert(make_pair(it.second, it.first));
-                    //std::cout << it.first << '\n'; -- QA purpose
-                    count++;
-                    ++orDocument[it.first];
-                }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
-            }
-            for(auto it : rranking)
-            {
-                if(it == *rranking.begin())
-                    std::cout << "Most appear in ";
-                std::cout << (it).second << "(" << (it).first << " instances)/";
-            }
-            std::cout << '\n';
-        }
-    }
-    for(auto it : orDocument)
-    {
-        if(countWord == countWord + notWord)
-            std::cout << "Document satisfying condition is " << it.first << '\n';
-//        else
-//        {
-//            if(it.second != countWord)
-//                std::cout << "Document satisfying condition is " << it.first << '\n';
-//        }
-    }
-}
-
-void Driver::notQueryHT(std::stringstream& ss)
-{
-    int countWord = 0;
-    countWord++;
-    std::map<std::string, int> document;
-    std::cout << "Word is " << wordToFind << '\n';
-    Porter2Stemmer::stem(wordToFind); //stem query
-    makingStorageHashTable(); //make HashTable
-    int count{0};
-    std::map<int, std::string, std::greater<int>> rranking;
-    try {
-        for( auto it : Table->find(wordToFind).getFileAndCount() )
-        {
-            rranking.insert(make_pair(it.second, it.first));
-            std::cout << it.first << '\n'; //-- QA purpose
-            ++document[it.first];
-            count++;
-        }
-    } catch (std::exception &e ) {
-       std::cerr << "The word does not exist in any of the current files." << "\n";
-    }
-    for(auto it : rranking)
-    {
-        if(it == *rranking.begin())
-            std::cout << "Most appear in ";
-        std::cout << (it).second << "(" << (it).first << " instances)/";
-    }
-    std::cout << '\n';
-    while(ss >> wordToFind)
-    {
-        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
-        {
-            countWord++;
-            ss >> wordToFind;
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            try {
-                for( auto it : Table->find(wordToFind).getFileAndCount() )
-                {
-                    //std::cout << it.first << '\n'; //-- QA purpose
-                    if(document.find(it.first) == document.end()){}
-                    else
-                        ++document[it.first];
-                }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
-            }
-            for(auto it : document)
-                if(it.second == countWord - 1)
-                    std::cout << "Document satisfying condition is " << it.first << '\n';
-        }
+        counter++;
+        if(counter == 50)
+            break;
+        std::cout << it.second << " ";
+        std::cout << it.first << '\n';
     }
 }
 
 void Driver :: TestingWithAVLTree()
 {
-    //This is the word the user will enter
+    makingStorage(Tree);
     std::string query;
-    //flushing cin to have clean input
     std::cin.ignore();
-    //prompt user to enter word they are looking for
     std::cout << "Enter your query: ";
-    //readingin the word(s) the user entered.
     getline(std::cin, query);
-    //converting string to string stream
     std::stringstream ss(query);
     ss >> wordToFind;
-    //checking and/or/not flags, output will vary depending on these flags.
     if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
-        andQueryAVL(ss);
+        andQuery(ss, Tree);
     else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
-        orQueryAVL(ss);
+        orQuery(ss, Tree);
     else
-        notQueryAVL(ss);
+        notQuery(ss, Tree);
 }
 
 void Driver :: TestingWithHashTable()
 {
-//        makingStorageHashTable();
 //        //display the size of the data structure
 //        std::cout<< "Size of hashtable: "<<Table->getSize() << '\n';
 
@@ -683,6 +527,7 @@ void Driver :: TestingWithHashTable()
 //           std::cerr << "\nThe word does not exist in any of the current files." << "\n";
 //        }
 
+        makingStorage(Table);
         std::string query;
         std::cin.ignore();
         std::cout << "Enter your query: ";
@@ -690,49 +535,96 @@ void Driver :: TestingWithHashTable()
         std::stringstream ss(query);
         ss >> wordToFind;
         if(wordToFind == "AND" || wordToFind == "And" || wordToFind == "and")
-            andQueryHT(ss);
+            andQuery(ss, Table);
         else if(wordToFind == "OR" || wordToFind == "or" || wordToFind == "Or")
-            orQueryHT(ss);
+            orQuery(ss, Table);
         else
-            notQueryHT(ss);
+            notQuery(ss, Table);
 }
 
-void Driver::basicStat()
+void Driver::userInterface()
 {
-    double avgWord;
-    int counter = 0;
-    if(Table->getSize() > 1)
+    bool condition = true;
+    char choice[20];
+    while(condition)
     {
-        std::cout << "Total opinions indexed: " << filesToIndex << '\n';
-        avgWord = Table->getSize() / filesToIndex;
-        std::cout << "Average words per opinion: " << avgWord << '\n';
-        for(auto it : Table->top50Common())
+        std::cout << "Choose an option: \n1. Maintenance mode\n2. Interactive mode\n3. Beast mode\n0. Quit\n";
+        std::cin >> choice;
+        if(choice[0] == '1')
         {
-            counter++;
-            if(counter == 50)
-                break;
-            std::cout << it.second << " ";
-            std::cout << it.first << '\n';
-        }
-    }
-    else if(Tree->getSize() > 1)
-    {
-        std::cout << "Total opinions indexed: " << filesToIndex << '\n';
-        avgWord = Tree->getSize() / filesToIndex;
-        std::cout << "Average words per opinion: " << avgWord << '\n';
-        for(auto it : Tree->top50Common())
-        {
-            counter++;
-            if(counter == 50)
-                break;
-            std::cout << it.second << " ";
-            std::cout << it.first << '\n';
-        }
-    }
-    else
-        std::cout << "No data structure has been initialized!!!\n";
+            char choiceMaintenance[20];
+            bool conditionMaintenance = true;
+            std::cout<<"Entering maintenance mode....\n";
+            while(conditionMaintenance)
+            {
+                std::cout << "Choose an option: \n1. Add opinions \n2. Clear index\n0. Back\n";
+                std::cin >> choiceMaintenance;
+                std::string path;
+                if(choiceMaintenance[0] == '1')
+                {
+                    std::cin.ignore(); //path currently = /home/student/Desktop/scotus
+                    std::cout<<"Enter path: " ;
+                    std::cin>>path;
+                    //Update index from new opinions goes here
 
+
+
+
+                }
+                if(choiceMaintenance[0] == '2')
+                {
+                    //Clear index goes here
+                    //Delete .txt file
+                }
+                if(choiceMaintenance[0] == '0')
+                {
+                    std::cout<<"Exiting maintenance mode...\n";
+                    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+                    conditionMaintenance = false;
+                }
+            }
+        }
+        if(choice[0] == '2')
+        {
+            std::cout<<"Entering interactive mode...\n";
+            char choiceMaintenance[20];
+            bool conditionInteractive = true;
+            while(conditionInteractive)
+            {
+                std::cout << "Choose an option: \n1. AVLTree \n2. HashTable\n3. Basic Statistics\n0. Back\n";
+                std::cin >> choiceMaintenance;
+                if(choiceMaintenance[0] == '1')
+                {
+                    TestingWithAVLTree();
+                }
+                if(choiceMaintenance[0] == '2')
+                {
+                    TestingWithHashTable();
+                }
+                if(choiceMaintenance[0] == '3')
+                {
+                    basicStat();
+                }
+                if(choiceMaintenance[0] == '0')
+                {
+                    std::cout<<"Exiting interactive mode...\n";
+                    conditionInteractive = false;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                }
+            }
+        }
+        if(choice[0] == '3')
+        {
+            std::cout<<"Entering beast mode....\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+            std::cout<<"Oops.... Nothing to do, exiting...\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        }
+        if(choice[0] == '0')
+        {
+            condition = false;
+            std::cout << "Stopping program.....\n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+    }
 }
-
-
-

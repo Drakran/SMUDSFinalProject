@@ -16,17 +16,15 @@ class Driver
 public:
     Driver(std::string);
     ~Driver();
+    void userInterface();
     void TestingWithAVLTree();
     void TestingWithHashTable();
-    void makingStorageAVLTree();
-    void makingStorageHashTable();
-    void andQueryAVL(std::stringstream&);
-    void orQueryAVL(std::stringstream&);
-    void notQueryAVL(std::stringstream&);
-    void andQueryHT(std::stringstream&);
-    void orQueryHT(std::stringstream&);
-    void notQueryHT(std::stringstream&);
+    void makingStorage(IndexInterface<Word, std::string>*& dataStructure);
+    void andQuery(std::stringstream&, IndexInterface<Word, std::string>*& dataStructure);
+    void notQuery(std::stringstream&, IndexInterface<Word, std::string>*& dataStructure);
+    void orQuery(std::stringstream&, IndexInterface<Word, std::string>*& dataStructure);
     void basicStat();
+    void stat(IndexInterface<Word, std::string>*& dataStructure);
 
 private:
     std::string file;
