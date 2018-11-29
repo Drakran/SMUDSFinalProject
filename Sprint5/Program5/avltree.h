@@ -55,13 +55,15 @@ public:
     virtual T& find( K& k );
     virtual void printInOrder();
     virtual std::map<int, std::string, std::greater<int>>& top50Common();
-    std::map<int, std::string, std::greater<int>> top50;
     void getWordObject();
     void getWordObject(Node<T,K>* ptrAtThisNode);
+    std::map<std::string, int>& getTotalWordsEachCase();
 
 private:
     Node<T,K>* root;
     int treeNodes;
+    std::map<int, std::string, std::greater<int>> top50;
+    std::map<std::string, int> IDandTotalWords;
     void copy(Node<T,K>* rightObjNodePtr);//used for copy constructor
     void clear(Node<T,K>* &rootPtr);//used for destructor
     void insert( T &d, K &k, Node<T,K>* &r);//passing root by reference
@@ -72,7 +74,6 @@ private:
     void doubleWithLeftChild(Node<T,K>* &r);//passing root by reference
     void doubleWithRightChild(Node<T,K>* &r);//passing root by reference
     void rotateWithRightChild(Node<T,K>* &r);//passing root by reference
-
 };
 
 //default constructor
@@ -358,8 +359,19 @@ void AVLTree<T,K> :: getWordObject(Node<T,K>* ptrAtThisNode)
         getWordObject(ptrAtThisNode->left);
         //2nd. Outputting values. //setw(ptrAtThisNode->height *4) to print in tree format
         int count = 0;
+        int countForID = 0;
         for(auto it : ptrAtThisNode->data.getFileAndCount())
+        {
             count += it.second;
+            auto itFind = IDandTotalWords.find(it.first);
+            if(itFind == IDandTotalWords.end())
+                IDandTotalWords.insert(make_pair(it.first, 0));
+            else
+            {
+                countForID += it.second;
+                itFind->second = countForID;
+            }
+        }
         top50.insert(make_pair(count, ptrAtThisNode->key));
         //3rd. Getting evertyhing to the right.
         getWordObject(ptrAtThisNode->right);
@@ -373,5 +385,14 @@ std::map<int, std::string, std::greater<int>>& AVLTree<T,K>::top50Common()
     getWordObject();
     return top50;
 }
+
+template <typename T,typename K>
+std::map<std::string, int>& AVLTree<T,K>::getTotalWordsEachCase()
+{
+    getWordObject();
+    return IDandTotalWords;
+}
+
+
 
 #endif

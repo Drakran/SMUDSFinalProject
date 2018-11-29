@@ -30,9 +30,9 @@ public:
      *The index is computed by getting the hash of a key(string).*/
     virtual T& find( K& k );
     virtual void printInOrder();
-    void makingTop50(); //equivalent to AVL getWordObject
-    std::map<int, std::string, std::greater<int>> top50;
+    void makingTop50andTotalWordEachCase(); //equivalent to AVL getWordObject
     virtual std::map<int, std::string, std::greater<int>>& top50Common();
+    virtual std::map<std::string, int>& getTotalWordsEachCase();
 
 private:
     /*This function will return an index of where to store a certain element
@@ -42,7 +42,8 @@ private:
     //private variables
     int elementsInTable;
     const int sizeOfTable = 100000;
-    //std::list<std::pair<K,T>> TableList[100000];
+    std::map<std::string, int> IDandTotalWords;
+    std::map<int, std::string, std::greater<int>> top50;
     std::list<std::pair<K,T>> *TableList;
 };
 //default constructor
@@ -217,9 +218,10 @@ unsigned int HashTable<T,K> ::  getHashKeyIndex( K& key)
 }
 
 template <typename T,typename K>
-void HashTable<T,K>::makingTop50()
+void HashTable<T,K>::makingTop50andTotalWordEachCase()
 {
     int count = 0;
+    int countforID = 0;
     //This first for loop is to acces each individual list in list array.
     for(int i = 0; i < sizeOfTable; ++i)
     {
@@ -227,9 +229,20 @@ void HashTable<T,K>::makingTop50()
         for(auto it = TableList[i].begin(); it != TableList[i].end(); ++it )
         {
             count = 0;
+            countforID = 0;
             //the key it.(first), it.second is the word object itself.
             for(auto inner : it->second.getFileAndCount())
+            {
                 count += inner.second;
+                auto itFind = IDandTotalWords.find(inner.first);
+                if(itFind == IDandTotalWords.end())
+                    IDandTotalWords.insert(make_pair(inner.first, 0));
+                else
+                {
+                    countforID += inner.second;
+                    itFind->second = countforID;
+                }
+            }
             top50.insert(make_pair(count, it->first));
         }
     }
@@ -238,9 +251,17 @@ void HashTable<T,K>::makingTop50()
 template <typename T,typename K>
 std::map<int, std::string, std::greater<int>>& HashTable<T,K> :: top50Common()
 {
-    makingTop50();
+    makingTop50andTotalWordEachCase();
     return top50;
 }
+
+template <typename T,typename K>
+std::map<std::string, int>& HashTable<T,K>::getTotalWordsEachCase()
+{
+    makingTop50andTotalWordEachCase();
+    return IDandTotalWords;
+}
+
 /*Citations:
  * The hash function was used from an example in StackOverflow:
 *https://stackoverflow.com/questions/33809770/hash-function-that-can-return-a-integer-range-based-on-string

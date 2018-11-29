@@ -18,7 +18,7 @@ public:
     virtual void printInOrder();
     virtual T& operator[](K& lookUpKey);
     virtual std::map<int, std::string, std::greater<int>>& top50Common() = 0;
-
+    virtual std::map<std::string, int>& getTotalWordsEachCase() = 0;
 private:
 
 };
@@ -33,4 +33,6 @@ template<typename T,typename K>
 inline T& IndexInterface<T,K> :: operator[](K& lookUpKey){}
 template<typename T,typename K>
 std::map<int, std::string, std::greater<int>>& top50Common(){}
+template<typename T,typename K>
+std::map<std::string, int>& getTotalWordsEachCase(){}
 #endif // INDEXINTERFACE_H

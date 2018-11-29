@@ -394,6 +394,7 @@ void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
         }
     }
     /*
+     * Skyler has fixed this!!! Ignore the rest of the comment.
     *SKYLER PLEASE CHECK THIS ITERATOR OUT!!!
     * this iterator will output only the files that appear in the first word and
     * not in the second one!!!
@@ -490,6 +491,13 @@ void Driver::stat(IndexInterface<Word, std::string>*& dataStructure)
     std::cout << "Total opinions indexed: " << filesToIndex << '\n';
     avgWord = dataStructure->getSize() / filesToIndex;
     std::cout << "Average words per opinion: " << avgWord << '\n';
+    std::cout << "Top 50 Common Words: \n";
+    /*
+     * These stats don't match
+     * AVL >><< HashTable
+     * NO GOOD!!
+     *
+     */
     for(auto it : dataStructure->top50Common())
     {
         counter++;
@@ -497,6 +505,12 @@ void Driver::stat(IndexInterface<Word, std::string>*& dataStructure)
             break;
         std::cout << it.second << " ";
         std::cout << it.first << '\n';
+    }
+    std::cout << "Total Words by case number: \n";
+    for(auto it : dataStructure->getTotalWordsEachCase())
+    {
+        std::cout << it.first << " ";
+        std::cout << it.second << '\n';
     }
 }
 
@@ -589,6 +603,9 @@ void Driver::userInterface()
             std::cout<<"Entering maintenance mode....\n";
             while(conditionMaintenance)
             {
+                std::cout<<"╔╦╗┌─┐┬┌┐┌┌┬┐┌─┐┌┐┌┌─┐┌┐┌┌─┐┌─┐\n";
+                std::cout<<"║║║├─┤││││ │ ├┤ │││├─┤││││  ├┤ \n";
+                std::cout<<"╩ ╩┴ ┴┴┘└┘ ┴ └─┘┘└┘┴ ┴┘└┘└─┘└─┘\n";
                 std::cout << "Choose an option: \n1. Add opinions \n2. Clear index\n0. Back\n";
                 std::cin >> choiceMaintenance;
                 std::string path;
@@ -623,10 +640,17 @@ void Driver::userInterface()
             bool conditionInteractive = true;
             while(conditionInteractive)
             {
+                std::cout<<"╦┌┐┌┌┬┐┌─┐┬─┐┌─┐┌─┐┌┬┐┬┬  ┬┌─┐\n";
+                std::cout<<"║│││ │ ├┤ ├┬┘├─┤│   │ │└┐┌┘├┤\n";
+                std::cout<<"╩┘└┘ ┴ └─┘┴└─┴ ┴└─┘ ┴ ┴ └┘ └─┘\n";
+
                 std::cout << "Choose an option: \n1. AVLTree \n2. HashTable\n3. Basic Statistics\n0. Back\n";
                 std::cin >> choiceMaintenance;
                 if(choiceMaintenance[0] == '1')
                 {
+                    std::cout<<" ╔═╗╦  ╦╦  \n";
+                    std::cout<<" ╠═╣╚╗╔╝║  \n";
+                    std::cout<<" ╩ ╩ ╚╝ ╩═╝\n";
                     if(counter_ == 0)
                     {
                         makingStorage(Tree);
@@ -636,6 +660,9 @@ void Driver::userInterface()
                 }
                 if(choiceMaintenance[0] == '2')
                 {
+                    std::cout<<"╦ ╦┌─┐┌─┐┬ ┬╔╦╗┌─┐┌┐ ┬  ┌─┐\n";
+                    std::cout<<"╠═╣├─┤└─┐├─┤ ║ ├─┤├┴┐│  ├┤ \n";
+                    std::cout<<"╩ ╩┴ ┴└─┘┴ ┴ ╩ ┴ ┴└─┘┴─┘└─┘\n";
                     if(counter_ == 0)
                     {
                         makingStorage(Table);
@@ -658,7 +685,12 @@ void Driver::userInterface()
         if(choice[0] == '3')
         {
             std::cout<<"Entering beast mode....\n";
-            std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::cout<<".----. .----.  .--.   .----..-----.    .-.  .-. .---. .----. .----. \n";
+            std::cout<<"| {_} }} |__} / {} \\ { {__-``-' '-'    }  \\/  {/ {-. \\} {-. \\} |__} \n";
+            std::cout<<"| {_} }} '__}/  /\\  \\.-._} }  } {      | {  } |\\ '-} /} '-} /} '__} \n";
+            std::cout<<"`----' `----'`-'  `-'`----'   `-'      `-'  `-' `---' `----' `----' \n";
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             std::cout<<"Oops.... Nothing to do, exiting...\n";
             std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         }
