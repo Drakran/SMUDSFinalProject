@@ -161,55 +161,57 @@ void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& 
     }
 }
 
-void Parser::parseOneFile(std::string filePath, std::string fileNum)
+void Parser::parseOneFile(std::vector<std::string> &tempfilePathVec, std::string fileNum)
 {
-    //This is the map of all the words and number of times it appear
-    filePath = filePath + "/" + fileNum;
-    std::ifstream firstFile( filePath);
-    if(!firstFile){
-        std::cerr << "File could not be read." << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    //Gets the Json file and Parses it
-    std::stringstream sstr;
-    sstr << firstFile.rdbuf();
-    std::string jstring = sstr.str();
-
-    firstFile.close();
-
-    //std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);//lowercase
-    const char* json = jstring.c_str(); //String to cstring
-    rapidjson::Document cases;
-    cases.Parse(json);
-
-    //Keep track of already stemmed words
-    //Can be substitute by using a 'dictionary' text file
-    //First if is testing html
-    if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
-    {
-
-        //Can Switch regex or not by commeting this line and remove comment on next
-        //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-        std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-        //std::istringstream ss{(cases["html"].GetString())};
-        int count = 0;
-        std::string temp;
-        while (count < 300 && !ss.eof()) {
-            ss >> temp;
-            std::cout << temp << " ";
-            ++count;
+    for(int a  = 0; a < tempfilePathVec.size(); ++a){
+        //This is the map of all the words and number of times it appear
+        std::string filePath = tempfilePathVec[a] + "/" + fileNum;
+        std::ifstream firstFile( filePath);
+        if(!firstFile){
+            std::cerr << "File could not be read." << std::endl;
+            exit(EXIT_FAILURE);
         }
-    }
-    //This else then checks plain text
-    else
-    {
-        std::istringstream ss{(cases["plain_text"].GetString())};
-        int count = 0;
-        std::string temp;
-        while (count < 300 && !ss.eof()) {
-            ss >> temp;
-            std::cout << temp << " ";
-            ++count;
+        //Gets the Json file and Parses it
+        std::stringstream sstr;
+        sstr << firstFile.rdbuf();
+        std::string jstring = sstr.str();
+
+        firstFile.close();
+
+        //std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);//lowercase
+        const char* json = jstring.c_str(); //String to cstring
+        rapidjson::Document cases;
+        cases.Parse(json);
+
+        //Keep track of already stemmed words
+        //Can be substitute by using a 'dictionary' text file
+        //First if is testing html
+        if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
+        {
+
+            //Can Switch regex or not by commeting this line and remove comment on next
+            //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+            std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+            //std::istringstream ss{(cases["html"].GetString())};
+            int count = 0;
+            std::string temp;
+            while (count < 300 && !ss.eof()) {
+                ss >> temp;
+                std::cout << temp << " ";
+                ++count;
+            }
+        }
+        //This else then checks plain text
+        else
+        {
+            std::istringstream ss{(cases["plain_text"].GetString())};
+            int count = 0;
+            std::string temp;
+            while (count < 300 && !ss.eof()) {
+                ss >> temp;
+                std::cout << temp << " ";
+                ++count;
+            }
         }
     }
 }

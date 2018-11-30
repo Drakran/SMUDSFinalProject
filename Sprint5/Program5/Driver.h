@@ -11,6 +11,8 @@
 #include <stdexcept>
 #include "hashtable.h"
 #include <porter2_stemmer.h>
+#include <vector>
+
 class Driver
 {
 public:
@@ -33,6 +35,7 @@ private:
     unsigned long totalWords;
     IndexInterface<Word, std::string>* Tree = new AVLTree<Word, std::string>();
     IndexInterface<Word, std::string>* Table = new HashTable<Word, std::string>();
+    std:: vector<std::string> filePathsVec;
 };
 
 #endif // DRIVER_H

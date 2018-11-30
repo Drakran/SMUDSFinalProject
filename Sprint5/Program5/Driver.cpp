@@ -9,14 +9,8 @@
 #include <exception>
 #include <porter2_stemmer.h>
 #include <set>
-#include<functional>
-
-
-//1) Number of Words Parsed.                        (  counter of each instance of an object )
-//2) Number of Unique words (Tree Nodes).           ( Tree->getSize() )
-//3) Number of documents parsed.                    ( counter of documents parsed.)
-//4) Number of unique documents with adjudication.  ( map.size() )
-
+#include <functional>
+#include <stdio.h>
 
 //to check time:
 //cd Desktop/CSE....../Sprint5/build...../
@@ -32,6 +26,7 @@ Driver::Driver(std::string fileName)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
+    filePathsVec.push_back(fileName);
     //number of files to index
     filesToIndex = 20;
     totalWords = 0;
@@ -50,42 +45,46 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
     std::string delimiter = "/";
     std::string filePath;
 
-    std::vector<std::string> files = parser.getFiles(file, extention);    //this will output all of files in format of: numberOfFile.json
-    //3) the vector named files has all of files in the folder.
-    //std::cerr << "Total number of files in folder: " << files.size() << std::endl;
-    filesToIndex = 20;
-    //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
-    for(unsigned i = 0; i < filesToIndex; ++i)
-    {
-        //filepath contains the name of each file (77000 files).
-        filePath = file + delimiter + files[i];
-        if(filesToIndex <= 100)
+    //This for loop opens all file paths for the data structure
+    //FilePaths[0] is the /home/student/Desktop/scotus
+    //the next subscripts should be the ones the user enters in maintence mode
+    for(int pengIndex = 0; pengIndex < filePathsVec.size(); ++pengIndex){
+        std::vector<std::string> files = parser.getFiles(filePathsVec[pengIndex], extention);    //this will output all of files in format of: numberOfFile.json
+        //3) the vector named files has all of files in the folder.
+        filesToIndex = files.size();//The number of files inside A filepathVec[index]
+        //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
+        for(unsigned i = 0; i < filesToIndex; ++i)
         {
-            if(i % 51 == 0)
-                std::cout << "Be patient please...\n";
+            //filepath contains the name of each file (77000 files).
+            filePath = file + delimiter + files[i];
+            if(filesToIndex <= 100)
+            {
+                if(i % 51 == 0)
+                    std::cout << "Be patient please...\n";
+            }
+            else if(filesToIndex <= 1001 && filesToIndex > 101)
+            {
+                if(i % 450 == 0)
+                    std::cout << "Be patient please...\n";
+            }
+            else if(filesToIndex <= 10001 && filesToIndex > 1001)
+            {
+                if(i % 1001 == 0)
+                    std::cout << "Be patient please...\n";
+            }
+            else if(filesToIndex <= 40001 && filesToIndex > 10001)
+            {
+                if(i % 10001 == 0)
+                    std::cout << "Be patient please...\n";
+            }
+            else if(filesToIndex <= files.size() && filesToIndex > 40001)
+            {
+                if(i % 15001 == 0)
+                    std::cout << "Be patient please...\n";
+            }
+            parser.parse(filePath,files[i], *dataStructure);
+            totalWords += parser.getOverallWordTotal();
         }
-        else if(filesToIndex <= 1001 && filesToIndex > 101)
-        {
-            if(i % 450 == 0)
-                std::cout << "Be patient please...\n";
-        }
-        else if(filesToIndex <= 10001 && filesToIndex > 1001)
-        {
-            if(i % 1001 == 0)
-                std::cout << "Be patient please...\n";
-        }
-        else if(filesToIndex <= 40001 && filesToIndex > 10001)
-        {
-            if(i % 10001 == 0)
-                std::cout << "Be patient please...\n";
-        }
-        else if(filesToIndex <= files.size() && filesToIndex > 40001)
-        {
-            if(i % 15001 == 0)
-                std::cout << "Be patient please...\n";
-        }
-        parser.parse(filePath,files[i], *dataStructure);
-        totalWords += parser.getOverallWordTotal();
     }
 }
 
@@ -213,7 +212,7 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
             if(LookUpIt != andDocumentFinal.end()){
                 //temp file path to get the 300 words from file
                 Parser penguinTerry;
-                penguinTerry.parseOneFile(file, *LookUpIt);
+                penguinTerry.parseOneFile(filePathsVec, *LookUpIt);
             }
             //it will keep on asking the user to enter the correct file if it did not find word
         }
@@ -278,6 +277,9 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
             orDocumentFinal.push_back(it.first);
         }
     }
+
+
+
     //we will output the next menu ONLY if there is something in the menu
     if( orDocumentFinal.size() > 0){
         //counter to keep track the number of outputs
@@ -334,7 +336,7 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
             if(LookUpIt != orDocumentFinal.end()){
                 //temp file path to get the 300 words from file
                 Parser penguinTerry;
-                penguinTerry.parseOneFile(file, *LookUpIt);
+                penguinTerry.parseOneFile(filePathsVec, *LookUpIt);
             }
             //it will keep on asking the user to enter the correct file if it did not find word
         }
@@ -474,7 +476,7 @@ void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
             if( LookUpIt != notDocumentFinal.end() ){
                 //temp file path to get the 300 words from file
                 Parser penguinTerry;
-                penguinTerry.parseOneFile(file, *LookUpIt);
+                penguinTerry.parseOneFile(filePathsVec, *LookUpIt);
             }
             //if the word cannot be found it will keep on asking the user to input the right choice.
         }
@@ -626,14 +628,15 @@ void Driver::userInterface()
                     std::cin>>path;
                     //Update index from new opinions goes here
 
-
-
+                    //the user has to enter a correct
 
                 }
                 if(choiceMaintenance[0] == '2')
                 {
                     //Clear index goes here
                     //Delete .txt file
+                    remove("test.txt");
+
                 }
                 if(choiceMaintenance[0] == '0')
                 {
