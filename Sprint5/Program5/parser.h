@@ -26,6 +26,7 @@
 #include "Word.h"
 #include "dirent.h"
 #include "IndexInterface.h"
+#include <vector>
 
 class Parser
 {
@@ -36,7 +37,7 @@ public:
     bool isStopWord(std::string); //check if a word is a stop word, return true if it is
     void incrementOverallWordTotal(int &wordsInThisFile);
     unsigned long getOverallWordTotal();
-    void parseOneFile(std::string, std::string);
+    void parseOneFile(std::vector<std::string>&, std::string);
     void parseIndex(std::string, IndexInterface<Word,std::string>&);
 private:
     std::set<std::string> stopWords;
