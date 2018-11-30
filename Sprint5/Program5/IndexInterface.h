@@ -16,6 +16,7 @@ public:
     virtual T& find( K& data ) = 0;
     //virtual functions, CAN BE OVERWRITEN BUT DO NOT HAVE TO.
     virtual void printInOrder();
+    virtual void printIndex();
     virtual T& operator[](K& lookUpKey);
     virtual std::map<int, std::string, std::greater<int>>& top50Common() = 0;
     virtual std::map<std::string, int>& getTotalWordsEachCase() = 0;
@@ -29,6 +30,8 @@ inline IndexInterface<T,K>::~IndexInterface(){}
 template<typename T,typename K>
 //virtual functions
 inline void IndexInterface<T,K> :: printInOrder(){}
+template<typename T, typename K>
+inline void IndexInterface<T,K> :: printIndex(){}
 template<typename T,typename K>
 inline T& IndexInterface<T,K> :: operator[](K& lookUpKey){}
 template<typename T,typename K>

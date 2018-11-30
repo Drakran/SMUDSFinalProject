@@ -676,6 +676,8 @@ void Driver::userInterface()
                 }
                 if(choiceMaintenance[0] == '0')
                 {
+                    if(Tree->getSize() > 1){Tree->printIndex();}
+                    if(Table->getSize() > 1){Table->printIndex();}
                     std::cout<<"Exiting interactive mode...\n";
                     conditionInteractive = false;
                     std::this_thread::sleep_for(std::chrono::milliseconds(500));

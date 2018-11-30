@@ -6,6 +6,7 @@
 #include <iomanip>
 #include "IndexInterface.h"
 #include "list"
+#include <fstream>
 
 template <typename T,typename K> class HashTable;
 /*
@@ -30,6 +31,7 @@ public:
      *The index is computed by getting the hash of a key(string).*/
     virtual T& find( K& k );
     virtual void printInOrder();
+    virtual void printIndex();
     void makingTop50andTotalWordEachCase(); //equivalent to AVL getWordObject
     virtual std::map<int, std::string, std::greater<int>>& top50Common();
     virtual std::map<std::string, int>& getTotalWordsEachCase();
@@ -199,6 +201,25 @@ void  HashTable<T,K> :: printInOrder()
             std::cout<<it->first << ' ';
         }
     }
+}
+
+template<typename T, typename K>
+void HashTable<T,K> :: printIndex()
+{
+    std::ofstream output;
+    output.open("outputhash.txt");
+    //This first for loop is to acces each individual list in list array.
+    for(int i = 0; i < sizeOfTable; ++i){
+        //SKYLER SEE THIS PLEASE!!! UNCOMMENT THE NEXT LINE,YOU CAN SEE ITS AN ARRAY OF LISTS
+        //std::cout<< "Size of index "<< i << " is: " << TableList->size() <<"\n";
+        //this second for loop is to iterate through each list that contains a pair
+        for(auto it = TableList[i].begin(); it != TableList[i].end(); ++it ){
+            //we only output the key (first), second is the word object itself.
+            //std::cout<<it->first << ' ';
+            output << it->second << '\n';
+        }
+    }
+    output.close();
 }
 
 template <typename T,typename K>
