@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <iomanip>
+#include <fstream>
 #include "IndexInterface.h"
 
 template <typename T,typename K> class Node;
@@ -54,6 +55,7 @@ public:
      because we will modify update existing info inside of the node.*/
     virtual T& find( K& k );
     virtual void printInOrder();
+    virtual void printIndex();
     virtual std::map<int, std::string, std::greater<int>>& top50Common();
     void getWordObject();
     void getWordObject(Node<T,K>* ptrAtThisNode);
@@ -68,6 +70,7 @@ private:
     void clear(Node<T,K>* &rootPtr);//used for destructor
     void insert( T &d, K &k, Node<T,K>* &r);//passing root by reference
     void printInOrder(Node<T,K>* r);
+    void printIndex(Node<T,K>* r, std::ofstream &output);
     int getHeight(Node<T,K>* n);
     int max(int l, int r);
     void rotateWithLeftChild(Node<T,K>* &r);//passing root by reference
@@ -236,6 +239,43 @@ void AVLTree<T,K> :: printInOrder(Node<T,K>* ptrAtThisNode)
         std::cout << ptrAtThisNode->data << std::endl;
         //3rd. Getting evertyhing to the right.
         printInOrder(ptrAtThisNode->right);
+    }
+}
+
+template <typename T,typename K>
+void AVLTree<T,K> :: printIndex()
+{
+    std::ofstream output;
+    output.open("output.txt");
+    //checking if tree is empty
+    if(root == nullptr)
+        throw std::out_of_range("Error trying to print empty AVL tree. Inside printInOrder.");
+    //calling private printInOrder method
+    printIndex(root,output);
+    output.close();
+}
+
+
+
+/**PrintIndex prints the contents of the data structure
+ * into an output file
+ * @param
+ */
+//Prints to file inside the tree
+template <typename T,typename K>
+void AVLTree<T,K> :: printIndex(Node<T,K>* ptrAtThisNode, std::ofstream &output)
+{
+
+    //recursive call until null
+    if(ptrAtThisNode != nullptr)
+    {
+        //1st. Getting everything to left
+        printIndex(ptrAtThisNode->left, output);
+        //2nd. Outputting values. //setw(ptrAtThisNode->height *4) to print in tree format
+        //std::cout << ptrAtThisNode->data;
+        output << ptrAtThisNode->data << '\n';
+        //3rd. Getting evertyhing to the right.
+        printIndex(ptrAtThisNode->right, output);
     }
 }
 
