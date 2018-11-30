@@ -207,7 +207,7 @@ template<typename T, typename K>
 void HashTable<T,K> :: printIndex()
 {
     std::ofstream output;
-    output.open("outputhash.txt");
+    output.open("output.txt");
     //This first for loop is to acces each individual list in list array.
     for(int i = 0; i < sizeOfTable; ++i){
         //SKYLER SEE THIS PLEASE!!! UNCOMMENT THE NEXT LINE,YOU CAN SEE ITS AN ARRAY OF LISTS

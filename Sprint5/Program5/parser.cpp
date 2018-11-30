@@ -124,7 +124,7 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
     }
 }
 
-int Parser :: getOverallWordTotal()
+unsigned long Parser :: getOverallWordTotal()
 {
     return OverallWordTotal;
 }
@@ -209,8 +209,48 @@ void Parser::parseOneFile(std::string filePath, std::string fileNum)
             std::cout << temp << " ";
             ++count;
         }
-
     }
 }
+
+/**ParseIndex will convert the index file into a
+ * readable file.
+ * @param
+ * @param the data structure
+ */
+void Parser::parseIndex(std::string filePath, IndexInterface<Word,std::string>& index)
+{
+    std::map<std::string,int> wordCase;
+    std::ifstream firstFile(filePath);
+    if(!firstFile){
+        std::cerr << "File could not be read." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    std::string tempText;
+    std::string word;
+    std::string fileName; //Name of the case
+    int num; //How many times that case appears for a word
+    //std::stringstream str;
+
+    while(std::getline(firstFile, tempText))
+    {
+        Word wordNode;
+        std::stringstream str(tempText);
+        //++wordCase[]
+        str >> word;
+        wordNode.setWord(word); //Sets the word into wordNode
+        while(str >> fileName >> num )
+        {
+            OverallWordTotal+= num;
+            //Updates the map of the wor
+            wordNode.upDateFileAndCount(fileName, num);
+        }
+        //Puts the final word into the map
+        index.insert(wordNode, wordNode.getWord());
+    }
+    firstFile.close();
+}
+
+
 
 
