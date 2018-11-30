@@ -112,8 +112,6 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
         Word caseWord;
         caseWord.setWord(iter.first);
         caseWord.upDateFileAndCount(fileNum, iter.second);
-        //counting every single word parsed including repeated words.
-        ++OverallWordTotal;
 
         try{
             //check if object exists and update that word object
@@ -147,13 +145,17 @@ void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& 
         else
         {
             if(keepTrack.find(temp) != keepTrack.end())
+            {
                 ++wordCase[keepTrack.find(temp)->second];
+                OverallWordTotal++;//counting every single word parsed excluding stop words.
+            }
             else
             {
                 std::string temp2 = temp;
                 Porter2Stemmer::stem(temp);
                 keepTrack.insert(std::pair<std::string, std::string>(temp2, temp));
                 ++wordCase[temp];
+                OverallWordTotal++;         //counting every single word parsed excluding stop words.
             }
         }
     }
@@ -241,7 +243,7 @@ void Parser::parseIndex(std::string filePath, IndexInterface<Word,std::string>& 
         wordNode.setWord(word); //Sets the word into wordNode
         while(str >> fileName >> num )
         {
-            OverallWordTotal+= num;
+            OverallWordTotal += num;
             //Updates the map of the wor
             wordNode.upDateFileAndCount(fileName, num);
         }

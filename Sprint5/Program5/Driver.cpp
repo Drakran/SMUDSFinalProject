@@ -85,8 +85,8 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
                 std::cout << "Be patient please...\n";
         }
         parser.parse(filePath,files[i], *dataStructure);
+        totalWords += parser.getOverallWordTotal();
     }
-    totalWords = parser.getOverallWordTotal();
 }
 
 void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
