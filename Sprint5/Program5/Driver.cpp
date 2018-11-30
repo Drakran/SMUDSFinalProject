@@ -21,12 +21,20 @@
 //to check time:
 //cd Desktop/CSE....../Sprint5/build...../
 // time ./Program5 /home/student/Desktop/scotus <wordToFind>
+
+bool is_file_exist(const char *fileName)
+{
+    std::ifstream infile(fileName);
+    return infile.good();
+}
+
 Driver::Driver(std::string fileName)
 {
     //this is the name of the directory where all of the files are found.
     file = fileName;
     //number of files to index
     filesToIndex = 20;
+    totalWords = 0;
 }
 
 Driver::~Driver()
@@ -45,7 +53,7 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
     std::vector<std::string> files = parser.getFiles(file, extention);    //this will output all of files in format of: numberOfFile.json
     //3) the vector named files has all of files in the folder.
     //std::cerr << "Total number of files in folder: " << files.size() << std::endl;
-
+    filesToIndex = 20;
     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
     for(unsigned i = 0; i < filesToIndex; ++i)
     {
@@ -78,6 +86,7 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
         }
         parser.parse(filePath,files[i], *dataStructure);
     }
+    totalWords = parser.getOverallWordTotal();
 }
 
 void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
@@ -489,7 +498,7 @@ void Driver::stat(IndexInterface<Word, std::string>*& dataStructure)
     double avgWord;
     int counter = 0;
     std::cout << "Total opinions indexed: " << filesToIndex << '\n';
-    avgWord = dataStructure->getSize() / filesToIndex;
+    avgWord = totalWords / filesToIndex;
     std::cout << "Average words per opinion: " << avgWord << '\n';
     std::cout << "Top 50 Common Words: \n";
     /*
@@ -591,7 +600,8 @@ void Driver::userInterface()
 {
     bool condition = true;
     char choice[20];
-    int counter_ = 0;
+    int counter_Tree = 0;
+    int counter_Hash = 0;
     while(condition)
     {
         std::cout << "Choose an option: \n1. Maintenance mode\n2. Interactive mode\n3. Beast mode\n0. Quit\n";
@@ -651,10 +661,18 @@ void Driver::userInterface()
                     std::cout<<" ╔═╗╦  ╦╦  \n";
                     std::cout<<" ╠═╣╚╗╔╝║  \n";
                     std::cout<<" ╩ ╩ ╚╝ ╩═╝\n";
-                    if(counter_ == 0)
+                    if(counter_Tree == 0)
                     {
+                        if(is_file_exist("output.txt"))
+                        {
+                            std::cout << "Building Tree from Index" << '\n';
+                            Parser parse;
+                            parse.parseIndex("output.txt", *Tree);
+                            totalWords = parse.getOverallWordTotal();
+                        }
+                        else
                         makingStorage(Tree);
-                        counter_++;
+                        counter_Tree++;
                     }
                     TestingWithAVLTree();
                 }
@@ -663,10 +681,18 @@ void Driver::userInterface()
                     std::cout<<"╦ ╦┌─┐┌─┐┬ ┬╔╦╗┌─┐┌┐ ┬  ┌─┐\n";
                     std::cout<<"╠═╣├─┤└─┐├─┤ ║ ├─┤├┴┐│  ├┤ \n";
                     std::cout<<"╩ ╩┴ ┴└─┘┴ ┴ ╩ ┴ ┴└─┘┴─┘└─┘\n";
-                    if(counter_ == 0)
+                    if(counter_Hash == 0)
                     {
-                        makingStorage(Table);
-                        counter_++;
+                        if(is_file_exist("outputhash.txt"))
+                        {
+                            std::cout << "Building Hash Table from Index" << '\n';
+                            Parser parse;
+                            parse.parseIndex("outputhash.txt", *Table);
+                            totalWords = parse.getOverallWordTotal();
+                        }
+                        else
+                            makingStorage(Table);
+                        counter_Hash++;
                     }
                     TestingWithHashTable();
                 }
@@ -676,8 +702,6 @@ void Driver::userInterface()
                 }
                 if(choiceMaintenance[0] == '0')
                 {
-                    if(Tree->getSize() > 1){Tree->printIndex();}
-                    if(Table->getSize() > 1){Table->printIndex();}
                     std::cout<<"Exiting interactive mode...\n";
                     conditionInteractive = false;
                     std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -698,9 +722,13 @@ void Driver::userInterface()
         }
         if(choice[0] == '0')
         {
+            std::cout << "Saving your Data Structures to Index" << '\n';
+            if(Tree->getSize() > 1){Tree->printIndex();}
+            if(Table->getSize() > 1){Table->printIndex();}
             condition = false;
             std::cout << "Stopping program.....\n";
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
     }
 }
+

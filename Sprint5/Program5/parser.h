@@ -35,12 +35,13 @@ public:
     void parse(std::string, std::string,  IndexInterface<Word,std::string>&);
     bool isStopWord(std::string); //check if a word is a stop word, return true if it is
     void incrementOverallWordTotal(int &wordsInThisFile);
-    int getOverallWordTotal();
+    unsigned long getOverallWordTotal();
     void parseOneFile(std::string, std::string);
+    void parseIndex(std::string, IndexInterface<Word,std::string>&);
 private:
     std::set<std::string> stopWords;
     std::vector<std::string> fileNames;
-    int OverallWordTotal;
+    unsigned long OverallWordTotal;
     std::map<std::string, std::string> keepTrack;
     void parseCase(std::map<std::string,int>&, std::istringstream&);
     std::regex reg;
