@@ -56,7 +56,7 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
         for(unsigned i = 0; i < filesToIndex; ++i)
         {
             //filepath contains the name of each file (77000 files).
-            filePath = file + delimiter + files[i];
+            filePath = filePathsVec[pengIndex] + delimiter + files[i];
             if(filesToIndex <= 100)
             {
                 if(i % 51 == 0)
@@ -499,6 +499,7 @@ void Driver::stat(IndexInterface<Word, std::string>*& dataStructure)
 {
     double avgWord;
     int counter = 0;
+    //WArnING FOr SKyler, filestoindex only changes if load in from new tree, DOES not change for loading from index
     std::cout << "Total opinions indexed: " << filesToIndex << '\n';
     avgWord = totalWords / filesToIndex;
     std::cout << "Average words per opinion: " << avgWord << '\n';
@@ -626,9 +627,46 @@ void Driver::userInterface()
                     std::cin.ignore(); //path currently = /home/student/Desktop/scotus
                     std::cout<<"Enter path: " ;
                     std::cin>>path;
-                    //Update index from new opinions goes here
+                    std::ifstream enteredPath(path); //Puts the file path into a ifstream
+                    //Should not proceed if filepath is invalid
+                    while(!enteredPath)
+                    {
+                        std::cout << "Your file path is wrong" << '\n'
+                                  << "Try Again: ";
+                        std::cin >> path;
+                        enteredPath.close();
+                        enteredPath.open(path);
+                    }
+                    filePathsVec.push_back(path);
+                    std::cout << "Creating your new Index" << '\n';
+                    //Put orginal index into tree
+                    //Chose tree because it faster somehow
+                    Parser parse;
+                    parse.parseIndex("output.txt", *Tree);
+                    //Add new opinons to index
+                    //wanted to use makingSotrage but too hard
+                    //This is all just the first part of makingstorage
+                    std::string extention = ".json";
+                    Parser parser = Parser();
+                    std::string delimiter = "/";
+                    std::string filePath;
+                    //This vector only contains the new files
+                    std::vector<std::string> files = parser.getFiles(path, extention);    //this will output all of files in format of: numberOfFile.json
+                    //3) the vector named files has all of files in the folder.
+                    int fileSize = files.size();//The number of files inside A filepathVec[index]
+                    //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
 
-                    //the user has to enter a correct
+                    //this adds the new files to the tree
+                    for(unsigned i = 0; i < fileSize; ++i)
+                    {
+                        filePath = path + delimiter + files[i];
+                        parser.parse(filePath,files[i], *Tree);
+                    }
+
+                    /*Now that tree has both old and new files
+                    * Print the entire thing into index
+                    */
+                    if(Tree->getSize() > 1){Tree->printIndex();}
 
                 }
                 if(choiceMaintenance[0] == '2')
