@@ -100,17 +100,19 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
     {
         if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
         {
-            ss >> wordToFind;
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            try {
-                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
-                {
-                    //std::cout << it.first << '\n'; //-- QA purpose
-                   andDocument.find(it.first)->second = flag;
+            while(ss >> wordToFind)
+            {
+                std::cout << "Word is " << wordToFind << '\n';
+                Porter2Stemmer::stem(wordToFind); //stem query
+                try {
+                    for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                    {
+                        //std::cout << it.first << '\n'; //-- QA purpose
+                        andDocument.find(it.first)->second = flag;
+                    }
+                } catch (std::exception &e ) {
+                   std::cerr << "The word does not exist in any of the current files." << "\n";
                 }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
             }
         }
         else
@@ -229,17 +231,19 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
     {
         if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
         {
-            ss >> wordToFind;
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            try {
-                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
-                {
-                    //std::cout << it.first << '\n'; //-- QA purpose
-                    orDocument.find(it.first)->second = flag;
+            while(ss >> wordToFind)
+            {
+                std::cout << "Word is " << wordToFind << '\n';
+                Porter2Stemmer::stem(wordToFind); //stem query
+                try {
+                    for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                    {
+                        //std::cout << it.first << '\n'; //-- QA purpose
+                        orDocument.find(it.first)->second = flag;
+                    }
+                } catch (std::exception &e ) {
+                   std::cerr << "The word does not exist in any of the current files." << "\n";
                 }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
             }
         }
         else
@@ -389,17 +393,19 @@ void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
         {
             if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
             {
-                ss >> wordToFind;
-                std::cout << "Word is " << wordToFind << '\n';
-                Porter2Stemmer::stem(wordToFind); //stem query
-                try {
-                    for( auto it : dataStructure->find(wordToFind).getFileAndCount() ){
-                        //std::cout << it.first << '\n'; //-- QA purpose
-                        //if(document.find(it.first) == document.end()){}
-                        document.find(it.first)->second = flag;
+                while(ss >> wordToFind)
+                {
+                    std::cout << "Word is " << wordToFind << '\n';
+                    Porter2Stemmer::stem(wordToFind); //stem query
+                    try {
+                        for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                        {
+                            //std::cout << it.first << '\n'; //-- QA purpose
+                            document.find(it.first)->second = flag;
+                        }
+                    } catch (std::exception &e ) {
+                       std::cerr << "The word does not exist in any of the current files." << "\n";
                     }
-                } catch (std::exception &e ) {
-                   std::cerr << "The word does not exist in any of the current files." << "\n";
                 }
             }
         }
@@ -500,6 +506,7 @@ void Driver::stat(IndexInterface<Word, std::string>*& dataStructure)
     double avgWord;
     int counter = 0;
     //WArnING FOr SKyler, filestoindex only changes if load in from new tree, DOES not change for loading from index
+    //Skyler has fixed stat :D
     std::cout << "Total opinions indexed: " << filesToIndex << '\n';
     avgWord = totalWords / filesToIndex;
     std::cout << "Average words per opinion: " << avgWord << '\n';
@@ -544,47 +551,6 @@ void Driver :: TestingWithAVLTree()
 
 void Driver :: TestingWithHashTable()
 {
-//        //display the size of the data structure
-//        std::cout<< "Size of hashtable: "<<Table->getSize() << '\n';
-
-//        //display all elements in data structure, use it for 400 files or less
-//        //Table->printInOrder();
-
-//        /*
-//        This is to test the find function in the hashtable
-//        */
-//        int counter = 0;
-//        int counter2 = 0;
-//        std::string testAdj = "adjudication";
-//        std::string testSkyler = "Skyler Tran";
-
-//        //this word exists on the hashtable
-//        std::cout << "Number of unique documents with " << testAdj << ": ";
-//        Porter2Stemmer::stem(testAdj);
-//        try {
-//            //this iterator is to traverse the map in inside the word object,
-//            //and keep count of each file inside of map
-//            for( auto it : Table->find(testAdj).getFileAndCount() ){
-//                ++counter;
-//            }
-//        } catch (std::exception &e ) {
-//            //if this outputs the word is not in the hashtable
-//           std::cerr << "\nThe word does not exist in any of the current files." << "\n";
-//        }
-//        std::cout << counter << '\n';
-
-//    //this word does not exists on table
-//        std::cout << "Number of unique documents with " << testSkyler << ": ";
-//        try {
-//            //this iterator is to traverse the map in inside the word object,
-//            //and keep count of each file inside of map
-//            for( auto it : Table->find(testSkyler).getFileAndCount() ){
-//                ++counter2;
-//            }
-//        } catch (std::exception &e ) {
-//            //if this outputs the word is not in the hashtable
-//           std::cerr << "\nThe word does not exist in any of the current files." << "\n";
-//        }
         std::string query;
         std::cin.ignore();
         std::cout << "Enter your query: ";
@@ -653,11 +619,12 @@ void Driver::userInterface()
                     //This vector only contains the new files
                     std::vector<std::string> files = parser.getFiles(path, extention);    //this will output all of files in format of: numberOfFile.json
                     //3) the vector named files has all of files in the folder.
-                    int fileSize = files.size();//The number of files inside A filepathVec[index]
+                    int filesToIndexLocal = files.size();//The number of files inside A filepathVec[index]
+                    filesToIndex += filesToIndexLocal;
                     //start at 0 to filesToTest = (custom # of files) or filesToTest = files.size() all files in folder.
 
                     //this adds the new files to the tree
-                    for(unsigned i = 0; i < fileSize; ++i)
+                    for(unsigned i = 0; i < filesToIndexLocal; ++i)
                     {
                         filePath = path + delimiter + files[i];
                         parser.parse(filePath,files[i], *Tree);
@@ -667,7 +634,6 @@ void Driver::userInterface()
                     * Print the entire thing into index
                     */
                     if(Tree->getSize() > 1){Tree->printIndex();}
-
                 }
                 if(choiceMaintenance[0] == '2')
                 {
@@ -712,7 +678,7 @@ void Driver::userInterface()
                             totalWords = parse.getOverallWordTotal();
                         }
                         else
-                        makingStorage(Tree);
+                            makingStorage(Tree);
                         counter_Tree++;
                     }
                     TestingWithAVLTree();
