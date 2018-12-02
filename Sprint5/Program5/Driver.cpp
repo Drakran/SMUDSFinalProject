@@ -101,26 +101,46 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
     char c;
     std::vector<std::string> twoWordParsing;
     std::string tempString = "";
+    std::string tempString_2 = "";//temp string for the rest of query except for bracket
+    localString = tempString;
+
+    while(ss_.get(c))
+    {//find string inside square bracket
+          if(c == '[')
+          {
+              localString += c;
+              while(ss_.get(c))
+              {
+                  if(c == ']')
+                  {
+                      ss_.get(c);
+                      twoWordParsing.push_back(tempString);
+                      tempString = "";
+                      while(ss_.get(c))
+                      {
+                            tempString_2+=c;
+                      }
+                      break;
+                  }
+                  else if(c == ' ')
+                  {
+                      twoWordParsing.push_back(tempString);
+                      tempString = "";
+                      localString += c;
+                  }
+
+                  else
+                  {
+                    localString += c;
+                    tempString += c;
+                  }
+              }
+          }
+    }
+
+    std::stringstream ss__(tempString_2);
     if(localString[0] == '[')
     {//Find a pair for team of 3
-        while(ss_.get(c))
-        {//find string inside square bracket
-              if(c == '[')
-              {}
-              else if(c == ']')
-              {
-                  twoWordParsing.push_back(tempString);
-                  tempString = "";
-                  break;
-              }
-              else if(c == ' ')
-              {
-                  twoWordParsing.push_back(tempString);
-                  tempString = "";
-              }
-              else
-                  tempString += c;
-        }
 
         //Find document with first word and second word in twoWordsToFind in query
         std::string twoWordsToFind = twoWordParsing[0] + " " + twoWordParsing[1];//string inside square bracket
@@ -144,12 +164,11 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
         }
         std::cout << '\n';
 
-        while(ss_ >> wordToFind)
+        while(ss__ >> wordToFind)
         {
-
             if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
             {
-                while(ss >> wordToFind)
+                while(ss__ >> wordToFind)
                 {
                     std::cout << "Word is " << wordToFind << '\n';
                     Porter2Stemmer::stem(wordToFind); //stem query
@@ -225,8 +244,6 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
             }
         }
     }
-    //better ui
-    std::cout<<'\n';
 
     for(auto it : andDocument)
     {
@@ -247,6 +264,7 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
      *
      *
     */
+
     int TF_IDF = 0;//variable for revelancy ranking
     std::map<int, std::string, std::greater<int>> andDocumentNextToFinal_2;
     for(auto it : andDocumentNextToFinal)
@@ -276,7 +294,6 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
 
 
         while(itForDocuFinal != andDocumentFinal.end() && fifteenBegin < fifteenEnd ){
-
             std::cout << "Document satisfying condition is " << *itForDocuFinal << '\n';
             //move to next element in vector
             ++itForDocuFinal;
@@ -330,63 +347,188 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
 
 void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
 {
-    std::map<std::string, int> orDocument;
-    int flag = 100;
-    while(ss >> wordToFind)
-    {
-        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+    //counter for the number of times this words appears.
+    int countWord = 0;
+    std::string strWithoutbracket = "";
+    int flag = 100; //use for "NOT"
+    std::map<std::string, int> orDocument;    //making a map containing the caseID and number to keep track of query
+    std::map<std::string, int> orDocumentNextToFinal;
+    std::string localString = ss.str();//query without the first boolean word
+    std::stringstream ss_(localString);
+    char c;
+    std::vector<std::string> twoWordParsing;
+    std::string tempString = "";
+    std::string tempString_2 = "";//temp string for the rest of query except for bracket
+    localString = tempString;
+
+    while(ss_.get(c))
+    {//find string inside square bracket
+          if(c == '[')
+          {
+              localString += c;
+              while(ss_.get(c))
+              {
+                  if(c == ']')
+                  {
+                      ss_.get(c);
+                      twoWordParsing.push_back(tempString);
+                      tempString = "";
+                      while(ss_.get(c))
+                      {
+                            tempString_2+=c;
+                      }
+                      break;
+                  }
+                  else if(c == ' ')
+                  {
+                      twoWordParsing.push_back(tempString);
+                      tempString = "";
+                      localString += c;
+                  }
+
+                  else
+                  {
+                    localString += c;
+                    tempString += c;
+                  }
+              }
+          }
+    }
+
+    std::stringstream ss__(tempString_2);
+    if(localString[0] == '[')
+    {//Find a pair for team of 3
+
+        //Find document with first word and second word in twoWordsToFind in query
+        std::string twoWordsToFind = twoWordParsing[0] + " " + twoWordParsing[1];//string inside square bracket
+        for(int i = 0; i < twoWordParsing.size(); i++)
         {
-            while(ss >> wordToFind)
+            countWord++;
+            wordToFind = twoWordParsing[i];
+            std::cout << "Word is " << wordToFind << '\n';
+            Porter2Stemmer::stem(wordToFind); //stem query
+            std::map<int, std::string, std::greater<int>> rranking;
+            try {
+                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                {
+                    //std::cout << it.first << '\n'; -- QA purpose
+                    ++orDocument[it.first];
+                }
+            } catch (std::exception &e ) {
+               countWord--;
+               std::cerr << "The word does not exist in any of the current files." << "\n";
+            }
+        }
+        std::cout << '\n';
+
+        while(ss__ >> wordToFind)
+        {
+            if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
             {
+                while(ss__ >> wordToFind)
+                {
+                    std::cout << "Word is " << wordToFind << '\n';
+                    Porter2Stemmer::stem(wordToFind); //stem query
+                    try {
+                        for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                        {
+                            //std::cout << it.first << '\n'; //-- QA purpose
+                            orDocument.find(it.first)->second = flag;
+                        }
+                    } catch (std::exception &e ) {
+                       std::cerr << "The word does not exist in any of the current files." << "\n";
+                    }
+                }
+            }
+            else if(wordToFind != " ")
+            {
+                countWord++;
+                std::cout << "Word is " << wordToFind << '\n';
+                Porter2Stemmer::stem(wordToFind); //stem query
+                std::map<int, std::string, std::greater<int>> rranking;
+                try {
+                    for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                    {
+                        //std::cout << it.first << '\n'; -- QA purpose
+                        ++orDocument[it.first];
+                    }
+                } catch (std::exception &e ) {
+                   countWord--;
+                   std::cerr << "The word does not exist in any of the current files." << "\n";
+                }
+            }
+        }
+    }
+
+    else
+    {//If not ask for a pair
+        while(ss >> wordToFind)
+        {
+            if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+            {
+                while(ss >> wordToFind)
+                {
+                    std::cout << "Word is " << wordToFind << '\n';
+                    Porter2Stemmer::stem(wordToFind); //stem query
+                    try {
+                        for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                        {
+                            //std::cout << it.first << '\n'; //-- QA purpose
+                            orDocument.find(it.first)->second = flag;
+                        }
+                    } catch (std::exception &e ) {
+                       std::cerr << "The word does not exist in any of the current files." << "\n";
+                    }
+                }
+            }
+            else
+            {
+                countWord++;
                 std::cout << "Word is " << wordToFind << '\n';
                 Porter2Stemmer::stem(wordToFind); //stem query
                 try {
                     for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
                     {
-                        //std::cout << it.first << '\n'; //-- QA purpose
-                        orDocument.find(it.first)->second = flag;
+                        //std::cout << it.first << '\n'; -- QA purpose
+                        ++orDocument[it.first];
                     }
                 } catch (std::exception &e ) {
+                   countWord--;
                    std::cerr << "The word does not exist in any of the current files." << "\n";
                 }
             }
         }
-        else
-        {
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            int count{0};
-            std::map<int, std::string, std::greater<int>> rranking;
-            try {
-                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
-                {
-                    rranking.insert(make_pair(it.second, it.first));
-                    //std::cout << it.first << '\n'; //-- QA purpose
-                    count++;
-                    ++orDocument[it.first];
-                }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
-            }
-            for(auto it : rranking)
-            {
-                if(it == *rranking.begin())
-                    std::cout << "Most appear in ";
-                std::cout << (it).second << "(" << (it).first << " instances)/";
-            }
-            std::cout << '\n';
-        }
     }
-    //creating a vector to store all files
-    std::vector<std::string> orDocumentFinal;
+
     for(auto it : orDocument)
     {
+        //Check for two words
         if(it.second != flag)
         {
-            orDocumentFinal.push_back(it.first);
+             //std::cout << "Document satisfying condition is " << it.first << '\n';
+             orDocumentNextToFinal.insert(make_pair(it.first, it.second));
         }
     }
 
+    /*
+     *
+     * Relevancy Ranking
+     *
+     *
+    */
+
+    int TF_IDF = 0;//variable for revelancy ranking
+    std::map<int, std::string, std::greater<int>> orDocumentNextToFinal_2;
+    for(auto it : orDocumentNextToFinal)
+    {
+        TF_IDF = 0;//ADD TD_IDF HERE
+        orDocumentNextToFinal_2.insert(make_pair(TF_IDF, it.first));
+    }
+
+    //this vector will contain all the words that are in both the documents based on relevancy ranking.
+    std::vector<std::string> orDocumentFinal;
+    for(auto it : orDocumentNextToFinal)
+        orDocumentFinal.push_back(it.first);
 
 
     //we will output the next menu ONLY if there is something in the menu
