@@ -90,54 +90,78 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
 
 void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& dataStructure)
 {
-    //making a map containing the
-    std::map<std::string, int> andDocument;
     //counter for the number of times this words appears.
     int countWord = 0;
+    std::string strWithoutbracket = "";
     int flag = 100; //use for "NOT"
-    //counter for
-    while(ss >> wordToFind)
-    {
-        if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+    std::map<std::string, int> andDocument;    //making a map containing the
+    std::string localString = ss.str();
+    std::stringstream ss_(localString);
+    char c;
+    if(localString[0] == '[')
+    {//Find a pair for team of 3
+        while (ss_.get(c))
         {
-            while(ss >> wordToFind)
+            if(c == '[')
+            {}
+            else if(c == ']')
             {
+                ss_.get(c);
+                break;
+            }
+            else
+            {
+                ss_.get(c);
+                strWithoutbracket += c;
+            }
+        }
+
+    }
+    else
+    {//If not ask for a pair
+        while(ss >> wordToFind)
+        {
+            if(wordToFind == "NOT" || wordToFind == "not" || wordToFind == "Not")
+            {
+                while(ss >> wordToFind)
+                {
+                    std::cout << "Word is " << wordToFind << '\n';
+                    Porter2Stemmer::stem(wordToFind); //stem query
+                    try {
+                        for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                        {
+                            //std::cout << it.first << '\n'; //-- QA purpose
+                            andDocument.find(it.first)->second = flag;
+                        }
+                    } catch (std::exception &e ) {
+                       std::cerr << "The word does not exist in any of the current files." << "\n";
+                    }
+                }
+            }
+            else
+            {
+                countWord++;
                 std::cout << "Word is " << wordToFind << '\n';
                 Porter2Stemmer::stem(wordToFind); //stem query
+                std::map<int, std::string, std::greater<int>> rranking;
                 try {
                     for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
                     {
-                        //std::cout << it.first << '\n'; //-- QA purpose
-                        andDocument.find(it.first)->second = flag;
+                        rranking.insert(make_pair(it.second, it.first));
+                        //std::cout << it.first << '\n'; -- QA purpose
+                        ++andDocument[it.first];
                     }
                 } catch (std::exception &e ) {
                    std::cerr << "The word does not exist in any of the current files." << "\n";
                 }
-            }
-        }
-        else
-        {
-            countWord++;
-            std::cout << "Word is " << wordToFind << '\n';
-            Porter2Stemmer::stem(wordToFind); //stem query
-            std::map<int, std::string, std::greater<int>> rranking;
-            try {
-                for( auto it : dataStructure->find(wordToFind).getFileAndCount() )
+                for(auto it : rranking)
                 {
-                    rranking.insert(make_pair(it.second, it.first));
-                    //std::cout << it.first << '\n'; -- QA purpose
-                    ++andDocument[it.first];
+                    if(it == *rranking.begin())
+                        std::cout << "Most appear in ";
+                    std::cout << (it).second << "(" << (it).first << " instances)/";
                 }
-            } catch (std::exception &e ) {
-               std::cerr << "The word does not exist in any of the current files." << "\n";
+                std::cout << '\n';
             }
-            for(auto it : rranking)
-            {
-                if(it == *rranking.begin())
-                    std::cout << "Most appear in ";
-                std::cout << (it).second << "(" << (it).first << " instances)/";
-            }
-            std::cout << '\n';
         }
     }
     //better ui
