@@ -283,38 +283,37 @@ void Parser::parseIndex(std::string filePath, IndexInterface<Word,std::string>& 
 
 std::string Parser::returnTextofFile(std::vector<std::string> &tempfilePathVec, std::string fileNum)
 {
+    std::ifstream firstFile = readInFiles(tempfilePathVec,fileNum);
+    //Gets the Json file and Parses it
+    std::stringstream sstr;
+    sstr << firstFile.rdbuf();
+    std::string jstring = sstr.str();
 
-        std::ifstream firstFile = readInFiles(tempfilePathVec,fileNum);
-        //Gets the Json file and Parses it
-        std::stringstream sstr;
-        sstr << firstFile.rdbuf();
-        std::string jstring = sstr.str();
+    firstFile.close();
 
-        firstFile.close();
+    //std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);//lowercase
+    const char* json = jstring.c_str(); //String to cstring
+    rapidjson::Document cases;
+    cases.Parse(json);
 
-        //std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);//lowercase
-        const char* json = jstring.c_str(); //String to cstring
-        rapidjson::Document cases;
-        cases.Parse(json);
+    //Keep track of already stemmed words
+    //Can be substitute by using a 'dictionary' text file
+    //First if is testing html
+    if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
+    {
 
-        //Keep track of already stemmed words
-        //Can be substitute by using a 'dictionary' text file
-        //First if is testing html
-        if(!cases["html"].IsNull() && (strcmp(cases["html"].GetString(), "") != 0))
-        {
-
-            //Can Switch regex or not by commeting this line and remove comment on next
-            //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-            std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
-            //std::istringstream ss{(cases["html"].GetString())};
-            return ss.str();
-        }
-        //This else then checks plain text
-        else
-        {
-            std::istringstream ss{(cases["plain_text"].GetString())};
-            return ss.str();
-        }
+        //Can Switch regex or not by commeting this line and remove comment on next
+        //std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+        std::istringstream ss{std::regex_replace(cases["html"].GetString(),reg, " ")};
+        //std::istringstream ss{(cases["html"].GetString())};
+        return ss.str();
+    }
+    //This else then checks plain text
+    else
+    {
+        std::istringstream ss{(cases["plain_text"].GetString())};
+        return ss.str();
+    }
 }
 
 /**
@@ -332,6 +331,52 @@ int Parser::numberofTerms(std::vector<std::string> &tempfilePathVec, std::string
 }
 
 /**
+ * Parser::parseResultInfo
+ * @param tempfilePathVec vector of file path
+ * @param fileNum the fileName
+ */
+
+void Parser::parseResultInfo(std::vector<std::string> &tempfilePathVec, std::string fileNum)
+{
+    std::ifstream firstFile = readInFiles(tempfilePathVec,fileNum);
+
+    //Gets the Json file and Parses it
+    std::stringstream sstr;
+    sstr << firstFile.rdbuf();
+    std::string jstring = sstr.str();
+    firstFile.close();
+    //std::transform(jstring.begin(), jstring.end(), jstring.begin(), ::tolower);//lowercase
+    const char* json = jstring.c_str(); //String to cstring
+    rapidjson::Document cases;
+    cases.Parse(json);
+
+    std::string author;
+    std::string date;
+
+    if(!cases["author"].IsNull() && (strcmp(cases["author"].GetString(), "") != 0))
+    {
+        std::istringstream ss{(cases["author"].GetString())};
+        author = ss.str();
+    }
+    else{
+        author = "N/A";
+    }
+
+    if(!cases["date_created"].IsNull() && (strcmp(cases["date_created"].GetString(), "") != 0))
+    {
+        std::istringstream ss{(cases["data_created"].GetString())};
+        date = ss.str();
+    }
+    else{
+        date = "N/A";
+    }
+    std::cout << "Document satisfying condition is " << fileNum << "Author is :" << author
+              << "Date:" << date;
+
+}
+
+
+/**
  * readInFiles is a private function to
  * create the Istream object to read in files
  *
@@ -339,7 +384,6 @@ int Parser::numberofTerms(std::vector<std::string> &tempfilePathVec, std::string
  * @param fileNum is the actual file name
  * @return a completed istream object
  */
-
 std::ifstream Parser::readInFiles(std::vector<std::string> &tempfilePathVec, std::string fileNum)
 {
     unsigned long filePathPosition = 0;
@@ -367,8 +411,12 @@ std::ifstream Parser::readInFiles(std::vector<std::string> &tempfilePathVec, std
         }
     }
     return firstFile;
-
 }
+
+
+
+
+
 
 
 

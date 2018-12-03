@@ -52,6 +52,7 @@ public:
     void parseIndex(std::string, IndexInterface<Word,std::string>&);
     std::string returnTextofFile(std::vector<std::string>&, std::string);
     int numberofTerms(std::vector<std::string>&, std::string, std::string, IndexInterface<Word,std::string>& );
+    void parseResultInfo(std::vector<std::string>&, std::string);
 private:
     std::set<std::string> stopWords;
     std::vector<std::string> fileNames;
