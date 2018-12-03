@@ -304,14 +304,16 @@ void Driver::andQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
         //it(is an iterator of a vector) and will iterate through the document
 
 
-        while(itForDocuFinal != andDocumentFinal.end() && fifteenBegin < fifteenEnd ){
-            std::cout << "Document satisfying condition is " << *itForDocuFinal << '\n';
+        while(itForDocuFinal != andDocumentFinal.end() && fifteenBegin <= fifteenEnd ){
+            std::cout << fifteenBegin + 1 << ".";
+            Parser parseInfo;
+            parseInfo.parseResultInfo(filePathsVec, *itForDocuFinal);
             //move to next element in vector
             ++itForDocuFinal;
             //increment counter in outputs
             ++fifteenBegin;
             //If there is more than 15 results we will ask the user if they want to see more.
-            if( fifteenBegin == fifteenEnd-1 ){
+            if( fifteenBegin > fifteenEnd ){
                 //ask user if they want to see more results
                 std::cout<< "\nWould you like to see more results? \nEnter (y) for yes or (n) for no: ";
                 //flushing cin to have clean input
@@ -553,15 +555,17 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
         std::vector<std::string>::iterator itForDocuFinal  = orDocumentFinal.begin();
         //this will display the first 15 files and ask the user if they want to see more.
         //it(is an iterator of a vector) and will iterate through the document
-        while(itForDocuFinal != orDocumentFinal.end() && fifteenBegin < fifteenEnd ){
+        while(itForDocuFinal != orDocumentFinal.end() && fifteenBegin <= fifteenEnd ){
 
-            std::cout << "Document satisfying condition is " << *itForDocuFinal << '\n';
+            std::cout << fifteenBegin + 1 << ".";
+            Parser parseInfo;
+            parseInfo.parseResultInfo(filePathsVec, *itForDocuFinal);
             //move to next element in vector
             ++itForDocuFinal;
             //increment counter in outputs
             ++fifteenBegin;
             //If there is more than 15 results we will ask the user if they want to see more.
-            if( fifteenBegin == fifteenEnd-1 ){
+            if( fifteenBegin > fifteenEnd ){
                 //ask user if they want to see more results
                 std::cout<< "\nWould you like to see more results? \nEnter (y) for yes or (n) for no: ";
                 //flushing cin to have clean input
@@ -695,15 +699,18 @@ void Driver::notQuery(std::stringstream& ss, IndexInterface<Word, std::string>*&
         std::vector<std::string>::iterator itForDocuFinal  = notDocumentFinal.begin();
         //this will display the first 15 files and ask the user if they want to see more.
         //it(is an iterator of map) and will iterate through the document
-        while(itForDocuFinal != notDocumentFinal.end() && fifteenBegin < fifteenEnd ){
-
-            std::cout << "Document satisfying condition is " << *itForDocuFinal<< '\n';
+        while(itForDocuFinal != notDocumentFinal.end() && fifteenBegin <= fifteenEnd ){
+            //std::cout << "Document satisfying condition is " << *itForDocuFinal<< '\n';
+            //Calls the function to print result and accompanying info
+            std::cout << fifteenBegin + 1 << ".";
+            Parser parseInfo;
+            parseInfo.parseResultInfo(filePathsVec, *itForDocuFinal);
             //move to next element in map
             ++itForDocuFinal;
             //increment counter in outputs
             ++fifteenBegin;
             //If there is more than 15 results we will ask the user if they want to see more.
-            if( fifteenBegin == fifteenEnd-1 ){
+            if( fifteenBegin > fifteenEnd ){
                 //ask user if they want to see more results
                 std::cout<< "\nWould you like to see more results? \nEnter (y) for yes or (n) for no: ";
                 //flushing cin to have clean input
@@ -948,11 +955,11 @@ void Driver::userInterface()
                     std::cout<<"╩ ╩┴ ┴└─┘┴ ┴ ╩ ┴ ┴└─┘┴─┘└─┘\n";
                     if(counter_Hash == 0)
                     {
-                        if(is_file_exist("outputhash.txt"))
+                        if(is_file_exist("output.txt"))
                         {
                             std::cout << "Building Hash Table from Index" << '\n';
                             Parser parse;
-                            parse.parseIndex("outputhash.txt", *Table);
+                            parse.parseIndex("output.txt", *Table);
                             totalWords = parse.getOverallWordTotal();
                         }
                         else

@@ -27,15 +27,6 @@ Parser::Parser()
         stopWords.insert(strArray[i]);
 }
 
-/**
- * getFiles gets the filepath and stores all the filenames
- * into a vector
- *
- * @param path is the filepath
- * @param extn is.json or any other extension
- * @return the vector with all the fileNames
- */
-
 std::vector<std::string> Parser::getFiles(std::string path, std:: string extn)
 {
     /* adapted from:
@@ -71,14 +62,6 @@ bool Parser::isStopWord(std::string s)
     return true;
 }
 
-/**
- * The Parse function parses all the words for a set number of cases
- * using regex
- *
- * @param filePath the filePath
- * @param fileNum the actual id of the file
- * @param index the data structure
- */
 void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Word,std::string>& index)
 {
     //This is the map of all the words and number of times it appear
@@ -133,25 +116,12 @@ void Parser::parse(std::string filePath, std::string fileNum, IndexInterface<Wor
     }
 }
 
-/**
- * getOverallWordTotal returns the total number of works
- * we have parsed
- * @return a long with the total number of words
- */
-
 unsigned long Parser :: getOverallWordTotal()
 {
     return OverallWordTotal;
 }
 
-/**
- * The Private Function that parses the words for a case
- * and stores them inside the temporary map for that case of
- * unique words and number of types the appear
- *
- * @param wordCase the map
- * @param textType html or plaintext
- */
+
 void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& textType)
 {
     std::string temp; //A single word
@@ -179,14 +149,6 @@ void Parser::parseCase(std::map<std::string,int>& wordCase, std::istringstream& 
         }
     }
 }
-
-/**
- * Parser::parseOneFile parses one file for its text
- * and prints out the first 300 words of the text
- *
- * @param tempfilePathVec the vector of file paths
- * @param fileNum the fileName
- */
 
 void Parser::parseOneFile(std::vector<std::string> &tempfilePathVec, std::string fileNum)
 {
@@ -232,13 +194,6 @@ void Parser::parseOneFile(std::vector<std::string> &tempfilePathVec, std::string
     }
 }
 
-/**
- * ParseIndex will convert the index file into a
- * readable file.
- *
- * @param filePath the path of the File where index is stored(Hardcoded)
- * @param index the data structure
- */
 void Parser::parseIndex(std::string filePath, IndexInterface<Word,std::string>& index)
 {
     std::map<std::string,int> wordCase;
@@ -273,13 +228,6 @@ void Parser::parseIndex(std::string filePath, IndexInterface<Word,std::string>& 
     firstFile.close();
 }
 
-/**
- * @brief Parser::returnTextofFile returns the entire text of the document
- * \
- * @param tempfilePathVec the vector with the filePath
- * @param fileNum the id of the file
- * @return a string of the entire file text
- */
 
 std::string Parser::returnTextofFile(std::vector<std::string> &tempfilePathVec, std::string fileNum)
 {
@@ -316,25 +264,11 @@ std::string Parser::returnTextofFile(std::vector<std::string> &tempfilePathVec, 
     }
 }
 
-/**
- * NumberofTerms returns the number of a certain term in a doucment
- *
- * @param tempFilePathVec the vector for the filePaths
- * @param fileNum the actual file
- * @param word The word that is used
- * @return the number of terms in a doucment
- */
 int Parser::numberofTerms(std::vector<std::string> &tempfilePathVec, std::string fileNum, std::string word, IndexInterface<Word,std::string>& index)
 {
     std::map<std::string,int> wordMap = index.find(word).getFileAndCount();
     return wordMap.find(fileNum)->second;
 }
-
-/**
- * Parser::parseResultInfo
- * @param tempfilePathVec vector of file path
- * @param fileNum the fileName
- */
 
 void Parser::parseResultInfo(std::vector<std::string> &tempfilePathVec, std::string fileNum)
 {
@@ -352,38 +286,36 @@ void Parser::parseResultInfo(std::vector<std::string> &tempfilePathVec, std::str
 
     std::string author;
     std::string date;
+    std::cout << fileNum << '\n';
+
 
     if(!cases["author"].IsNull() && (strcmp(cases["author"].GetString(), "") != 0))
     {
         std::istringstream ss{(cases["author"].GetString())};
         author = ss.str();
     }
-    else{
+
+    else
+    {
         author = "N/A";
     }
 
+        //std::string temp = cases["author"].GetString();
+
     if(!cases["date_created"].IsNull() && (strcmp(cases["date_created"].GetString(), "") != 0))
     {
-        std::istringstream ss{(cases["data_created"].GetString())};
+        std::istringstream ss{(cases["date_created"].GetString())};
         date = ss.str();
     }
     else{
         date = "N/A";
     }
-    std::cout << "Document satisfying condition is " << fileNum << "Author is :" << author
-              << "Date:" << date;
+    std::cout << "Document satisfying condition is " << fileNum << '\n' <<
+              "Author is :" << author << '\n'
+              << "Date:" << date << '\n';
 
 }
 
-
-/**
- * readInFiles is a private function to
- * create the Istream object to read in files
- *
- * @param tempfilePathVec& is the vector of filepaths
- * @param fileNum is the actual file name
- * @return a completed istream object
- */
 std::ifstream Parser::readInFiles(std::vector<std::string> &tempfilePathVec, std::string fileNum)
 {
     unsigned long filePathPosition = 0;
