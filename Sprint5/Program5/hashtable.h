@@ -9,36 +9,77 @@
 #include <fstream>
 
 template <typename T,typename K> class HashTable;
-/*
- *The Hash table will contain a key and value.
- * The KEY IS MADE BY A HASH FUNCTION GO GET THE INDEX IN THE ARRAY
- * WHERE THE VALUE WILL BE INSERTED.
- * This will provide constant look up and insertion.
- */
+
 template <typename T,typename K>
 class HashTable : public IndexInterface<T,K>
 {
 
 public:
+    /* HashTable is the default constructor of the sub class.
+    * @return HashTable<T,k>
+    */
     HashTable();
+    /* HashTable is the copy constructor of the sub class
+     * @param rightObj is the object we are copying to the initialized object.
+    * @return HashTable<T,k>
+    */
     HashTable(const HashTable<T,K> &rightObj);
+    /* Destructor, deletes dynamic memory.
+    * @return HashTable<T,K>
+    */
     ~HashTable();
+    /* operator= is the overloaded assignment operator
+     * @param rightObj is the object we are copying to the object left of (=).
+    * @return HashTable<T,k>&
+    */
     HashTable<T,K>& operator=(const HashTable<T,K> &rightObj);
+    /* operator[] will overload the subscript operator for the hashtable. Same implementation as find.
+    * @param K is the key (string) by reference used to find value.
+    * @return T&
+    */
     virtual T& operator[](K& lookUpKey);
+    /* getSize() it will return the number of elements inside each data structure.
+    * @return int
+    */
     virtual int getSize();
-    virtual void insert( T &d, K &k);//value first then key
-    /*find: will traverse the table and see if a key exists at that index.
-     *The index is computed by getting the hash of a key(string).*/
+    /* insert(T &d, K &k) allow insertion of elements using a value (T &d) and key (K &k).
+    * @param T is the object (value) by reference
+    * @param K is the key (string) by reference used to insert value.
+    * @return Void
+    */
+    virtual void insert( T &d, K &k);
+    /* find(K &k) allow finding of elements using a key (K &k).
+    * @param K is the key (string) by reference used to find value.
+    * @return T&
+    */
     virtual T& find( K& k );
+    /* printInOrder will print out all of the keys in the order they stored.
+    * @return void
+    */
     virtual void printInOrder();
+    /* printIndex() is virtual function, that will print out the from each data structure into a .txt file.
+    * @return void
+    */
     virtual void printIndex();
-    void makingTop50andTotalWordEachCase(); //equivalent to AVL getWordObject
+    /* makingTop50andTotalWordEachCase() will be used to calculate top 50 words per case.
+    * @return void
+    */
+    void makingTop50andTotalWordEachCase();
+    /*  top50Common() is pure virtual, it will return a map of ints and strings containing the top 50 common words.
+    * @return std::map<int, std::string, std::greater<int>>&
+    */
     virtual std::map<int, std::string, std::greater<int>>& top50Common();
+    /* getTotalWordsEachCase() is pure virtual, it will return the number of words per case, that will be used for stats purposes.
+    * @return std::map<std::string, int>&
+    */
     virtual std::map<std::string, int>& getTotalWordsEachCase();
 
 private:
     /*This function will return an index of where to store a certain element
-    * based on the hash calculated by this function.*/
+    * based on the hash calculated by this function.
+     @param K is the key (string) by reference used to insert value.
+    * @return unsigned int
+    */
     unsigned int getHashKeyIndex(K &k);
 
     //private variables

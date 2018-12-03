@@ -22,7 +22,9 @@ private:
     int height;
     K key;
 public:
-    //default parameters for each child pointers
+    /* Node is the default constructor of the friend class.
+    * @return Node<T,k>
+    */
     Node(T d, K k);
 };
 
@@ -39,26 +41,64 @@ Node<T,K>::Node(T d, K k)
 
 template <typename T,typename K>
 class AVLTree: public IndexInterface<T,K> {
-/*
-The AVLTree class will use private and public functions to insert.
-The private function(s) are internal function(s) called
-the public function(s).
-*/
+
 public:
+    /* AVLTree is the default constructor of the subclass class.
+    * @return AVLTree<T,k>
+    */
     AVLTree();
+    /* AVLTree is the copy constructor of the sub class
+     * @param rightObj is the object we are copying to the initialized object.
+    * @return AVLTree<T,k>
+    */
     AVLTree(const AVLTree<T,K>& rightObject);
+    /* Destructor, deletes dynamic memory.
+    * @return AVLTree<T,K>
+    */
     virtual ~AVLTree();
+    /* operator= is the overloaded assignment operator
+     * @param rightObj is the object we are copying to the object left of (=).
+    * @return AVLTree<T,k>&
+    */
     AVLTree<T,K>& operator=(const AVLTree<T,K>& rightObject);
+    /* getSize() it will return the number of elements inside this data structure.
+    * @return int
+    */
     virtual int getSize();
+    /* insert(T &d, K &k) allow insertion of elements using a value (T &d) and key (K &k).
+    * @param T is the object (value) by reference
+    * @param K is the key (string) by reference used to insert value.
+    * @return Void
+    */
     virtual void insert( T &d, K &k);
-    /*find: will traverse the tree and see if a node exits.This function is passed by reference
-     because we will modify update existing info inside of the node.*/
+    /* find(K &k) allow finding of elements using a key (K &k).
+    * @param K is the key (string) by reference used to find value.
+    * @return T&
+    */
     virtual T& find( K& k );
+    /* printInOrder() will print out all of the keys in the order they stored.
+    * @return void
+    */
     virtual void printInOrder();
+    /* printIndex() is virtual function, that will print out the from each data structure into a .txt file.
+    * @return void
+    */
     virtual void printIndex();
+    /*  top50Common() it will return a map of ints and strings containing the top 50 common words.
+    * @return std::map<int, std::string, std::greater<int>>&
+    */
     virtual std::map<int, std::string, std::greater<int>>& top50Common();
+    /*  getWordObject() wil call getWordObject(Node<T,K>*)
+    * @return void
+    */
     void getWordObject();
+    /*   getWordObject(Node<T,K>*) will be used along side of top50Common() to help calculate top 50 words.
+    * @return void
+    */
     void getWordObject(Node<T,K>* ptrAtThisNode);
+    /*  getTotalWordsEachCase() will return a map of strings and ints getting the total number of words per case.
+    * @return std::map<std::string, int>&
+    */
     std::map<std::string, int>& getTotalWordsEachCase();
 
 private:
