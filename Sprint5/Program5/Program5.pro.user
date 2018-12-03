@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.7.0, 2018-12-02T16:27:01. -->
+<!-- Written by QtCreator 4.7.2, 2018-12-02T15:47:24. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -306,8 +306,8 @@
     <value type="int" key="PE.EnvironmentAspect.Base">2</value>
     <valuelist type="QVariantList" key="PE.EnvironmentAspect.Changes"/>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Program5</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Program52</value>
-    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/student/Desktop/CSE2341-18F-search-engine-Skyler-Tran-Terry-Wang-Jaime-Goicoechea/Sprint5/Program5/Program5.pro</value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
+    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:/home/student/Desktop/NEW-CSE2341/CSE2341-18F-search-engine-Skyler-Tran-Terry-Wang-Jaime-Goicoechea/Sprint5/Program5/Program5.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">/home/student/Desktop/scotus10Files</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">Program5.pro</value>
