@@ -44,6 +44,17 @@ void Driver::makingStorage(IndexInterface<Word, std::string>*& dataStructure)
     Parser parser = Parser();
     std::string delimiter = "/";
     std::string filePath;
+    std::ifstream readInFiles("filepaths.txt");
+    if(readInFiles){
+        std::string tempFilePath;
+        while(readInFiles >> tempFilePath)
+        {
+            filePathsVec.push_back(tempFilePath);
+        }
+    }
+    readInFiles.close();
+
+
 
     //This for loop opens all file paths for the data structure
     //FilePaths[0] is the /home/student/Desktop/scotus
@@ -385,7 +396,6 @@ void Driver::orQuery(std::stringstream& ss, IndexInterface<Word, std::string>*& 
                       tempString = "";
                       localString += c;
                   }
-
                   else
                   {
                     localString += c;
@@ -887,6 +897,7 @@ void Driver::userInterface()
                     //Clear index goes here
                     //Delete .txt file
                     remove("test.txt");
+                    remove("filePaths.txt");
 
                 }
                 if(choiceMaintenance[0] == '0')
@@ -979,6 +990,11 @@ void Driver::userInterface()
             std::cout << "Saving your Data Structures to Index" << '\n';
             if(Tree->getSize() > 1){Tree->printIndex();}
             if(Table->getSize() > 1){Table->printIndex();}
+            std::ofstream filePaths("filespaths.txt");
+            for(int x = 1; x < filePathsVec.size(); x++)
+            {
+                filePaths << filePathsVec[x] << " ";
+            }
             condition = false;
             std::cout << "Stopping program.....\n";
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
