@@ -396,9 +396,8 @@ std::ifstream Parser::readInFiles(std::vector<std::string> &tempfilePathVec, std
     {
         //std::cerr << "Hi" << '\n';
         filePathPosition++;
-        //filePath = tempfilePathVec[filePathPosition] + "/" + fileNum;
-
-        filePath = "/home/student/Desktop/scotus";
+        filePath = tempfilePathVec[filePathPosition] + "/" + fileNum;
+        //filePath = "/home/student/Desktop/scotus";
         filePath = filePath + "/" + fileNum;
         firstFile.close();
         firstFile.open(filePath);
