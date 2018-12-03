@@ -60,7 +60,6 @@ HEADERS += \
     hash.h \
     string_view.h \
     IndexInterface.h \
-    r_ranking.h \
     hashtable.h
 
 
